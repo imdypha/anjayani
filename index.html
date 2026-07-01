@@ -1,0 +1,2797 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Usaha Sensus Ekonomi 2026</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+
+  <style>
+    :root {
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --surface-1: #ffffff;
+      --surface-2: #f8fafc;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      
+      --accent: #00479b; 
+      --accent-hover: #00367a;
+      --bg-accent: #eff6ff;
+      --border-accent: #bfdbfe;
+      
+      --bg-danger: #fee2e2;
+      --text-danger: #ef4444;
+
+      --bg-success: #dcfce7;
+      --text-success: #15803d;
+      --border-success: #bbf7d0;
+
+      --bg-warning: #fef9c3;
+      
+      --radius: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: #f1f5f9; font-family: var(--font-sans); color: var(--text-primary); display: flex; justify-content: center; padding: 1.5rem 1rem; min-height: 100vh; overflow-x: hidden; }
+    
+    .app { background: var(--surface-1); width: 100%; max-width: 500px; padding: 1.5rem; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
+
+    .header-title { text-align: center; margin-bottom: 1.5rem; }
+    .header-title h1 { font-size: 18px; font-weight: 700; color: var(--accent); }
+    .header-title p { font-size: 12px; color: var(--text-muted); }
+
+    .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
+    .home-card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 24px 10px; text-align: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .home-card:hover { border-color: var(--accent); background: var(--bg-accent); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,71,155,0.1); }
+    .home-card-icon { font-size: 32px; color: var(--accent); }
+    .home-card span { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+
+    .tabs { display: flex; gap: 4px; margin-bottom: 1.5rem; background: var(--surface-2); padding: 5px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab { flex: 1; padding: 10px 14px; border-radius: 8px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-muted); background: transparent; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; white-space: nowrap; }
+    .tab.active { background: var(--surface-1); color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+    .panel { display: none; animation: fadeUp 0.3s ease; }
+    .panel.active { display: block; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .section-label { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--accent); margin: 1.5rem 0 1rem; }
+    .section-label::before { content: ''; display: block; width: 8px; height: 8px; background: #f59e0b; border-radius: 50%; }
+    .section-desc { font-size: 11px; color: var(--text-muted); margin: -8px 0 12px; line-height: 1.5; }
+
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; width: 100%; }
+    .field label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; line-height: 1.3; }
+    
+    .input-box, select { width: 100%; height: 42px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--surface-1); font-size: 13px; color: var(--text-primary); font-family: inherit; transition: all 0.2s; outline: none; }
+    .input-box:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--bg-accent); }
+    
+    .input-group { display: flex; border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--surface-2); overflow: hidden; transition: all 0.2s; width: 100%; }
+    .input-group:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--bg-accent); }
+    .input-group-text { padding: 0 12px; display: flex; align-items: center; font-size: 13px; font-weight: 600; color: var(--text-muted); border-right: 1px solid var(--border-strong); flex-shrink: 0; }
+    .input-group input { flex: 1; width: 100%; min-width: 0; border: none; height: 42px; padding: 0 12px; font-size: 14px; background: var(--surface-1); outline: none; font-family: var(--font-mono); color: var(--accent); font-weight: 500; }
+    .input-group input::placeholder { font-family: var(--font-sans); font-weight: 400; color: #94a3b8; }
+
+    .day-group { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; justify-content: space-between; }
+    .day-btn, .day-btn-keb { flex: 1; min-width: 40px; padding: 10px 0; background: var(--surface-1); border: 1.5px solid var(--border); border-radius: 12px; font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .day-btn:hover, .day-btn-keb:hover { border-color: var(--border-accent); background: var(--bg-accent); color: var(--accent); transform: translateY(-1px); }
+    .day-btn.active, .day-btn-keb.active { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 4px 10px rgba(0, 71, 155, 0.25); transform: translateY(-2px); }
+    .day-info { font-size: 12px; color: var(--text-muted); font-weight: 500;}
+
+    .biaya-item { background: var(--surface-1); border: 1px solid var(--border-strong); padding: 12px; border-radius: 12px; margin-bottom: 12px; position: relative; }
+    .biaya-item-top { display: flex; gap: 8px; margin-bottom: 8px; }
+    .biaya-item-bottom { display: flex; gap: 8px; align-items: center; }
+    
+    .b-nom { display: flex; align-items: center; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface-2); overflow: hidden; height: 42px; transition: 0.2s; flex: 2; }
+    .b-nom:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--bg-accent); }
+    .b-nom span { padding: 0 10px; color: var(--text-muted); font-size: 13px; font-weight: 600; flex-shrink: 0; }
+    .b-nom input { flex: 1; width: 100%; min-width: 0; border: none; background: var(--surface-1); height: 100%; outline: none; font-family: var(--font-mono); padding-left: 8px; font-size: 14px; color: var(--accent); font-weight: 500; }
+    
+    .b-freq { flex: 0.8; height: 42px; text-align: center; font-weight: 600; }
+    .b-periode { flex: 1.2; height: 42px; padding: 0 8px; font-size: 12px; font-weight: 600; }
+
+    .btn-del { width: 42px; height: 42px; background: #fff1f2; color: var(--text-danger); border: 1px solid #fecdd3; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .btn-del:hover { background: var(--bg-danger); }
+    .btn-add { width: 100%; padding: 12px; background: transparent; border: 2px dashed var(--accent); color: var(--accent); border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; transition: 0.2s; margin-bottom: 1.5rem; }
+    .btn-add:hover { background: var(--bg-accent); }
+
+    .btn-primary { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px -1px rgba(0,71,155,0.2); transition: 0.2s; margin-top: 1rem; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-reset { width: 100%; padding: 12px; background: var(--bg-danger); color: var(--text-danger); border: none; border-radius: var(--radius); font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; margin-top: 10px; }
+    .btn-reset:hover { background: #fecaca; }
+    .btn-reset:active { transform: scale(0.98); }
+    
+    .btn-save { width: 100%; padding: 14px; background: var(--surface-1); color: var(--text-success); border: 2px solid var(--border-success); border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; display: none; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; margin-top: 12px; }
+    .btn-save.vis { display: flex; animation: fadeUp 0.4s ease; }
+    .btn-save:hover { background: var(--bg-success); }
+    .btn-save:active { transform: scale(0.98); }
+
+    .result-container { margin-top: 2.5rem; display: none; padding-top: 1rem; border-top: 2px solid var(--border); }
+    .result-container.vis { display: block; animation: fadeUp 0.4s ease; }
+    .res-label { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 12px; }
+    .res-label::before { content: ''; display: block; width: 8px; height: 8px; background: #f59e0b; border-radius: 50%; }
+    .tag-dagang { background: #fef08a; color: #854d0e; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; margin-left: 6px; border: 1px solid #fde047; }
+    
+    .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .res-box { background: #eef2fb; border: 1px solid #d4def1; border-radius: 8px; padding: 14px 10px; text-align: center; }
+    .res-box span { display: block; font-size: 10px; font-weight: 700; color: #5a719d; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .res-box strong { font-family: var(--font-mono); font-size: 14px; color: #475a82; }
+    .res-box-full { background: #fdf5e6; border: 1px solid #f6e3c6; grid-column: span 2; padding: 16px; text-align: center; }
+    .res-box-full span { color: #9c7b4f; }
+    .res-box-full strong { font-size: 18px; color: #82633a; }
+    .res-box-full small { display: block; font-size: 11px; color: #9c7b4f; font-style: italic; margin-top: 4px; }
+
+    .breakdown { margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 12px; }
+    .bd-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: var(--text-secondary); border-bottom: 1px dashed var(--border); }
+    .bd-row:last-child { border-bottom: none; }
+    .bd-row.minus { color: var(--text-muted); }
+    .bd-row.total { border-top: 1.5px solid var(--border-strong); margin-top: 4px; padding-top: 12px; font-weight: 700; color: var(--text-primary); border-bottom: none; font-size: 14px; }
+    .bd-val { font-family: var(--font-mono); }
+
+    .rekap-empty { text-align: center; padding: 4rem 1rem; color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+    .rekap-item { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); animation: fadeUp 0.3s ease; }
+    .rekap-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .rekap-badge { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 4px; letter-spacing: 0.5px; }
+    .badge-usaha { background: var(--bg-accent); color: var(--accent); }
+    .badge-kebutuhan { background: var(--bg-warning); color: #a16207; }
+    .rekap-time { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; font-weight: 500;}
+    .rekap-body { font-size: 13px; color: var(--text-secondary); line-height: 1.6; background: var(--surface-2); padding: 14px; border-radius: 10px; margin-bottom: 12px; border: 1px solid var(--border); }
+    .rekap-body strong { color: var(--text-primary); }
+    .rekap-action { display: flex; justify-content: flex-end; }
+    .btn-del-rekap { font-size: 12px; color: var(--text-danger); background: var(--surface-1); border: 1px solid #fecdd3; border-radius: 8px; padding: 8px 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; transition: 0.2s; font-family: inherit;}
+    .btn-del-rekap:hover { background: var(--bg-danger); }
+
+    .calc-wrap { background: var(--surface-2); padding: 16px; border-radius: 16px; border: 1px solid var(--border); }
+    .calc-screen { background: var(--surface-1); border: 1px solid var(--border-strong); border-radius: 10px; padding: 16px; font-size: 28px; text-align: right; margin-bottom: 16px; font-family: var(--font-mono); color: var(--text-primary); font-weight: 600; min-height: 70px; word-break: break-all; display: flex; align-items: flex-end; justify-content: flex-end; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+    .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .calc-btn { padding: 16px 10px; font-size: 18px; font-weight: 600; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); cursor: pointer; transition: 0.15s; display: flex; justify-content: center; align-items: center; font-family: inherit; }
+    .calc-btn:active { transform: scale(0.94); }
+    .calc-btn:hover { border-color: var(--border-strong); background: #f8fafc; }
+    .calc-btn.op { background: var(--bg-accent); color: var(--accent); border-color: var(--border-accent); }
+    .calc-btn.op:hover { background: #dbeafe; }
+    .calc-btn.equals { background: var(--accent); color: white; border-color: var(--accent); grid-row: span 2; }
+    .calc-btn.equals:hover { background: var(--accent-hover); }
+    .calc-btn.clear { background: var(--bg-danger); color: var(--text-danger); border-color: #fecaca; }
+    .calc-btn.clear:hover { background: #fee2e2; }
+
+    .toast-wrap { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100; pointer-events: none; }
+    .toast { background: var(--text-primary); color: white; padding: 12px 24px; border-radius: 100px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.15); opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    
+    .fab-calc { position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 99; transition: 0.2s; border: none; }
+    .fab-calc:hover { transform: scale(1.05); background: var(--accent-hover); }
+    .calc-modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 100; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+    .calc-modal-overlay.active { display: flex; }
+    .calc-modal { background: var(--surface-1); padding: 20px; border-radius: 20px; width: 90%; max-width: 350px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); animation: fadeUp 0.3s ease; }
+
+    .res-tabs { display: flex; gap: 4px; margin-bottom: 12px; background: var(--surface-2); padding: 4px; border-radius: 8px; border: 1px solid var(--border); }
+    .res-tab { flex: 1; padding: 8px; border-radius: 6px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; background: transparent; color: var(--text-muted); transition: 0.2s; }
+    .res-tab.active { background: #2e7d32; color: white; }
+    .res-content { display: none; }
+    .res-content.active { display: block; animation: fadeUp 0.3s ease; }
+    .bd-card { background: #fdf5e6; border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid #f6e3c6; }
+    .bd-card-green { background: #e8f5e9; border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid #c8e6c9; }
+
+    @media (max-width: 550px) {
+      .app { padding: 1.2rem; }
+      .fields-grid { grid-template-columns: 1fr; gap: 0px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header-title">
+    <h1>Kalkulator Usaha Sensus Ekonomi 2026</h1>
+    <p>Alat bantu Perhitungan Sensus Ekonomi 2026</p>
+    <p>Instagram : @nhazlipse</p>
+  </div>
+
+  <div class="tabs">
+  <button class="tab active" id="tab-home" onclick="sw('home', this)"><i class="ti ti-home"></i> Home</button>
+  <button class="tab" onclick="sw('kalkulasi', this)"><i class="ti ti-building-store"></i> Usaha</button>
+  <button class="tab" id="tab-perikanan" onclick="sw('perikanan', this)"><i class="ti ti-fish"></i> Perikanan</button>
+  <button class="tab" id="tab-peternakan" onclick="sw('peternakan', this)"><i class="ti ti-shredder"></i> Peternakan</button> 
+  
+  
+  <button class="tab" onclick="sw('pertanian', this)"><i class="ti ti-tractor"></i> Pertanian</button>
+  <button class="tab" onclick="sw('blok26', this)"><i class="ti ti-receipt"></i> Blok 26</button>
+  <button class="tab" onclick="sw('blok27', this)"><i class="ti ti-chart-bar"></i> Blok 27</button>
+  <button class="tab" onclick="sw('kebutuhan', this)"><i class="ti ti-basket"></i> Rumah Tangga</button>
+  <button class="tab" onclick="sw('rekap', this)"><i class="ti ti-database"></i> Rekap</button>
+</div>
+
+  <button class="fab-calc" onclick="toggleCalc()">
+    <i class="ti ti-calculator"></i>
+  </button>
+
+  <div class="calc-modal-overlay" id="calcModal" onclick="closeCalc(event)">
+    <div class="calc-modal" onclick="event.stopPropagation()">
+      <div class="section-label" style="margin-top:0;">Kalkulator</div>
+      <div class="calc-wrap" style="border:none; padding:0; background:transparent;">
+        <div class="calc-screen" id="calc-screen">0</div>
+        <div class="calc-grid">
+          <button class="calc-btn clear" onclick="calcClear()">C</button>
+          <button class="calc-btn clear" onclick="calcDel()"><i class="ti ti-backspace"></i></button>
+          <button class="calc-btn op" onclick="calcInput('/')">&divide;</button>
+          <button class="calc-btn op" onclick="calcInput('*')">&times;</button>
+          <button class="calc-btn" onclick="calcInput('7')">7</button>
+          <button class="calc-btn" onclick="calcInput('8')">8</button>
+          <button class="calc-btn" onclick="calcInput('9')">9</button>
+          <button class="calc-btn op" onclick="calcInput('-')">-</button>
+          <button class="calc-btn" onclick="calcInput('4')">4</button>
+          <button class="calc-btn" onclick="calcInput('5')">5</button>
+          <button class="calc-btn" onclick="calcInput('6')">6</button>
+          <button class="calc-btn op" onclick="calcInput('+')">+</button>
+          <button class="calc-btn" onclick="calcInput('1')">1</button>
+          <button class="calc-btn" onclick="calcInput('2')">2</button>
+          <button class="calc-btn" onclick="calcInput('3')">3</button>
+          <button class="calc-btn equals" onclick="calcCalculate()">=</button>
+          <button class="calc-btn" style="grid-column: span 2" onclick="calcInput('0')">0</button>
+          <button class="calc-btn" onclick="calcInput('.')">.</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="p-home" class="panel active">
+  <div class="section-label">Jenis Usaha Responden</div>
+  <p class="section-desc">Pilih sektor usaha untuk memulai perhitungan Sensus Ekonomi.</p>
+  
+  <div class="home-grid">
+    <div class="home-card" onclick="sw('kalkulasi', document.querySelector('.tabs button:nth-child(3)'))">
+      <div class="home-card-icon">🛒</div>
+      <span>Dagang / Retail</span>
+    </div>
+    <div class="home-card" onclick="showToast('Fitur Kuliner sedang dalam tahap pengembangan.')">
+      <div class="home-card-icon">🍽️</div>
+      <span>Kuliner / Makanan</span>
+    </div>
+    <div class="home-card" onclick="showToast('Fitur Usaha Jasa sedang dalam tahap pengembangan.')">
+      <div class="home-card-icon">🔧</div>
+      <span>Usaha Jasa</span>
+    </div>
+    <div class="home-card" onclick="sw('perikanan', document.getElementById('tab-perikanan'))">
+      <div class="home-card-icon">🐟</div>
+      <span>Perikanan</span>
+    </div>
+    <div class="home-card" onclick="sw('pertanian', document.querySelector('.tabs button:nth-child(4)'))">
+      <div class="home-card-icon">🌿</div>
+      <span>Pertanian</span>
+    </div>
+    <div class="home-card" onclick="sw('peternakan', document.getElementById('tab-peternakan'))">
+  <div class="home-card-icon">🐄</div>
+  <span>Peternakan</span>
+</div>
+  </div>
+</div>
+
+<div id="p-perikanan" class="panel">
+  <div class="section-label">Data Infrastruktur Perikanan</div>
+  <p class="section-desc">Tambahkan aset seperti Kolam, Tambak, atau Kapal beserta data tenaga kerja di dalamnya.</p>
+
+  <div id="containerIkan"></div>
+  <button class="btn-add" onclick="tambahAsetIkan()">+ Tambah Aset / Kolam / Kapal</button>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Biaya Operasional</div>
+  <p class="section-desc">Masukkan biaya seperti pakan, BBM, pemeliharaan, dll.</p>
+  
+  <div id="containerOpsIkan"></div>
+  <button class="btn-add" onclick="tambahOpsIkan()">+ Tambah Biaya Operasional</button>
+
+  <!-- <details style="margin-top:1.5rem; margin-bottom:1.5rem; background: var(--surface-2); padding: 12px; border-radius: var(--radius); border: 1px solid var(--border);">
+    <summary style="font-size: 13px; font-weight: 700; cursor: pointer; color: var(--text-secondary);"><i class="ti ti-clipboard-list"></i> Rincian Asumsi Teknis (Perikanan)</summary>
+    
+    <div id="containerAsumsiIkan" class="fields-grid" style="margin-top: 12px;">
+      <div class="field asumsi-ikan-item" style="background: var(--surface-1); padding: 8px; border-radius: 8px; border: 1px solid var(--border);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+          <input type="text" class="asm-ikan-nama" value="BIBIT / BENUR (RP/SIKLUS)" style="font-size:10px; font-weight:700; color:var(--text-secondary); border:none; background:transparent; outline:none; width:85%; text-transform:uppercase;">
+          <button type="button" class="btn-del" onclick="hapusElemen(this)" style="width: 20px; height: 20px; min-height: 20px; padding: 0; font-size: 12px; background: transparent; border: none; color: var(--text-danger); cursor:pointer;"><i class="ti ti-x"></i></button>
+        </div>
+        <input type="text" inputmode="numeric" class="input-box asm-ikan-val" value="200.000" style="height: 36px;" oninput="formatRupiah(this)">
+      </div>
+      
+      <div class="field asumsi-ikan-item" style="background: var(--surface-1); padding: 8px; border-radius: 8px; border: 1px solid var(--border);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+          <input type="text" class="asm-ikan-nama" value="OBAT / VITAMIN (RP/SIKLUS)" style="font-size:10px; font-weight:700; color:var(--text-secondary); border:none; background:transparent; outline:none; width:85%; text-transform:uppercase;">
+          <button type="button" class="btn-del" onclick="hapusElemen(this)" style="width: 20px; height: 20px; min-height: 20px; padding: 0; font-size: 12px; background: transparent; border: none; color: var(--text-danger); cursor:pointer;"><i class="ti ti-x"></i></button>
+        </div>
+        <input type="text" inputmode="numeric" class="input-box asm-ikan-val" value="50.000" style="height: 36px;" oninput="formatRupiah(this)">
+      </div>
+      
+      <div class="field asumsi-ikan-item" style="background: var(--surface-1); padding: 8px; border-radius: 8px; border: 1px solid var(--border);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+          <input type="text" class="asm-ikan-nama" value="PENYUSUTAN ALAT (RP/SIKLUS)" style="font-size:10px; font-weight:700; color:var(--text-secondary); border:none; background:transparent; outline:none; width:85%; text-transform:uppercase;">
+          <button type="button" class="btn-del" onclick="hapusElemen(this)" style="width: 20px; height: 20px; min-height: 20px; padding: 0; font-size: 12px; background: transparent; border: none; color: var(--text-danger); cursor:pointer;"><i class="ti ti-x"></i></button>
+        </div>
+        <input type="text" inputmode="numeric" class="input-box asm-ikan-val" value="100.000" style="height: 36px;" oninput="formatRupiah(this)">
+      </div>
+    </div>
+    
+    <button class="btn-add" style="margin-top:12px; padding:8px; font-size:12px; margin-bottom:0;" onclick="tambahAsumsiIkan()">+ Tambah Item Asumsi Teknis</button>
+  </details> -->
+
+  <button class="btn-primary" onclick="hitungPerikanan()"><i class="ti ti-calculator"></i> HITUNG HASIL PERIKANAN</button>
+  <button class="btn-reset" onclick="resetForm('perikanan')"><i class="ti ti-refresh"></i> RESET FORM</button>
+
+  <div class="result-container" id="resPerikananBox">
+    <div class="res-label">Rekapitulasi Perikanan</div>
+    <div class="res-grid" style="grid-template-columns: 1fr;">
+      <div class="res-box res-box-full" style="background: #f0fdf4; border-color: #dcfce7; padding: 12px;">
+        <span style="color: #166534;">TOTAL OMZET / BULAN</span>
+        <strong id="r-ikanOmsetBulan" style="color: #15803d; font-size: 20px;">Rp 0</strong>
+      </div>
+      <div class="res-box res-box-full" style="background: #f0fdf4; border-color: #dcfce7; padding: 12px;">
+        <span style="color: #166534;">TOTAL OMZET / TAHUN</span>
+        <strong id="r-ikanOmset" style="color: #15803d; font-size: 20px;">Rp 0</strong>
+      </div>
+      <div class="res-box res-box-full" style="background: #fff1f2; border-color: #fecdd3; padding: 12px;">
+        <span style="color: #9f1239;">PENGELUARAN / TAHUN</span>
+        <strong id="r-ikanPengeluaran" style="color: #e11d48; font-size: 20px;">Rp 0</strong>
+      </div>
+      <div class="res-box res-box-full" id="box-ikanLabaBulan" style="padding: 12px; margin-top: 8px;">
+        <span id="lbl-ikanLabaBulan">LABA BERSIH / BULAN</span>
+        <strong id="r-ikanLabaBulan" style="font-size: 22px;">Rp 0</strong>
+      </div>
+      <div class="res-box res-box-full" id="box-ikanLaba" style="padding: 12px;">
+        <span id="lbl-ikanLaba">LABA BERSIH / TAHUN</span>
+        <strong id="r-ikanLaba" style="font-size: 22px;">Rp 0</strong>
+      </div>
+    </div>
+    <div class="breakdown" id="resBreakdownIkan"></div>
+    <button id="btn-save-perikanan" class="btn-save" onclick="simpanRekap('perikanan')"><i class="ti ti-device-floppy"></i> SIMPAN KE REKAP DATA</button>
+  </div>
+</div>
+
+<div id="p-peternakan" class="panel">
+  <div class="section-label">Data Umum & Infrastruktur</div>
+  <div class="fields-grid">
+    <div class="field">
+      <label>LUAS LAHAN / KANDANG (m²)</label>
+      <input type="number" id="ternakLuas" class="input-box" placeholder="0">
+    </div>
+  </div>
+  
+  <div class="fields-grid" style="margin-top: 12px;">
+    <div class="field">
+      <label>JUMLAH PEGAWAI (Orang)</label>
+      <input type="number" id="ternakPegawai" class="input-box" placeholder="0" oninput="syncUpahPeternakan()">
+    </div>
+    <div class="field">
+      <label>UPAH PEGAWAI / BULAN</label>
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" id="ternakUpah" placeholder="0" oninput="formatRupiah(this); syncUpahPeternakan()">
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Rincian Populasi Ternak</div>
+  <p class="section-desc">Masukkan jenis dan jumlah hewan ternak yang dipelihara saat ini.</p>
+  <div id="containerPopulasiTernak">
+    <div class="biaya-item b-ternak-item">
+      <div class="biaya-item-top">
+        <input type="text" class="input-box p-jenis" placeholder="Jenis Ternak (mis: Sapi Perah)">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="field" style="margin-bottom:0; margin-top:8px;">
+        <div class="input-group">
+          <input type="number" class="p-jumlah" placeholder="Jumlah" style="border-radius: 8px 0 0 8px;">
+          <span class="input-group-text" style="border-left: 1px solid var(--border-strong); border-right:none;">Ekor</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-add" onclick="tambahPopulasiTernak()">+ Tambah Jenis Ternak Lain</button>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Penjualan Ternak & Hasil (Pendapatan)</div>
+  <p class="section-desc">Masukkan rincian penjualan untuk menghitung Poin 16 (Pendapatan per tahun).</p>
+  <div id="containerJualTernak"></div>
+  <button class="btn-add" onclick="tambahJualTernak()">+ Tambah Item Penjualan</button>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Biaya Produksi Peternakan (Per Tahun)</div>
+  <p class="section-desc">Masukkan estimasi pengeluaran operasional selama <b>satu tahun</b>.</p>
+  
+  <div class="fields-grid">
+    <div class="field">
+      <label>PAKAN</label>
+      <div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" id="ternakBPakan" placeholder="0" oninput="formatRupiah(this)"></div>
+    </div>
+    <div class="field">
+      <label>OBAT & VAKSIN</label>
+      <div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" id="ternakBObat" placeholder="0" oninput="formatRupiah(this)"></div>
+    </div>
+    <div class="field">
+      <label>BIBIT / TERNAK (Pembelian)</label>
+      <div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" id="ternakBBibit" placeholder="0" oninput="formatRupiah(this)"></div>
+    </div>
+    <div class="field">
+      <label>LISTRIK & AIR</label>
+      <div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" id="ternakBListrik" placeholder="0" oninput="formatRupiah(this)"></div>
+    </div>
+    <div class="field">
+      <label>LAIN-LAIN</label>
+      <div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" id="ternakBLain" placeholder="0" oninput="formatRupiah(this)"></div>
+    </div>
+    <div class="field">
+      <label>TENAGA KERJA (Terisi Otomatis)</label>
+      <div class="input-group"><span class="input-group-text">Rp</span><input type="text" id="ternakBTk" placeholder="0" readonly style="background: var(--surface-2); color: var(--text-muted);"></div>
+    </div>
+  </div>
+
+  <button class="btn-primary" onclick="hitungPeternakan()"><i class="ti ti-calculator"></i> HITUNG HASIL PETERNAKAN</button>
+  <button class="btn-reset" onclick="resetForm('peternakan')"><i class="ti ti-refresh"></i> RESET FORM</button>
+
+  <div class="result-container" id="resPeternakanBox">
+    <div class="res-label">Rekapitulasi Peternakan (Per Tahun)</div>
+    <div class="res-grid" style="grid-template-columns: 1fr;">
+      <div class="res-box res-box-full" style="background: #f0fdf4; border-color: #dcfce7; padding: 12px;">
+        <span style="color: #166534;">16. TOTAL PENDAPATAN / TAHUN</span>
+        <strong id="r-ternakPendapatan" style="color: #15803d; font-size: 20px;">Rp 0</strong>
+      </div>
+      <div class="res-box res-box-full" style="background: #fff1f2; border-color: #fecdd3; padding: 12px;">
+        <span style="color: #9f1239;">19. TOTAL BIAYA PRODUKSI / TAHUN</span>
+        <strong id="r-ternakBiaya" style="color: #e11d48; font-size: 20px;">Rp 0</strong>
+      </div>
+      <div class="res-box res-box-full" id="box-ternakLaba" style="padding: 12px;">
+        <span id="lbl-ternakLaba">KEUNTUNGAN BERSIH / TAHUN</span>
+        <strong id="r-ternakLaba" style="font-size: 22px;">Rp 0</strong>
+      </div>
+    </div>
+    <div class="breakdown" id="resBreakdownTernak"></div>
+    <button id="btn-save-peternakan" class="btn-save" onclick="simpanRekap('peternakan')"><i class="ti ti-device-floppy"></i> SIMPAN KE REKAP DATA</button>
+  </div>
+</div>
+
+  <div id="p-kalkulasi" class="panel">
+    <div class="section-label">Data Responden</div>
+    
+    <div class="fields-grid">
+      <div class="field">
+        <label>NO. URUT KELUARGA</label>
+        <div class="input-group">
+          <span class="input-group-text">KK</span>
+          <input type="text" id="noKK" placeholder="001" maxlength="3" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+      </div>
+      <div class="field">
+        <label>NO. URUT BANGUNAN</label>
+        <div class="input-group">
+          <span class="input-group-text">BG</span>
+          <input type="text" id="noBG" placeholder="001" maxlength="3" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+      </div>
+    </div>
+    
+    <div class="field" style="margin-top: 12px;">
+      <label>NAMA USAHA (OPSIONAL)</label>
+      <input type="text" class="input-box" id="namaUsaha" placeholder="Contoh: Warung Bu Sari">
+    </div>
+
+    <div class="field" style="margin-top: 20px;">
+      <label>RESPONDEN MENYEBUT OMZET PER</label>
+      <select id="periode" onchange="cekPeriode()">
+        <option value="hari">Hari</option>
+        <option value="minggu">Minggu</option>
+        <option value="bulan">Bulan</option>
+      </select>
+    </div>
+
+    <div id="wrapHariKerja" class="field">
+      <label>HARI KERJA PER MINGGU</label>
+      <br><br>
+      <div class="day-group">
+        <button class="day-btn active" onclick="toggleDay(this)">Sen</button>
+        <button class="day-btn active" onclick="toggleDay(this)">Sel</button>
+        <button class="day-btn active" onclick="toggleDay(this)">Rab</button>
+        <button class="day-btn active" onclick="toggleDay(this)">Kam</button>
+        <button class="day-btn active" onclick="toggleDay(this)">Jum</button>
+        <button class="day-btn active" onclick="toggleDay(this)">Sab</button>
+        <button class="day-btn active" onclick="toggleDay(this)">Min</button>
+      </div>
+      <div class="day-info" id="infoHariKerja">7 hari kerja / minggu → ~30 hari/bulan</div>
+    </div>
+
+    <div class="field">
+      <label id="lblOmzet">NILAI OMZET PER HARI</label>
+      <div class="input-group" style="background:var(--surface-1)">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" id="valOmzet" placeholder="0" oninput="formatRupiah(this)">
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:1rem">Biaya Produksi</div>
+    <p class="section-desc">Masukkan biaya Produksi beserta <b>frekuensi dan periodenya</b> (misal: 2x per minggu).</p>
+    
+    <div id="biayaContainer">
+      <div class="biaya-item">
+        <div class="biaya-item-top">
+          <input type="text" class="input-box b-nama" placeholder="Beli bahan (mis: tepung)">
+          <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+        </div>
+        <div class="biaya-item-bottom">
+          <div class="b-nom">
+            <span>Rp</span>
+            <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
+          </div>
+          <span style="font-size: 12px; font-weight: bold; color: var(--text-muted);">x</span>
+          <input type="number" class="input-box b-freq" placeholder="1" value="1" min="1">
+          <select class="input-box b-periode">
+            <option value="hari">/ Hari</option>
+            <option value="minggu">/ Minggu</option>
+            <option value="bulan">/ Bulan</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <button class="btn-add" onclick="tambahBiaya()">+ Tambah Item Biaya Lain</button>
+
+    <div class="section-label" style="margin-top:0rem">Biaya Barang yang Terjual</div>
+    <p class="section-desc">Masukkan biaya barang yang terjual <b>Jika Usahanya industri dan membuat/memproduksi sendiri maka di isi 0</p>
+    <div id="biayaJualContainer"></div>
+    <button class="btn-add" onclick="tambahBiayaJual()">+ Tambah Item Biaya Penjualan</button>
+
+    <button class="btn-primary" onclick="hitungPenghasilan()">
+      <i class="ti ti-calculator"></i> HITUNG PENGHASILAN
+    </button>
+    <button class="btn-reset" onclick="resetForm('usaha')">
+      <i class="ti ti-refresh"></i> RESET FORM USAHA
+    </button>
+
+    <div class="result-container" id="resBox">
+      <div class="res-label">Hasil Kalkulasi <span class="tag-dagang" id="tagUsaha">USAHA</span></div>
+      
+      <div class="res-grid">
+        <div class="res-box res-box-full">
+          <span>TOTAL OMSET / PEMASUKAN KOTOR (TAHUN)</span>
+          <strong id="r-otahun">Rp 0</strong>
+          <small id="r-otahun-txt">0,00 juta</small>
+        </div>
+        <div class="res-box" style="background: #fff1f2; border-color: #ffe4e6;">
+          <span style="color: #9f1239;">JUMLAH PENGELUARAN (TAHUN)</span>
+          <strong id="r-ptahun" style="color: #e11d48;">Rp 0</strong>
+        </div>
+        <div class="res-box" style="background: #f0fdf4; border-color: #dcfce7;">
+          <span style="color: #166534;">LABA BERSIH (BULAN)</span>
+          <strong id="r-lbulan" style="color: #15803d;">Rp 0</strong>
+        </div>
+      </div>
+
+      <div class="breakdown" id="resBreakdown"></div>
+      
+      <button id="btn-save-usaha" class="btn-save" onclick="simpanRekap('usaha')">
+        <i class="ti ti-device-floppy"></i> SIMPAN KE REKAP DATA
+      </button>
+    </div>
+  </div>
+
+  <div id="p-pertanian" class="panel">
+    <div class="section-label">Data Sawah & Tanaman Pangan</div>
+    <p class="section-desc">Tambahkan lahan jika responden memiliki lebih dari satu jenis tanaman atau lokasi sawah.</p>
+
+    <div class="fields-grid" style="margin-bottom: 1rem;">
+      <div class="field">
+        <label>NJOP Sawah / m²</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" id="taniNjop" placeholder="33500" value="33.500" oninput="formatRupiah(this)">
+        </div>
+      </div>
+    </div>
+
+    <div id="containerSawah">
+      <div class="biaya-item tani-item">
+        <div class="biaya-item-top">
+          <input type="text" class="input-box t-nama" placeholder="Nama Tanaman (Contoh: Padi Sawah 1, Bawang Merah)">
+          <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+        </div>
+        
+        <div class="fields-grid" style="margin-top: 8px;">
+          <div class="field">
+            <label>Luas Lahan (m²)</label>
+            <input type="number" class="t-luas input-box" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Siklus Panen</label>
+            <div style="display:flex; gap:4px;">
+              <input type="number" class="input-box t-siklus-val" placeholder="Nilai" value="3" style="flex:1;">
+              <select class="input-box t-siklus-tipe" style="flex:1.5;">
+                <option value="bulan">Bulan Sekali</option>
+                <option value="tahun" selected>Kali Setahun</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-label" style="margin-top:16px; margin-bottom:8px; font-size:12px;">Metode Penjualan</div>
+        <div class="metode-container">
+          <div class="metode-row" style="display: flex; gap: 8px; align-items: flex-end; margin-bottom: 8px; width: 100%;">
+            <div class="field" style="margin-bottom:0; flex: 1;">
+              <label style="font-size: 10px;">Metode</label>
+              <input type="text" class="input-box t-metode" placeholder="Gabah / Beras">
+            </div>
+            <div class="field" style="margin-bottom:0; flex: 1;">
+              <label style="font-size: 10px;">Harga/kg</label>
+              <div class="input-group">
+                <span class="input-group-text" style="padding:0 8px;">Rp</span>
+                <input type="text" inputmode="numeric" class="t-harga" value="6200" oninput="formatRupiah(this)">
+              </div>
+            </div>
+            <button class="btn-del" onclick="hapusElemen(this)" style="margin-bottom:0; flex-shrink: 0;"><i class="ti ti-x"></i></button>
+          </div>
+        </div>
+        <button class="btn-add" style="margin-top:4px; margin-bottom:8px; padding:8px; font-size:12px;" onclick="tambahMetodeJual(this)">+ Tambah Metode Penjualan Lain</button>
+
+        <div class="section-label" style="margin-top:16px; margin-bottom:8px; font-size:12px;">Data Pekerja</div>
+        <div class="fields-grid">
+          <div class="field">
+            <label>Banyaknya Pekerja</label>
+            <input type="number" class="t-pek-tot input-box" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Pekerja Yang Digaji</label>
+            <input type="number" class="t-pek-gaji input-box" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Pekerja Tidak Digaji</label>
+            <input type="number" class="t-pek-nogaji input-box" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Upah/Hari (Bagi Yg Digaji)</label>
+            <div class="input-group">
+              <span class="input-group-text">Rp</span>
+              <input type="text" inputmode="numeric" class="t-upah" placeholder="75000" value="75.000" oninput="formatRupiah(this)">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button class="btn-add" onclick="tambahSawah()">+ Tambah Lahan / Tanaman Baru</button>
+
+    <details style="margin-top:1.5rem; background: var(--surface-2); padding: 12px; border-radius: var(--radius); border: 1px solid var(--border);">
+      <summary style="font-size: 13px; font-weight: 700; cursor: pointer; color: var(--text-secondary);"><i class="ti ti-clipboard-list"></i> Rincian Asumsi Teknis</summary>
+      <div class="fields-grid" style="margin-top: 12px;">
+        <div class="field"><label>Estimasi Panen (kg/m²)</label><input type="number" id="asmPanen" class="input-box" value="0.6" step="0.1"></div>
+        <div class="field"><label>Bajak Sawah (Rp/m²)</label><input type="number" id="asmBajak" class="input-box" value="1000"></div>
+        <div class="field"><label>Benih (Rp/m²)</label><input type="number" id="asmBenih" class="input-box" value="200"></div>
+        <div class="field"><label>Pupuk Urea (Rp/m²)</label><input type="number" id="asmUrea" class="input-box" value="300"></div>
+        <div class="field"><label>Pupuk NPK (Rp/m²)</label><input type="number" id="asmNpk" class="input-box" value="400"></div>
+        <div class="field"><label>Pestisida (Rp/m²)</label><input type="number" id="asmPestisida" class="input-box" value="250"></div>
+        <div class="field"><label>Air / Irigasi (Rp/m²)</label><input type="number" id="asmAir" class="input-box" value="150"></div>
+      </div>
+    </details>
+
+    <button class="btn-primary" onclick="hitungPertanian()">
+      <i class="ti ti-calculator"></i> HITUNG HASIL PERTANIAN
+    </button>
+    <button class="btn-reset" onclick="resetForm('pertanian')">
+      <i class="ti ti-refresh"></i> RESET FORM PERTANIAN
+    </button>
+
+    <div class="result-container" id="resPertanianBox">
+      <div class="res-label">Hasil Otomatis</div>
+      <div class="res-grid" style="grid-template-columns: 1fr;">
+        <div class="res-box res-box-full" style="background: #fdf5e6; border-color: #f6e3c6; padding: 12px;">
+          <span style="color: #9c7b4f;">PENDAPATAN KOTOR (TAHUN)</span>
+          <strong id="r-taniPendapatan" style="color: #82633a; font-size: 20px;">Rp 0</strong>
+        </div>
+        <div class="res-box res-box-full" id="box-taniLaba" style="padding: 12px;">
+          <span id="lbl-taniLaba">LABA BERSIH (TAHUN)</span>
+          <strong id="r-taniLaba" style="font-size: 22px;">Rp 0</strong>
+        </div>
+      </div>
+      <div class="breakdown" id="resBreakdownTani"></div>
+      <button id="btn-save-pertanian" class="btn-save" onclick="simpanRekap('pertanian')">
+        <i class="ti ti-device-floppy"></i> SIMPAN KE REKAP DATA
+      </button>
+    </div>
+  </div>
+
+
+  <div id="p-blok26" class="panel">
+    <div class="section-label">Rincian Pengeluaran Tahun 2025 (Blok 26)</div>
+    <p class="section-desc">Masukkan biaya operasional tetap untuk mendapatkan rincian per <b>Tahun</b>.</p>
+
+    <div class="section-label" style="margin-top:1.5rem">26.A Upah, Gaji & Jaminan Sosial Pegawai</div>
+    <div class="fields-grid" style="grid-template-columns: 1fr;">
+      <div class="field">
+        <label>JUMLAH PEGAWAI / KARYAWAN</label>
+        <input type="number" id="jmlPegawai" class="input-box" placeholder="0" min="0">
+      </div>
+    </div>
+    <div class="fields-grid">
+      <div class="field">
+        <label>GAJI PER PEGAWAI</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" id="gajiPegawai" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+      <div class="field">
+        <label>PERIODE GAJI</label>
+        <select id="periodeGaji" class="input-box">
+          <option value="hari">Harian</option>
+          <option value="minggu">Mingguan</option>
+          <option value="bulan" selected>Bulanan</option>
+          <option value="tahun">Tahunan</option>
+        </select>
+      </div>
+    </div>
+    <div class="fields-grid">
+      <div class="field">
+        <label>JAMINAN SOSIAL PER PEGAWAI</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" id="bpjsPegawai" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+      <div class="field">
+        <label>PERIODE JAMINAN SOSIAL</label>
+        <select id="periodeBpjs" class="input-box">
+          <option value="bulan" selected>Bulanan</option>
+          <option value="tahun">Tahunan</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:1.5rem">26.B Biaya Produksi</div>
+    <div id="container26B"></div>
+    <button class="btn-add" onclick="tambahItem26('container26B', 'Nama bahan/produksi')">+ Tambah Item Produksi</button>
+
+    <div class="section-label" style="margin-top:1.5rem">26.D Biaya Operasional (Air, Listrik, Gas, dll)</div>
+    <div id="container26D"></div>
+    <button class="btn-add" onclick="tambahItem26('container26D', 'Listrik / Air / Gas')">+ Tambah Item Operasional</button>
+
+    <div class="section-label" style="margin-top:1.5rem">26.E Biaya Non-Operasional</div>
+    <div id="container26E"></div>
+    <button class="btn-add" onclick="tambahItem26('container26E', 'Pajak / Bunga')">+ Tambah Item Non-Operasional</button>
+
+    <button class="btn-primary" onclick="hitungBlok26()">
+      <i class="ti ti-calculator"></i> HITUNG BLOK 26 (SETAHUN)
+    </button>
+    <button class="btn-reset" onclick="resetForm('blok26')">
+      <i class="ti ti-refresh"></i> RESET FORM BLOK 26
+    </button>
+
+    <div class="result-container" id="resBlok26Box">
+      <div class="res-label">Hasil Kalkulasi Blok 26 (Total Setahun)</div>
+      <div class="res-grid">
+        <div class="res-box res-box-full" style="background: #f8fafc; border-color: #cbd5e1;">
+          <span>TOTAL PENGELUARAN BLOK 26 / TAHUN</span>
+          <strong id="r-b26tahun" style="font-size: 24px; color: var(--accent);">Rp 0</strong>
+        </div>
+      </div>
+      <div class="breakdown" id="resBreakdown26" style="margin-top: 15px;"></div>
+      <button id="btn-save-blok26" class="btn-save" onclick="simpanRekap('blok26')">
+        <i class="ti ti-device-floppy"></i> SIMPAN KE REKAP DATA
+      </button>
+    </div>
+  </div>
+
+
+  <div id="p-kebutuhan" class="panel">
+    <div class="section-label">Kebutuhan Rumah Tangga</div>
+    <p class="section-desc">Isi rincian pendapatan dan pengeluaran rumah tangga di bawah ini.</p>
+    
+    <div class="section-label" style="margin-top:1.5rem">Pendapatan Keluarga</div>
+    <div id="containerPendapatan">
+      <div class="biaya-item p-gaji-item">
+        <div class="biaya-item-top">
+          <input type="text" class="input-box i-nama" placeholder="Gaji Kepala Keluarga" value="Gaji Kepala Keluarga">
+          <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <div class="input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-add" onclick="tambahPendapatan()">+ Tambah Pendapatan Keluarga Lain</button>
+
+    <div class="section-label" style="margin-top:1.5rem">15.a Pengeluaran Listrik Sebulan</div>
+    <div class="field">
+      <label>NILAI PENGELUARAN LISTRIK (PER BULAN)</label>
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" id="keb15a" placeholder="0" oninput="formatRupiah(this)">
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:1.5rem">15.b Pengeluaran Pulsa & Internet Seluruh Anggota Sebulan</div>
+    <div id="container15b"></div>
+    <button class="btn-add" onclick="tambahItem15b()">+ Tambah Item Pulsa / Internet</button>
+
+    <div class="section-label" style="margin-top:1.5rem">16.a Rata-rata Pengeluaran Makanan Keluarga Seminggu</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label>NILAI PENGELUARAN MAKANAN</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" id="keb16a_val" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+      <div class="field">
+        <label>PILIHAN PERIODE OLEH RESPONDEN</label>
+        <select id="keb16a_per" class="input-box">
+          <option value="hari">Per Hari</option>
+          <option value="minggu" selected>Per Minggu</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:1.5rem">16.b Rata-rata Pengeluaran Bukan Makanan Rutin Bulanan</div>
+    <p class="section-desc">Contoh: Rokok Rp 31.000 x 2 per minggu.</p>
+    <div id="container16b"></div>
+    <button class="btn-add" onclick="tambahItem16b()">+ Tambah Item Bukan Makanan (Bulanan)</button>
+
+    <div class="section-label" style="margin-top:1.5rem">16.c Rata-rata Pengeluaran Bukan Makanan Rutin Tahunan</div>
+    <p class="section-desc">Pajak Motor/UKT Semester/SPP atau Baju Lebaran.</p>
+    <p class="section-desc">Contoh : Pajak Montor 300.000 x3, Baju Lebaran 100.000 x5, UKT 3.000.000 x2.</p>
+    <div id="container16c"></div>
+    <button class="btn-add" onclick="tambahItem16c()">+ Tambah Item Bukan Makanan (Tahunan)</button>
+
+    <button class="btn-primary" onclick="hitungKebutuhan()">
+      <i class="ti ti-calculator"></i> HITUNG REKAP KEBUTUHAN
+    </button>
+    <button class="btn-reset" onclick="resetForm('kebutuhan')">
+      <i class="ti ti-refresh"></i> RESET FORM KEBUTUHAN
+    </button>
+
+    <div class="result-container" id="resKebutuhan">
+      <div class="res-label">Rekap Rumah Tangga (Setahun)</div>
+      
+      <div class="res-grid" style="grid-template-columns: 1fr;">
+        <div class="res-box res-box-full" style="background: #f0fdf4; border-color: #dcfce7; padding: 12px;">
+          <span style="color: #166534;">TOTAL PEMASUKAN SETAHUN</span>
+          <strong id="r-kin" style="color: #15803d; font-size: 20px;">Rp 0</strong>
+        </div>
+        <div class="res-box res-box-full" style="background: #fff1f2; border-color: #fecdd3; padding: 12px;">
+          <span style="color: #9f1239;">TOTAL PENGELUARAN SETAHUN</span>
+          <strong id="r-kout" style="color: #e11d48; font-size: 20px;">Rp 0</strong>
+        </div>
+        <div class="res-box res-box-full" id="box-kprofit" style="padding: 12px;">
+          <span id="lbl-kprofit">TOTAL KEUNTUNGAN SETAHUN</span>
+          <strong id="r-kprofit" style="font-size: 22px;">Rp 0</strong>
+        </div>
+      </div>
+
+      <div class="breakdown" id="resBreakdownKebutuhan"></div>
+
+      <button id="btn-save-kebutuhan" class="btn-save" onclick="simpanRekap('kebutuhan')">
+        <i class="ti ti-device-floppy"></i> SIMPAN KE REKAP DATA
+      </button>
+    </div>
+  </div>
+
+
+  <div id="p-blok27" class="panel">
+    <div class="section-label">Rincian Nilai Pendapatan Tahun 2025 (Blok 27)</div>
+    
+    <div class="section-label" style="margin-top:1.5rem">27.A Pendapatan Barang & Jasa</div>
+    <div id="container27A"></div>
+    <button class="btn-add" onclick="tambahItem27A()">+ Tambah Barang/Jasa (27.A)</button>
+
+    <div class="section-label" style="margin-top:1.5rem">27.B Pendapatan Lainnya</div>
+    <div id="container27B"></div>
+    <button class="btn-add" onclick="tambahItem27B()">+ Tambah Pendapatan Lain (27.B)</button>
+
+    <div class="section-label" style="margin-top:1.5rem">27.D Persentase Pendapatan dari Stok</div>
+    <p class="section-desc" style="margin-top: 8px;">Kalkulasi rasio barang terjual dibandingkan stok riil.</p>
+    <div id="container27D"></div>
+    <button class="btn-add" onclick="tambahItem27D()">+ Tambah Hitungan Stok (27.D)</button>
+
+    <button class="btn-primary" onclick="hitungBlok27()">
+      <i class="ti ti-calculator"></i> HITUNG TOTAL BLOK 27
+    </button>
+    <button class="btn-reset" onclick="resetForm('blok27')">
+      <i class="ti ti-refresh"></i> RESET FORM BLOK 27
+    </button>
+
+    <div class="result-container" id="resBlok27Box">
+      <div class="res-label">27.C Hasil Kalkulasi Total (27A + 27B)</div>
+      <div class="res-grid">
+        <div class="res-box res-box-full" style="background: #f0fdf4; border-color: #dcfce7;">
+          <span>TOTAL PENDAPATAN / TAHUN (27.C)</span>
+          <strong id="r-b27tahun" style="font-size: 24px; color: #166534;">Rp 0</strong>
+        </div>
+      </div>
+      <div class="breakdown" id="resBreakdown27" style="margin-top: 15px;"></div>
+      <button id="btn-save-blok27" class="btn-save" onclick="simpanRekap('blok27')">
+        <i class="ti ti-device-floppy"></i> SIMPAN KE REKAP DATA
+      </button>
+    </div>
+  </div>
+
+
+  <div id="p-rekap" class="panel">
+    <div class="section-label">Data Tersimpan</div>
+    <p class="section-desc">Kumpulan rekapitulasi hitungan usaha dan kebutuhan keluarga yang telah Anda simpan di perangkat ini.</p>
+    
+    <div id="rekapContainer">
+      <div class="rekap-empty">
+        <i class="ti ti-database-off" style="font-size:36px; color:var(--border-strong); display:block; margin-bottom:12px;"></i>
+        Belum ada data yang disimpan.<br>Hitung dan simpan data dari tab lainnya.
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<div class="toast-wrap">
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+  const formatRp = (num) => 'Rp ' + new Intl.NumberFormat('id-ID').format(Math.round(num));
+  const formatJuta = (num) => {
+    let j = num / 1e6;
+    return j.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' juta';
+  };
+
+  function formatRupiah(input) {
+    let val = input.value.replace(/[^0-9]/g, '');
+    if (val !== '') {
+      input.value = new Intl.NumberFormat('id-ID').format(val);
+    } else {
+      input.value = '';
+    }
+  }
+
+  function parseNum(str) {
+    if (!str) return 0;
+    return parseFloat(str.replace(/\./g, '')) || 0;
+  }
+
+  function sw(name, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('p-' + name).classList.add('active');
+  }
+
+  function hapusElemen(btn) {
+    const bungkus = btn.closest('.metode-row, .biaya-item, .biaya-row, .asumsi-ikan-item');
+    if (bungkus) {
+      bungkus.remove();
+    }
+  }
+
+  function toggleResTani(btn, type, idx) {
+    const container = btn.closest('.res-tabs').parentElement;
+    container.querySelectorAll('.res-tab').forEach(b => b.classList.remove('active'));
+    container.querySelectorAll('.res-content').forEach(c => c.classList.remove('active'));
+    
+    btn.classList.add('active');
+    container.querySelector(`#tani-${type}-${idx}`).classList.add('active');
+  }
+
+  function resetForm(jenis) {
+    if (jenis === 'usaha') {
+      document.getElementById('noKK').value = '';
+      document.getElementById('noBG').value = '';
+      document.getElementById('namaUsaha').value = '';
+      document.getElementById('valOmzet').value = '';
+      document.querySelectorAll('#biayaContainer .val-biaya').forEach(el => el.value = '');
+      document.querySelectorAll('#biayaJualContainer .val-biaya').forEach(el => el.value = '');
+      document.getElementById('resBox').classList.remove('vis');
+      showToast('Form Usaha Direset');
+    } else if (jenis === 'blok26') {
+      document.getElementById('jmlPegawai').value = '';
+      document.getElementById('gajiPegawai').value = '';
+      document.getElementById('bpjsPegawai').value = '';
+      document.getElementById('container26B').innerHTML = '';
+      document.getElementById('container26D').innerHTML = '';
+      document.getElementById('container26E').innerHTML = '';
+      document.getElementById('resBlok26Box').classList.remove('vis');
+      showToast('Form Blok 26 Direset');
+    } else if (jenis === 'blok27') {
+      document.getElementById('container27A').innerHTML = '';
+      document.getElementById('container27B').innerHTML = '';
+      document.getElementById('container27D').innerHTML = '';
+      document.getElementById('resBlok27Box').classList.remove('vis');
+      showToast('Form Blok 27 Direset');
+    } else if (jenis === 'kebutuhan') {
+      document.getElementById('containerPendapatan').innerHTML = `<div class="biaya-item p-gaji-item"><div class="biaya-item-top"><input type="text" class="input-box i-nama" placeholder="Gaji Kepala Keluarga" value="Gaji Kepala Keluarga"><button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button></div><div class="field" style="margin-bottom:0;"><div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)"></div></div></div>`;
+      document.getElementById('keb15a').value = '';
+      document.getElementById('keb16a_val').value = '';
+      document.getElementById('container15b').innerHTML = '';
+      document.getElementById('container16b').innerHTML = '';
+      document.getElementById('container16c').innerHTML = '';
+      document.getElementById('resKebutuhan').classList.remove('vis');
+      showToast('Form Kebutuhan Direset');
+    } else if (jenis === 'pertanian') {
+      document.getElementById('containerSawah').innerHTML = '';
+      tambahSawah();
+      document.getElementById('resPertanianBox').classList.remove('vis');
+      showToast('Form Pertanian Direset');
+    } else if (jenis === 'perikanan') {
+      document.getElementById('containerIkan').innerHTML = '';
+      document.getElementById('containerOpsIkan').innerHTML = '';
+      document.getElementById('resPerikananBox').classList.remove('vis');
+      showToast('Form Perikanan Direset');
+    }
+  }
+
+  let dataRekap = JSON.parse(localStorage.getItem('rekapSensusData')) || [];
+  let tempUsaha = null;
+  let tempKebutuhan = null;
+  let tempBlok26 = null;
+  let tempBlok27 = null;
+  let tempPertanian = null;
+
+  window.addEventListener('beforeunload', function (e) {
+    e.preventDefault();
+    e.returnValue = '';
+  });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerHTML = `<i class="ti ti-circle-check"></i> <span>${msg}</span>`;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  function simpanRekap(jenis) {
+    const now = new Date().toLocaleString('id-ID', { hour12: false });
+    
+    if (jenis === 'usaha' && tempUsaha) {
+      dataRekap.unshift({ id: Date.now(), type: 'usaha', waktu: now, data: tempUsaha });
+      showToast('Rekap Usaha Disimpan!');
+      document.getElementById('btn-save-usaha').classList.remove('vis');
+    } else if (jenis === 'kebutuhan' && tempKebutuhan) {
+      dataRekap.unshift({ id: Date.now(), type: 'kebutuhan', waktu: now, data: tempKebutuhan });
+      showToast('Rekap Kebutuhan Disimpan!');
+      document.getElementById('btn-save-kebutuhan').classList.remove('vis');
+    } else if (jenis === 'blok26' && tempBlok26) {
+      dataRekap.unshift({ id: Date.now(), type: 'blok26', waktu: now, data: tempBlok26 });
+      showToast('Rekap Blok 26 Disimpan!');
+      document.getElementById('btn-save-blok26').classList.remove('vis');
+    } else if (jenis === 'blok27' && tempBlok27) {
+      dataRekap.unshift({ id: Date.now(), type: 'blok27', waktu: now, data: tempBlok27 });
+      showToast('Rekap Blok 27 Disimpan!');
+      document.getElementById('btn-save-blok27').classList.remove('vis');
+    } else if (jenis === 'pertanian' && tempPertanian) {
+      dataRekap.unshift({ id: Date.now(), type: 'pertanian', waktu: now, data: tempPertanian });
+      showToast('Rekap Pertanian Disimpan!');
+      document.getElementById('btn-save-pertanian').classList.remove('vis');
+    } else if (jenis === 'perikanan' && window.tempPerikanan) {
+      dataRekap.unshift({ id: Date.now(), type: 'perikanan', waktu: now, data: window.tempPerikanan });
+      showToast('Rekap Perikanan Disimpan!');
+      document.getElementById('btn-save-perikanan').classList.remove('vis');
+      } else if (jenis === 'peternakan' && window.tempPeternakan) {
+    dataRekap.unshift({ id: Date.now(), type: 'peternakan', waktu: now, data: window.tempPeternakan });
+    showToast('Rekap Peternakan Disimpan!');
+    document.getElementById('btn-save-peternakan').classList.remove('vis');
+    }
+    
+    localStorage.setItem('rekapSensusData', JSON.stringify(dataRekap));
+    renderRekap();
+  }
+
+  function hapusRekap(id) {
+    dataRekap = dataRekap.filter(item => item.id !== id);
+    localStorage.setItem('rekapSensusData', JSON.stringify(dataRekap));
+    renderRekap();
+    showToast('Data Dihapus!');
+  }
+
+  function renderRekap() {
+    const container = document.getElementById('rekapContainer');
+    if (dataRekap.length === 0) {
+      container.innerHTML = `
+        <div class="rekap-empty">
+          <i class="ti ti-database-off" style="font-size:36px; color:var(--border-strong); display:block; margin-bottom:12px;"></i>
+          Belum ada data yang disimpan.<br>Hitung dan simpan data dari tab lainnya.
+        </div>`;
+      return;
+    }
+
+    let html = '';
+    dataRekap.forEach(item => {
+      if (item.type === 'usaha') {
+        const d = item.data;
+        html += `
+          <div class="rekap-item">
+            <div class="rekap-head">
+              <span class="rekap-badge badge-usaha"><i class="ti ti-building-store"></i> Rekap Usaha</span>
+              <span class="rekap-time"><i class="ti ti-clock"></i> ${item.waktu}</span>
+            </div>
+            <div class="rekap-body">
+              <strong>${d.nama}</strong><br>
+              <span style="font-size:11px; color:var(--text-muted)">KK: ${d.noKK} &middot; BG: ${d.noBG}</span><br><br>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Omset / Tahun:</span> <strong style="font-family:var(--font-mono)">${formatRp(d.omzetTahun)}</strong></div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Pengeluaran / Tahun:</span> <strong style="font-family:var(--font-mono)">${formatRp(d.biayaTahun)}</strong></div>
+              <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border-strong); padding-top:6px; margin-top:4px;">
+                <span>Laba / Bulan:</span> <strong style="font-family:var(--font-mono); color: ${d.labaBulan >= 0 ? '#15803d' : '#b91c1c'};">${formatRp(d.labaBulan)}</strong>
+              </div>
+            </div>
+            <div class="rekap-action">
+              <button class="btn-del-rekap" onclick="hapusRekap(${item.id})"><i class="ti ti-trash"></i> Hapus</button>
+            </div>
+          </div>
+        `;
+        } else if (item.type === 'peternakan') {
+    const d = item.data;
+    html += `
+      <div class="rekap-item">
+        <div class="rekap-head">
+          <span class="rekap-badge badge-usaha" style="background:#fef3c7; color:#b45309"><i class="ti ti-shredder"></i> Rekap Peternakan</span>
+          <span class="rekap-time"><i class="ti ti-clock"></i> ${item.waktu}</span>
+        </div>
+        <div class="rekap-body">
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Pendapatan / Tahun:</span> <strong style="font-family:var(--font-mono)">${formatRp(d.totalPendapatan)}</strong></div>
+          <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border-strong); padding-top:6px; margin-top:4px;">
+            <span>Laba Bersih:</span> <strong style="font-family:var(--font-mono); color: ${d.totalLaba >= 0 ? '#15803d' : '#b91c1c'};">${formatRp(d.totalLaba)}</strong>
+          </div>
+        </div>
+        <div class="rekap-action"><button class="btn-del-rekap" onclick="hapusRekap(${item.id})"><i class="ti ti-trash"></i> Hapus</button></div>
+      </div>`;
+      } else if (item.type === 'kebutuhan') {
+        const d = item.data;
+        let pTahun = (d.pendapatanBulan || 0) * 12;
+        let kTahun = d.totalBulan * 12;
+        let laba = pTahun - kTahun;
+        let cLaba = laba < 0 ? '#e11d48' : '#15803d';
+        
+        html += `
+          <div class="rekap-item">
+            <div class="rekap-head">
+              <span class="rekap-badge badge-kebutuhan"><i class="ti ti-basket"></i> Kebutuhan Keluarga</span>
+              <span class="rekap-time"><i class="ti ti-clock"></i> ${item.waktu}</span>
+            </div>
+            <div class="rekap-body">
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Pemasukan / Tahun:</span> <strong style="font-family:var(--font-mono)">${formatRp(pTahun)}</strong></div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Pengeluaran / Tahun:</span> <strong style="font-family:var(--font-mono)">${formatRp(kTahun)}</strong></div>
+              <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border-strong); padding-top:6px; margin-top:4px;">
+                <span>Keuntungan:</span> <strong style="font-family:var(--font-mono); color: ${cLaba};">${formatRp(laba)}</strong>
+              </div>
+            </div>
+            <div class="rekap-action">
+              <button class="btn-del-rekap" onclick="hapusRekap(${item.id})"><i class="ti ti-trash"></i> Hapus</button>
+            </div>
+          </div>
+        `;
+      } else if (item.type === 'blok26') {
+        const d = item.data;
+        html += `
+          <div class="rekap-item">
+            <div class="rekap-head">
+              <span class="rekap-badge badge-usaha"><i class="ti ti-receipt"></i> Blok 26</span>
+              <span class="rekap-time"><i class="ti ti-clock"></i> ${item.waktu}</span>
+            </div>
+            <div class="rekap-body">
+              <span>Total Pengeluaran / Tahun:</span><br>
+              <strong style="color: var(--accent); font-size: 16px; font-family:var(--font-mono)">${formatRp(d.totalTahun)}</strong>
+            </div>
+            <div class="rekap-action">
+              <button class="btn-del-rekap" onclick="hapusRekap(${item.id})"><i class="ti ti-trash"></i> Hapus</button>
+            </div>
+          </div>
+        `;
+      } else if (item.type === 'blok27') {
+        const d = item.data;
+        html += `
+          <div class="rekap-item">
+            <div class="rekap-head">
+              <span class="rekap-badge badge-usaha" style="background:#dcfce7; color:#166534"><i class="ti ti-chart-bar"></i> Blok 27</span>
+              <span class="rekap-time"><i class="ti ti-clock"></i> ${item.waktu}</span>
+            </div>
+            <div class="rekap-body">
+              <span>Total Pendapatan / Tahun (27.C):</span><br>
+              <strong style="color: #166534; font-size: 16px; font-family:var(--font-mono)">${formatRp(d.totalTahun)}</strong>
+            </div>
+            <div class="rekap-action">
+              <button class="btn-del-rekap" onclick="hapusRekap(${item.id})"><i class="ti ti-trash"></i> Hapus</button>
+            </div>
+          </div>
+        `;
+      } else if (item.type === 'pertanian') {
+        const d = item.data;
+        html += `
+          <div class="rekap-item">
+            <div class="rekap-head">
+              <span class="rekap-badge badge-usaha" style="background:#e0f2f1; color:#00695c"><i class="ti ti-tractor"></i> Rekap Pertanian</span>
+              <span class="rekap-time"><i class="ti ti-clock"></i> ${item.waktu}</span>
+            </div>
+            <div class="rekap-body">
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Pendapatan / Tahun:</span> <strong style="font-family:var(--font-mono)">${formatRp(d.totalPendapatan)}</strong></div>
+              <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border-strong); padding-top:6px; margin-top:4px;">
+                <span>Laba Bersih:</span> <strong style="font-family:var(--font-mono); color: ${d.totalLaba >= 0 ? '#15803d' : '#b91c1c'};">${formatRp(d.totalLaba)}</strong>
+              </div>
+            </div>
+            <div class="rekap-action"><button class="btn-del-rekap" onclick="hapusRekap(${item.id})"><i class="ti ti-trash"></i> Hapus</button></div>
+          </div>`;
+      } else if (item.type === 'perikanan') {
+        const d = item.data;
+        html += `
+          <div class="rekap-item">
+            <div class="rekap-head">
+              <span class="rekap-badge badge-usaha" style="background:#e0f2fe; color:#0369a1"><i class="ti ti-fish"></i> Rekap Perikanan</span>
+              <span class="rekap-time"><i class="ti ti-clock"></i> ${item.waktu}</span>
+            </div>
+            <div class="rekap-body">
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Pendapatan / Tahun:</span> <strong style="font-family:var(--font-mono)">${formatRp(d.totalPendapatan)}</strong></div>
+              <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border-strong); padding-top:6px; margin-top:4px;">
+                <span>Laba Bersih:</span> <strong style="font-family:var(--font-mono); color: ${d.totalLaba >= 0 ? '#15803d' : '#b91c1c'};">${formatRp(d.totalLaba)}</strong>
+              </div>
+            </div>
+            <div class="rekap-action"><button class="btn-del-rekap" onclick="hapusRekap(${item.id})"><i class="ti ti-trash"></i> Hapus</button></div>
+          </div>`;
+      }
+    });
+    container.innerHTML = html;
+  }
+
+  let totalHariSebulan = 30; 
+  
+  function toggleDay(btn) {
+    btn.classList.toggle('active');
+    kalkulasiHari();
+  }
+
+  function kalkulasiHari() {
+    let aktif = document.querySelectorAll('#wrapHariKerja .day-btn.active').length;
+    if (aktif === 7) totalHariSebulan = 30;
+    else if (aktif === 6) totalHariSebulan = 26;
+    else if (aktif === 5) totalHariSebulan = 22;
+    else totalHariSebulan = Math.round(aktif * 4.33);
+    document.getElementById('infoHariKerja').innerHTML = `${aktif} hari kerja / minggu &rarr; ~${totalHariSebulan} hari/bulan`;
+  }
+
+  function cekPeriode() {
+    const p = document.getElementById('periode').value;
+    const wrap = document.getElementById('wrapHariKerja');
+    const lblO = document.getElementById('lblOmzet');
+    
+    if(p === 'hari') {
+      wrap.style.display = 'block';
+      lblO.innerText = 'NILAI OMZET PER HARI';
+    } else if(p === 'minggu') {
+      wrap.style.display = 'none';
+      lblO.innerText = 'NILAI OMZET PER MINGGU';
+    } else {
+      wrap.style.display = 'none';
+      lblO.innerText = 'NILAI OMZET PER BULAN';
+    }
+  }
+
+  function tambahBiaya() {
+    const div = document.createElement('div');
+    div.className = 'biaya-item';
+    div.innerHTML = `
+      <div class="biaya-item-top">
+        <input type="text" class="input-box b-nama" placeholder="Nama biaya...">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="biaya-item-bottom">
+        <div class="b-nom">
+          <span>Rp</span>
+          <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+        <span style="font-size: 12px; font-weight: bold; color: var(--text-muted);">x</span>
+        <input type="number" class="input-box b-freq" placeholder="1" value="1" min="1">
+        <select class="input-box b-periode">
+          <option value="hari">/ Hari</option>
+          <option value="minggu">/ Minggu</option>
+          <option value="bulan">/ Bulan</option>
+        </select>
+      </div>
+    `;
+    document.getElementById('biayaContainer').appendChild(div);
+  }
+
+  function tambahBiayaJual() {
+    const div = document.createElement('div');
+    div.className = 'biaya-item b-jual-item';
+    div.innerHTML = `
+      <div class="biaya-item-top">
+        <input type="text" class="input-box b-nama" placeholder="Biaya (mis: Kemasan/Ongkir)">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="biaya-item-bottom">
+        <div class="b-nom"><span>Rp</span><input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)"></div>
+        <span style="font-size: 12px; font-weight: bold; color: var(--text-muted);">x</span>
+        <input type="number" class="input-box b-freq" placeholder="1" value="1" min="1">
+        <select class="input-box b-periode"><option value="hari">/ Hari</option><option value="minggu">/ Minggu</option><option value="bulan">/ Bulan</option></select>
+      </div>`;
+    document.getElementById('biayaJualContainer').appendChild(div);
+  }
+
+  function tambahPendapatan() {
+    const div = document.createElement('div');
+    div.className = 'biaya-item p-gaji-item';
+    div.innerHTML = `
+      <div class="biaya-item-top">
+        <input type="text" class="input-box i-nama" placeholder="Nama / Sumber Gaji">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <div class="input-group">
+          <span class="input-group-text">Rp</span><input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+      </div>`;
+    document.getElementById('containerPendapatan').appendChild(div);
+  }
+
+  function hitungPenghasilan() {
+  const periode = document.getElementById('periode').value;
+  const valOmzet = parseNum(document.getElementById('valOmzet').value); 
+  
+  let omzetBulan = 0, pengaliKeBulan = 1;
+  if (periode === 'hari') { pengaliKeBulan = totalHariSebulan; omzetBulan = valOmzet * pengaliKeBulan; } 
+  else if (periode === 'minggu') { pengaliKeBulan = 4.33; omzetBulan = valOmzet * pengaliKeBulan; } 
+  else { pengaliKeBulan = 1; omzetBulan = valOmzet; }
+
+  const omzetTahun = omzetBulan * 12;
+
+  let nU = document.getElementById('namaUsaha').value || 'Tanpa Nama';
+  document.getElementById('tagUsaha').innerText = nU.toUpperCase();
+
+  const bItems = document.querySelectorAll('#biayaContainer .biaya-item');
+  let totalBiayaBulan = 0;
+  let totalBiayaProduksiTahun = 0;
+  
+  let htmlBreakdown = `
+    <div class="bd-row"><span>Omzet / Bulan</span><span class="bd-val" style="color:var(--text-primary); font-weight:600">${formatRp(omzetBulan)}</span></div>
+    <div class="bd-row"><span>Omzet / Tahun</span><span class="bd-val" style="color:var(--text-primary); font-weight:600">${formatRp(omzetTahun)}</span></div>
+    <div class="bd-row" style="margin-top: 8px; border-bottom: 1px solid var(--border); padding-bottom: 4px;"><strong style="font-size: 12px; color: var(--text-secondary);">Rincian Biaya Bahan:</strong></div>
+  `;
+  
+  bItems.forEach(item => {
+    let nama = item.querySelector('.b-nama').value || 'Biaya Bahan';
+    let valInput = parseNum(item.querySelector('.val-biaya').value);
+    let freq = parseInt(item.querySelector('.b-freq').value) || 1;
+    let per = item.querySelector('.b-periode').value;
+    
+    if(valInput > 0) {
+      let multiplier = 1;
+      if (per === 'hari') multiplier = totalHariSebulan; 
+      else if (per === 'minggu') multiplier = 4.33; 
+
+      let nominalBulan = valInput * freq * multiplier;
+      let nominalTahun = nominalBulan * 12;
+      totalBiayaBulan += nominalBulan;
+      totalBiayaProduksiTahun += nominalTahun;
+      
+      htmlBreakdown += `
+        <div class="bd-row minus" style="align-items: center;">
+          <span>- ${nama} ${formatRp(valInput)} (${freq}x / ${per})</span>
+          <div style="text-align: right; line-height: 1.4;">
+            <span class="bd-val">${formatRp(nominalBulan)}/bln</span><br>
+            <span class="bd-val" style="font-size: 11px; color: var(--text-muted);">${formatRp(nominalTahun)} /thn</span>
+          </div>
+        </div>`;
+    }
+  });
+
+  let hasBiayaJual = false;
+  let totalBiayaJualTahun = 0;
+  document.querySelectorAll('#biayaJualContainer .b-jual-item').forEach(item => {
+    let nama = item.querySelector('.b-nama').value || 'Biaya Penjualan';
+    let valInput = parseNum(item.querySelector('.val-biaya').value);
+    let freq = parseInt(item.querySelector('.b-freq').value) || 1;
+    let per = item.querySelector('.b-periode').value;
+    
+    if(valInput > 0) {
+      if(!hasBiayaJual) {
+        htmlBreakdown += `<div class="bd-row" style="margin-top: 12px; border-bottom: 1px solid var(--border); padding-bottom: 4px;"><strong style="font-size: 12px; color: var(--text-secondary);">Rincian Biaya Penjualan:</strong></div>`;
+        hasBiayaJual = true;
+      }
+      let multiplier = (per === 'hari') ? totalHariSebulan : (per === 'minggu') ? 4.33 : 1;
+      let nominalBulan = valInput * freq * multiplier;
+      let nominalTahun = nominalBulan * 12;
+      totalBiayaBulan += nominalBulan;
+      totalBiayaJualTahun += nominalTahun;
+      htmlBreakdown += `<div class="bd-row minus" style="align-items: center;"><span>- ${nama} ${formatRp(valInput)} (${freq}x / ${per})</span><div style="text-align: right; line-height: 1.4;"><span class="bd-val">${formatRp(nominalBulan)}/bln</span><br><span class="bd-val" style="font-size: 11px; color: var(--text-muted);">${formatRp(nominalTahun)} /thn</span></div></div>`;
+    }
+  });
+
+  const totalBiayaTahun = totalBiayaBulan * 12;
+  let labaBulan = omzetBulan - totalBiayaBulan;
+
+  document.getElementById('r-otahun').innerText = formatRp(omzetTahun);
+  document.getElementById('r-otahun-txt').innerText = formatJuta(omzetTahun);
+  document.getElementById('r-ptahun').innerText = formatRp(totalBiayaTahun);
+  
+  const boxLaba = document.getElementById('r-lbulan').parentElement;
+  if (labaBulan < 0) {
+    boxLaba.style.background = '#fff1f2';
+    boxLaba.style.borderColor = '#ffe4e6';
+    boxLaba.querySelector('span').style.color = '#9f1239'; 
+    document.getElementById('r-lbulan').style.color = '#e11d48'; 
+  } else {
+    boxLaba.style.background = '#f0fdf4';
+    boxLaba.style.borderColor = '#dcfce7';
+    boxLaba.querySelector('span').style.color = '#166534';
+    document.getElementById('r-lbulan').style.color = '#15803d';
+  }
+  document.getElementById('r-lbulan').innerText = formatRp(labaBulan);
+
+  htmlBreakdown += `
+    <div class="bd-row total">
+      <span>Total Biaya / Bulan</span>
+      <span class="bd-val">${formatRp(totalBiayaBulan)}</span>
+    </div>
+    <div class="bd-row total" style="color: ${labaBulan >= 0 ? '#15803d' : '#b91c1c'}; border-top:none; padding-top:0; font-size:16px">
+      <span>Laba Bersih / Bulan</span>
+      <span class="bd-val">${formatRp(labaBulan)}</span>
+    </div>
+    <div class="bd-row total" style="color: var(--text-secondary); border-top:1px dashed var(--border); padding-top:8px; font-size:12px;">
+      <span>Total Biaya Produksi / Tahun</span>
+      <span class="bd-val">${formatRp(totalBiayaProduksiTahun)}</span>
+    </div>
+    <div class="bd-row total" style="color: var(--text-secondary); border-top:none; padding-top:4px; font-size:12px;">
+      <span>Total Biaya Barang Terjual / Tahun</span>
+      <span class="bd-val">${formatRp(totalBiayaJualTahun)}</span>
+    </div>
+  `;
+
+  tempUsaha = {
+    noKK: document.getElementById('noKK').value || '...',
+    noBG: document.getElementById('noBG').value || '...',
+    nama: nU,
+    omzetTahun: omzetTahun,
+    biayaTahun: totalBiayaTahun,
+    labaBulan: labaBulan
+  };
+
+  document.getElementById('resBreakdown').innerHTML = htmlBreakdown;
+  document.getElementById('resBox').classList.add('vis');
+  document.getElementById('btn-save-usaha').classList.add('vis');
+  
+  setTimeout(() => { document.getElementById('resBox').scrollIntoView({behavior: "smooth", block: "nearest"}); }, 150);
+}
+
+  function getMultiplierTahunan(periode) {
+    if (periode === 'hari') return (window.totalHariSebulan || 30) * 12;
+    if (periode === 'minggu') return 52; 
+    if (periode === 'bulan') return 12;
+    if (periode === 'tahun') return 1;
+    return 1;
+  }
+
+  function tambahItem26(containerId, placeholderStr) {
+    const div = document.createElement('div');
+    div.className = 'biaya-item b26-dynamic-item'; 
+    div.innerHTML = `
+      <div class="biaya-item-top">
+        <input type="text" class="input-box b-nama" placeholder="${placeholderStr}">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="biaya-item-bottom">
+        <div class="b-nom">
+          <span>Rp</span>
+          <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+        <span style="font-size: 12px; font-weight: bold; color: var(--text-muted);">x</span>
+        <input type="number" class="input-box b-freq" placeholder="1" value="1" min="1">
+        <select class="input-box b-periode">
+          <option value="hari">/ Hari</option>
+          <option value="minggu">/ Minggu</option>
+          <option value="bulan">/ Bulan</option>
+          <option value="tahun">/ Tahun</option>
+        </select>
+      </div>
+    `;
+    document.getElementById(containerId).appendChild(div);
+  }
+
+  function hitungBlok26() {
+    let htmlBreakdown = '';
+    let grandTotalTahun = 0;
+
+    let jmlPegawai = parseInt(document.getElementById('jmlPegawai').value) || 0;
+    let gaji = parseNum(document.getElementById('gajiPegawai').value);
+    let perGaji = document.getElementById('periodeGaji').value;
+    let bpjs = parseNum(document.getElementById('bpjsPegawai').value);
+    let perBpjs = document.getElementById('periodeBpjs').value;
+
+    let gajiTahun = gaji * getMultiplierTahunan(perGaji);
+    let bpjsTahun = bpjs * getMultiplierTahunan(perBpjs);
+    let total26A_tahun = jmlPegawai * (gajiTahun + bpjsTahun);
+
+    if (total26A_tahun > 0) {
+      grandTotalTahun += total26A_tahun;
+      htmlBreakdown += `
+        <div style="border-bottom: 1.5px dashed var(--border-strong); padding-bottom: 12px; margin-bottom: 12px;">
+          <div class="bd-row total" style="color: #000000; border: none; padding-bottom: 4px;">
+            <span>26.A Gaji & Jamsos (${jmlPegawai} Org)</span>
+          </div>
+          <div class="bd-row minus" style="padding-left: 10px;">
+            <span>- Total Upah/Gaji</span><span class="bd-val">${formatRp(jmlPegawai * gajiTahun)}</span>
+          </div>
+          <div class="bd-row minus" style="padding-left: 10px;">
+            <span>- Total Jaminan Sosial</span><span class="bd-val">${formatRp(jmlPegawai * bpjsTahun)}</span>
+          </div>
+          <div class="bd-row total" style="color: #000000; font-size: 13px; padding-top: 6px; border-top: 1px solid var(--border);">
+            <span>Total 26.A / Tahun</span><span class="bd-val">${formatRp(total26A_tahun)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function hitungContainer(id, label, colorDark, colorLight) {
+      let totalTahun = 0;
+      let items = document.querySelectorAll(`#${id} .b26-dynamic-item`);
+      let tempHtml = '';
+      
+      items.forEach(item => {
+        let nama = item.querySelector('.b-nama').value || 'Item';
+        let val = parseNum(item.querySelector('.val-biaya').value);
+        let freq = parseInt(item.querySelector('.b-freq').value) || 1;
+        let per = item.querySelector('.b-periode').value;
+
+        if (val > 0) {
+          let nomTahun = val * freq * getMultiplierTahunan(per);
+          totalTahun += nomTahun;
+          tempHtml += `<div class="bd-row minus" style="padding-left: 10px;"><span>- ${nama} (${freq}x / ${per})</span><span class="bd-val">${formatRp(nomTahun)}</span></div>`;
+        }
+      });
+      
+      if (totalTahun > 0) {
+          htmlBreakdown += `
+            <div style="border-bottom: 1.5px dashed var(--border-strong); padding-bottom: 12px; margin-bottom: 12px;">
+              <div class="bd-row total" style="color: ${colorDark}; border: none; padding-bottom: 4px;">
+                <span>${label}</span>
+              </div>
+              ${tempHtml}
+              <div class="bd-row total" style="color: ${colorLight}; font-size: 13px; padding-top: 6px; border-top: 1px solid var(--border);">
+                <span>Total ${label.split(' ')[0]} / Tahun</span><span class="bd-val">${formatRp(totalTahun)}</span>
+              </div>
+            </div>
+          `;
+      }
+      return totalTahun;
+    }
+
+    let total26B_tahun = hitungContainer('container26B', '26.B Produksi', '#000000', '#000000');
+    grandTotalTahun += total26B_tahun;
+
+    let total26D_tahun = hitungContainer('container26D', '26.D Operasional', '#000000', '#000000');
+    grandTotalTahun += total26D_tahun;
+
+    let total26E_tahun = hitungContainer('container26E', '26.E Non-Operasional', '#000000', '#000000');
+    grandTotalTahun += total26E_tahun;
+
+    document.getElementById('r-b26tahun').innerText = formatRp(grandTotalTahun);
+    document.getElementById('resBreakdown26').innerHTML = htmlBreakdown;
+    
+    tempBlok26 = { totalTahun: grandTotalTahun };
+
+    document.getElementById('resBlok26Box').classList.add('vis');
+    document.getElementById('btn-save-blok26').classList.add('vis');
+    setTimeout(() => { document.getElementById('resBlok26Box').scrollIntoView({behavior: "smooth", block: "nearest"}); }, 150);
+  }
+
+  let totalHariSebulanKeb = 30; 
+
+  function toggleDayKeb(btn) {
+    btn.classList.toggle('active');
+    kalkulasiHariKeb();
+  }
+
+  function kalkulasiHariKeb() {
+    let aktif = document.querySelectorAll('.day-btn-keb.active').length;
+    if (aktif === 7) totalHariSebulanKeb = 30;
+    else if (aktif === 6) totalHariSebulanKeb = 26;
+    else if (aktif === 5) totalHariSebulanKeb = 22;
+    else totalHariSebulanKeb = Math.round(aktif * 4.33);
+    document.getElementById('infoHariKerjaKeb').innerHTML = `${aktif} hari / minggu &rarr; ~${totalHariSebulanKeb} hari/bulan`;
+  }
+
+  function cekPeriodeKeb() {
+    const p = document.getElementById('periodeKebutuhan').value;
+    const wrap = document.getElementById('wrapHariKerjaKeb');
+    if(p === 'hari') wrap.style.display = 'block';
+    else wrap.style.display = 'none';
+  }
+
+  let calcDisplay = '0';
+
+  function updateCalcDisplay() {
+    let dispStr = calcDisplay;
+    document.getElementById('calc-screen').innerText = dispStr.replace(/\*/g, '×').replace(/\//g, '÷');
+  }
+
+  function calcInput(val) {
+    if (calcDisplay === '0' || calcDisplay === 'Error') {
+      if (['+', '-', '*', '/'].includes(val)) {
+        calcDisplay += val;
+      } else if (val === '.') {
+        calcDisplay = '0.';
+      } else {
+        calcDisplay = val;
+      }
+    } else {
+      const lastChar = calcDisplay.slice(-1);
+      if (['+', '-', '*', '/'].includes(val) && ['+', '-', '*', '/'].includes(lastChar)) {
+        calcDisplay = calcDisplay.slice(0, -1) + val;
+      } else {
+        calcDisplay += val;
+      }
+    }
+    updateCalcDisplay();
+  }
+
+  function calcClear() {
+    calcDisplay = '0';
+    updateCalcDisplay();
+  }
+
+  function calcDel() {
+    if (calcDisplay.length > 1 && calcDisplay !== 'Error') {
+      calcDisplay = calcDisplay.slice(0, -1);
+    } else {
+      calcDisplay = '0';
+    }
+    updateCalcDisplay();
+  }
+
+  function calcCalculate() {
+    try {
+      let res = eval(calcDisplay);
+      if (!isFinite(res)) throw new Error('Error');
+      calcDisplay = String(Math.round(res * 100000000) / 100000000);
+    } catch (e) {
+      calcDisplay = 'Error';
+    }
+    updateCalcDisplay();
+  }
+
+  cekPeriode();
+  cekPeriodeKeb();
+  renderRekap(); 
+
+  function tambahItem27A() {
+    const div = document.createElement('div');
+    div.className = 'biaya-item b27a-item'; 
+    div.innerHTML = `
+      <div class="biaya-item-top">
+        <input type="text" class="input-box i-nama" placeholder="Nama Barang/Jasa">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="fields-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 8px; gap:8px;">
+        <div>
+          <label style="font-size: 10px; font-weight:700; color:var(--text-muted);">BANYAK BARANG</label>
+          <input type="number" class="input-box i-qty" placeholder="0" min="1" value="1">
+        </div>
+        <div>
+          <label style="font-size: 10px; font-weight:700; color:var(--text-muted);">PERIODE</label>
+          <select class="input-box i-periode">
+            <option value="hari">Per Hari</option>
+            <option value="bulan">Per Bulan</option>
+            <option value="tahun">Per Tahun</option>
+          </select>
+        </div>
+      </div>
+      <div class="b-nom" style="width: 100%;">
+        <span>Harga / Pcs</span>
+        <input type="text" inputmode="numeric" class="val-harga" placeholder="0" oninput="formatRupiah(this)">
+      </div>
+    `;
+    document.getElementById('container27A').appendChild(div);
+  }
+
+  function tambahItem27B() {
+    const div = document.createElement('div');
+    div.className = 'biaya-item b27b-item'; 
+    div.innerHTML = `
+      <div class="biaya-item-top">
+        <input type="text" class="input-box i-nama" placeholder="Contoh: Penjualan Padi">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="biaya-item-bottom">
+        <div class="b-nom">
+          <span>Nilai Jual Rp</span>
+          <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+        <select class="input-box i-periode" style="flex: 1;">
+          <option value="hari">/ Hari</option>
+          <option value="bulan">/ Bulan</option>
+          <option value="tahun" selected>/ Tahun</option>
+        </select>
+      </div>
+    `;
+    document.getElementById('container27B').appendChild(div);
+  }
+
+  function tambahItem27D() {
+    const div = document.createElement('div');
+    div.className = 'biaya-item b27d-item'; 
+    div.innerHTML = `
+      <div class="biaya-item-top">
+        <input type="text" class="input-box i-nama" placeholder="Nama Barang">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="fields-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 8px; gap:8px;">
+        <div>
+          <label style="font-size: 10px; font-weight:700; color:var(--text-muted);">STOK TOTAL</label>
+          <input type="number" class="input-box i-stock" placeholder="0" min="1">
+        </div>
+        <div>
+          <label style="font-size: 10px; font-weight:700; color:var(--text-muted);">TERJUAL</label>
+          <input type="number" class="input-box i-sold" placeholder="0" min="0">
+        </div>
+      </div>
+      <select class="input-box i-periode" style="width:100%">
+        <option value="hari">Terjual Per Hari</option>
+        <option value="bulan">Terjual Per Bulan</option>
+        <option value="tahun" selected>Terjual Per Tahun</option>
+      </select>
+    `;
+    document.getElementById('container27D').appendChild(div);
+  }
+
+  function hitungBlok27() {
+    let htmlBreakdown = '';
+    let total27A = 0;
+    let total27B = 0;
+
+    let itemsA = document.querySelectorAll('#container27A .b27a-item');
+    if (itemsA.length > 0) {
+      htmlBreakdown += `<div style="border-bottom: 1.5px dashed var(--border-strong); padding-bottom: 12px; margin-bottom: 12px;"><div class="bd-row total" style="color: #1e40af; border: none; padding-bottom: 4px;"><span>27.A Pendapatan Barang & Jasa</span></div>`;
+      itemsA.forEach(item => {
+        let nama = item.querySelector('.i-nama').value || 'Barang/Jasa';
+        let qty = parseInt(item.querySelector('.i-qty').value) || 0;
+        let harga = parseNum(item.querySelector('.val-harga').value);
+        let per = item.querySelector('.i-periode').value;
+        
+        let multiplier = getMultiplierTahunan(per);
+        let omsetTahun = qty * harga * multiplier;
+        if(omsetTahun > 0) {
+          total27A += omsetTahun;
+          htmlBreakdown += `<div class="bd-row minus" style="padding-left: 10px;"><span>+ ${nama} (${qty} pcs / ${per})</span><span class="bd-val" style="color: #15803d;">${formatRp(omsetTahun)}</span></div>`;
+        }
+      });
+      htmlBreakdown += `<div class="bd-row total" style="color: #1e3a8a; font-size: 13px; padding-top: 6px; border-top: 1px solid var(--border);"><span>Total 27.A / Tahun</span><span class="bd-val">${formatRp(total27A)}</span></div></div>`;
+    }
+
+    let itemsB = document.querySelectorAll('#container27B .b27b-item');
+    if (itemsB.length > 0) {
+      htmlBreakdown += `<div style="border-bottom: 1.5px dashed var(--border-strong); padding-bottom: 12px; margin-bottom: 12px;"><div class="bd-row total" style="color: #0f766e; border: none; padding-bottom: 4px;"><span>27.B Pendapatan Lainnya</span></div>`;
+      itemsB.forEach(item => {
+        let nama = item.querySelector('.i-nama').value || 'Pendapatan Lain';
+        let val = parseNum(item.querySelector('.val-biaya').value);
+        let per = item.querySelector('.i-periode').value;
+        
+        let multiplier = getMultiplierTahunan(per);
+        let omsetTahun = val * multiplier;
+        if(omsetTahun > 0) {
+          total27B += omsetTahun;
+          htmlBreakdown += `<div class="bd-row minus" style="padding-left: 10px;"><span>+ ${nama} (Per ${per})</span><span class="bd-val" style="color: #15803d;">${formatRp(omsetTahun)}</span></div>`;
+        }
+      });
+      htmlBreakdown += `<div class="bd-row total" style="color: #115e59; font-size: 13px; padding-top: 6px; border-top: 1px solid var(--border);"><span>Total 27.B / Tahun</span><span class="bd-val">${formatRp(total27B)}</span></div></div>`;
+    }
+
+    let itemsD = document.querySelectorAll('#container27D .b27d-item');
+    if (itemsD.length > 0) {
+      htmlBreakdown += `<div style="border-bottom: 1.5px dashed var(--border-strong); padding-bottom: 12px; margin-bottom: 12px;"><div class="bd-row total" style="color: #b45309; border: none; padding-bottom: 4px;"><span>27.D Persentase Barang Terjual</span></div>`;
+      itemsD.forEach(item => {
+        let nama = item.querySelector('.i-nama').value || 'Barang';
+        let stock = parseInt(item.querySelector('.i-stock').value) || 0;
+        let sold = parseInt(item.querySelector('.i-sold').value) || 0;
+        let per = item.querySelector('.i-periode').value;
+        
+        if (stock > 0) {
+          let multiplier = getMultiplierTahunan(per);
+          let totalSoldTahun = sold * multiplier;
+          let percentage = (totalSoldTahun / stock) * 100;
+          
+          htmlBreakdown += `
+            <div class="bd-row minus" style="padding-left: 10px; display:flex; flex-direction:column; gap:4px;">
+              <div style="display:flex; justify-content:space-between; width:100%;">
+                <span>${nama} (Terjual: ${totalSoldTahun} dari ${stock})</span>
+                <span class="bd-val" style="color: ${percentage > 100 ? '#e11d48' : '#b45309'}; font-weight:700;">${percentage.toFixed(1)}%</span>
+              </div>
+            </div>`;
+        }
+      });
+      htmlBreakdown += `</div>`;
+    }
+
+    let grandTotal27 = total27A + total27B;
+    document.getElementById('r-b27tahun').innerText = formatRp(grandTotal27);
+    document.getElementById('resBreakdown27').innerHTML = htmlBreakdown;
+
+    tempBlok27 = { totalTahun: grandTotal27 };
+
+    document.getElementById('resBlok27Box').classList.add('vis');
+    document.getElementById('btn-save-blok27').classList.add('vis');
+    setTimeout(() => { document.getElementById('resBlok27Box').scrollIntoView({behavior: "smooth", block: "nearest"}); }, 150);
+  }
+  
+  function getMultiplierKebTahun(periode) {
+    if (periode === 'hari') return 360;    
+    if (periode === 'minggu') return 52;   
+    if (periode === 'bulan') return 12;    
+    return 1;
+  }
+
+  function tambahItem15b() {
+    const div = document.createElement('div');
+    div.className = 'biaya-item b15b-item';
+    div.innerHTML = `
+      <div class="biaya-item-top">
+        <input type="text" class="input-box i-nama" placeholder="Nama pengeluaran / Anggota">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="biaya-item-bottom">
+        <div class="b-nom">
+          <span>Rp</span>
+          <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+        <select class="input-box i-periode" style="flex: 1.2;">
+          <option value="hari">/ Hari</option>
+          <option value="minggu">/ Minggu</option>
+          <option value="bulan" selected>/ Bulan</option>
+        </select>
+      </div>
+    `;
+    document.getElementById('container15b').appendChild(div);
+  }
+
+  function tambahItem16b() {
+    const div = document.createElement('div');
+    div.className = 'biaya-item b16b-item';
+    div.innerHTML = `
+      <div class="biaya-item-top">
+        <input type="text" class="input-box i-nama" placeholder="Nama pengeluaran (mis: Rokok)">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="biaya-item-bottom">
+        <div class="b-nom">
+          <span>Rp</span>
+          <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+        <span style="font-size: 12px; font-weight: bold; color: var(--text-muted);">x</span>
+        <input type="number" class="input-box i-freq" placeholder="1" value="1" min="1" style="flex: 0.6; text-align:center;">
+        <select class="input-box i-periode" style="flex: 1.2;">
+          <option value="hari">/ Hari</option>
+          <option value="minggu" selected>/ Minggu</option>
+          <option value="bulan">/ Bulan</option>
+        </select>
+      </div>
+    `;
+    document.getElementById('container16b').appendChild(div);
+  }
+
+  function tambahItem16c() {
+    const div = document.createElement('div');
+    div.className = 'biaya-item b16c-item';
+    div.innerHTML = `
+      <div class="biaya-item-top">
+        <input type="text" class="input-box i-nama" placeholder="Nama pengeluaran (mis: Pajak Motor)">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="biaya-item-bottom">
+        <div class="b-nom">
+          <span>Rp</span>
+          <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+        <span style="font-size: 12px; font-weight: bold; color: var(--text-muted);">x</span>
+        <input type="number" class="input-box i-freq" placeholder="1" value="1" min="1" style="flex: 0.8; text-align:center;">
+        <span style="font-size: 12px; font-weight: 600; color: var(--text-muted); padding-left: 4px;">/ Tahun</span>
+      </div>
+    `;
+    document.getElementById('container16c').appendChild(div);
+  }
+
+  function hitungKebutuhan() {
+    let pendapatanBulan = 0;
+    document.querySelectorAll('#containerPendapatan .val-biaya').forEach(inp => { 
+      pendapatanBulan += parseNum(inp.value); 
+    });
+    let totalPendapatanTahun = pendapatanBulan * 12;
+    
+    let grandTotalTahun = 0;
+    let htmlBreakdown = '';
+
+    const buatHeader = (label, totalSub, warna) => `
+      <div style="border-bottom: 1.5px dashed var(--border-strong); padding-bottom: 12px; margin-bottom: 12px;">
+        <div class="bd-row total" style="color: ${warna}; border: none; padding-bottom: 4px; font-size:13px;">
+          <span>${label}</span>
+          <span class="bd-val">${formatRp(totalSub)}</span>
+        </div>
+    `;
+    const buatItem = (nama, nilai) => `
+        <div class="bd-row minus" style="padding-left: 10px; padding-top:4px; padding-bottom:4px; border:none; font-size:12px;">
+          <span>- ${nama}</span><span class="bd-val">${formatRp(nilai)}</span>
+        </div>
+    `;
+    const tutupHeader = () => `</div>`;
+
+    let listrikBulan = parseNum(document.getElementById('keb15a').value);
+    if (listrikBulan > 0) {
+      grandTotalTahun += (listrikBulan * 12);
+      htmlBreakdown += buatHeader('15.a Total Listrik / Bulan', listrikBulan, '#000');
+      htmlBreakdown += buatItem('Tagihan Listrik', listrikBulan);
+      htmlBreakdown += tutupHeader();
+    }
+
+    let items15b = document.querySelectorAll('#container15b .b15b-item');
+    let sub15bBulan = 0;
+    let html15b = '';
+    items15b.forEach(item => {
+      let nama = item.querySelector('.i-nama').value || 'Pulsa/Internet';
+      let val = parseNum(item.querySelector('.val-biaya').value);
+      let per = item.querySelector('.i-periode').value;
+      if (val > 0) {
+        let multiplierBulan = (per === 'hari') ? 30 : (per === 'minggu') ? 4.33 : 1;
+        let nominalBulan = val * multiplierBulan;
+        sub15bBulan += nominalBulan;
+        html15b += buatItem(`${nama} (${per})`, nominalBulan);
+      }
+    });
+    if (sub15bBulan > 0) {
+      grandTotalTahun += (sub15bBulan * 12);
+      htmlBreakdown += buatHeader('15.b Total Pulsa & Internet / Bulan', sub15bBulan, '#000') + html15b + tutupHeader();
+    }
+
+    let makanVal = parseNum(document.getElementById('keb16a_val').value);
+    let makanPer = document.getElementById('keb16a_per').value;
+    if (makanVal > 0) {
+      let multiplierMinggu = (makanPer === 'hari') ? 7 : 1;
+      let sub16aMinggu = makanVal * multiplierMinggu;
+      grandTotalTahun += (sub16aMinggu * 52); 
+      htmlBreakdown += buatHeader('16.a Total Makanan / Minggu', sub16aMinggu, '#000');
+      htmlBreakdown += buatItem(`Belanja Makanan (${makanPer})`, makanVal);
+      htmlBreakdown += tutupHeader();
+    }
+
+    let items16b = document.querySelectorAll('#container16b .b16b-item');
+    let sub16bBulan = 0;
+    let html16b = '';
+    items16b.forEach(item => {
+      let nama = item.querySelector('.i-nama').value || 'Bukan Makanan Bulanan';
+      let val = parseNum(item.querySelector('.val-biaya').value);
+      let freq = parseInt(item.querySelector('.i-freq').value) || 1;
+      let per = item.querySelector('.i-periode').value;
+      if (val > 0) {
+        let multiplierBulan = (per === 'hari') ? 30 : (per === 'minggu') ? 4.33 : 1;
+        let nominalBulan = val * freq * multiplierBulan;
+        sub16bBulan += nominalBulan;
+        html16b += buatItem(`${nama} (${freq}x /${per})`, nominalBulan);
+      }
+    });
+    if (sub16bBulan > 0) {
+      grandTotalTahun += (sub16bBulan * 12);
+      htmlBreakdown += buatHeader('16.b Total Bukan Makanan / Bulan', sub16bBulan, '#000') + html16b + tutupHeader();
+    }
+
+    let items16c = document.querySelectorAll('#container16c .b16c-item');
+    let sub16cTahun = 0;
+    let html16c = '';
+    items16c.forEach(item => {
+      let nama = item.querySelector('.i-nama').value || 'Bukan Makanan Tahunan';
+      let val = parseNum(item.querySelector('.val-biaya').value);
+      let freq = parseInt(item.querySelector('.i-freq').value) || 1;
+      if (val > 0) {
+        let nominalTahun = val * freq;
+        sub16cTahun += nominalTahun;
+        html16c += buatItem(`${nama} (${freq}x /thn)`, nominalTahun);
+      }
+    });
+    if (sub16cTahun > 0) {
+      grandTotalTahun += sub16cTahun;
+      htmlBreakdown += buatHeader('16.c Total Bukan Makanan / Tahun', sub16cTahun, '#000') + html16c + tutupHeader();
+    }
+
+    let keuntunganTahun = totalPendapatanTahun - grandTotalTahun;
+
+    document.getElementById('r-kin').innerText = formatRp(totalPendapatanTahun);
+    document.getElementById('r-kout').innerText = formatRp(grandTotalTahun);
+    document.getElementById('r-kprofit').innerText = formatRp(keuntunganTahun);
+
+    const boxProfit = document.getElementById('box-kprofit');
+    const lblProfit = document.getElementById('lbl-kprofit');
+    const valProfit = document.getElementById('r-kprofit');
+
+    if (keuntunganTahun < 0) {
+      boxProfit.style.background = '#fff1f2';
+      boxProfit.style.borderColor = '#ffe4e6';
+      lblProfit.style.color = '#9f1239';
+      valProfit.style.color = '#e11d48';
+    } else {
+      boxProfit.style.background = '#f0fdf4';
+      boxProfit.style.borderColor = '#dcfce7';
+      lblProfit.style.color = '#166534';
+      valProfit.style.color = '#15803d';
+    }
+
+    tempKebutuhan = { totalBulan: grandTotalTahun / 12, pendapatanBulan: pendapatanBulan };
+
+    document.getElementById('resBreakdownKebutuhan').innerHTML = htmlBreakdown;
+    document.getElementById('resKebutuhan').classList.add('vis');
+    document.getElementById('btn-save-kebutuhan').classList.add('vis');
+    
+    setTimeout(() => { document.getElementById('resKebutuhan').scrollIntoView({behavior: "smooth", block: "nearest"}); }, 150);
+  }
+
+  function toggleCalc() {
+    document.getElementById('calcModal').classList.add('active');
+  }
+
+  function closeCalc(e) {
+    if(e.target.id === 'calcModal') {
+      document.getElementById('calcModal').classList.remove('active');
+    }
+  }
+
+  function tambahSawah() {
+    const div = document.createElement('div');
+    div.className = 'biaya-item tani-item';
+    div.innerHTML = `
+      <div class="biaya-item-top">
+        <input type="text" class="input-box t-nama" placeholder="Nama Tanaman (Contoh: Bawang Sawah A)">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      
+      <div class="fields-grid" style="margin-top: 8px;">
+        <div class="field">
+          <label>Luas Lahan (m²)</label>
+          <input type="number" class="t-luas input-box" placeholder="0">
+        </div>
+        <div class="field">
+          <label>Siklus Panen</label>
+          <div style="display:flex; gap:4px;">
+            <input type="number" class="input-box t-siklus-val" placeholder="Nilai" value="1" style="flex:1;">
+            <select class="input-box t-siklus-tipe" style="flex:1.5;">
+              <option value="bulan">Bulan Sekali</option>
+              <option value="tahun">Kali Setahun</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:16px; margin-bottom:8px; font-size:12px;">Metode Penjualan</div>
+      <div class="metode-container">
+        <div class="metode-row" style="display: flex; gap: 8px; align-items: flex-end; margin-bottom: 8px; width: 100%;">
+          <div class="field" style="margin-bottom:0; flex: 1;">
+            <label style="font-size: 10px;">Metode</label>
+            <input type="text" class="input-box t-metode" placeholder="Gabah / Beras">
+          </div>
+          <div class="field" style="margin-bottom:0; flex: 1;">
+            <label style="font-size: 10px;">Harga/kg</label>
+            <div class="input-group">
+              <span class="input-group-text" style="padding:0 8px;">Rp</span>
+              <input type="text" inputmode="numeric" class="t-harga" value="0" oninput="formatRupiah(this)">
+            </div>
+          </div>
+          <button class="btn-del" onclick="hapusElemen(this)" style="margin-bottom:0; flex-shrink: 0;"><i class="ti ti-x"></i></button>
+        </div>
+      </div>
+      <button class="btn-add" style="margin-top:4px; margin-bottom:8px; padding:8px; font-size:12px;" onclick="tambahMetodeJual(this)">+ Tambah Metode Penjualan Lain</button>
+
+      <div class="section-label" style="margin-top:16px; margin-bottom:8px; font-size:12px;">Data Pekerja</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Banyaknya Pekerja</label>
+          <input type="number" class="t-pek-tot input-box" placeholder="0">
+        </div>
+        <div class="field">
+          <label>Pekerja Yang Digaji</label>
+          <input type="number" class="t-pek-gaji input-box" placeholder="0">
+        </div>
+        <div class="field">
+          <label>Pekerja Tidak Digaji</label>
+          <input type="number" class="t-pek-nogaji input-box" placeholder="0">
+        </div>
+        <div class="field">
+          <label>Upah/Hari (Bagi Yg Digaji)</label>
+          <div class="input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="text" inputmode="numeric" class="t-upah" placeholder="0" oninput="formatRupiah(this)">
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById('containerSawah').appendChild(div);
+  }
+
+  function hitungPertanian() {
+    let njop = parseNum(document.getElementById('taniNjop').value);
+
+    let asmPanen = parseFloat(document.getElementById('asmPanen').value) || 0;
+    let asmBajak = parseFloat(document.getElementById('asmBajak').value) || 0;
+    let asmBenih = parseFloat(document.getElementById('asmBenih').value) || 0;
+    let asmUrea = parseFloat(document.getElementById('asmUrea').value) || 0;
+    let asmNpk = parseFloat(document.getElementById('asmNpk').value) || 0;
+    let asmPestisida = parseFloat(document.getElementById('asmPestisida').value) || 0;
+    let asmAir = parseFloat(document.getElementById('asmAir').value) || 0;
+
+    let items = document.querySelectorAll('.tani-item');
+    let totalPendapatanTahun = 0;
+    let totalLabaTahun = 0;
+    let totalPbbTahun = 0;
+    let htmlBreakdown = '';
+
+    items.forEach((item, index) => {
+      let nama = item.querySelector('.t-nama').value || `Lahan/Tanaman ${index + 1}`;
+      let luas = parseFloat(item.querySelector('.t-luas').value) || 0;
+      let siklusVal = parseFloat(item.querySelector('.t-siklus-val').value) || 1;
+      let siklusTipe = item.querySelector('.t-siklus-tipe').value;
+      
+      let pekTot = parseFloat(item.querySelector('.t-pek-tot').value) || 0;
+      let pekDigaji = parseFloat(item.querySelector('.t-pek-gaji').value) || 0;
+      let upahHari = parseNum(item.querySelector('.t-upah').value);
+
+      let siklusPerTahun = siklusTipe === 'bulan' ? (12 / siklusVal) : siklusVal;
+      
+      let metodeRows = item.querySelectorAll('.metode-row');
+      let isTebasan = Array.from(metodeRows).some(row => (row.querySelector('.t-metode').value || '').toLowerCase().includes('bas') || (row.querySelector('.t-metode').value || '').toLowerCase().includes('tebas'));
+
+      let upahTanam = pekDigaji * upahHari;
+      let pekPanen = isTebasan ? 0 : pekDigaji;
+      let upahPanen = isTebasan ? 0 : (pekPanen * upahHari);
+      let totalUpah = upahTanam + upahPanen;
+
+      let bBajak = luas * asmBajak, bBenih = luas * asmBenih, bUrea = luas * asmUrea;
+      let bNpk = luas * asmNpk, bPestisida = luas * asmPestisida, bAir = luas * asmAir;
+      let totalProduksi = bBajak + bBenih + bUrea + bNpk + bPestisida + bAir;
+      
+      let totalBiayaSiklus = totalUpah + totalProduksi;
+      let panenTotal = luas * asmPanen;
+      
+      let pendapatanSiklus = 0;
+      let htmlMetodeDetail = '';
+      let htmlMetodeDetailTahun = '';
+      metodeRows.forEach(row => {
+        let mtd = row.querySelector('.t-metode').value || 'Metode';
+        let hrg = parseNum(row.querySelector('.t-harga').value);
+        let mtdLength = metodeRows.length || 1;
+        
+        let dpt = (panenTotal / mtdLength) * hrg; 
+        pendapatanSiklus += dpt;
+        htmlMetodeDetail += `<div class="bd-row minus"><span>Jual ${mtd}</span><span class="bd-val">${formatRp(dpt)}</span></div>`;
+        htmlMetodeDetailTahun += `<div class="bd-row minus"><span>Jual ${mtd} (Tahun)</span><span class="bd-val">${formatRp(dpt * siklusPerTahun)}</span></div>`;
+      });
+      
+      let labaSiklus = pendapatanSiklus - totalBiayaSiklus;
+      let bep = panenTotal > 0 ? (totalBiayaSiklus / panenTotal) : 0;
+      let pbbLahan = (luas * njop) * 0.001;
+
+      totalPendapatanTahun += (pendapatanSiklus * siklusPerTahun);
+      totalLabaTahun += (labaSiklus * siklusPerTahun);
+      totalPbbTahun += pbbLahan;
+
+      htmlBreakdown += `
+        <div style="border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 16px; background: #fff;">
+          <div style="font-weight: 700; color: var(--accent); margin-bottom: 12px; font-size:14px;">${nama}</div>
+          
+          <div class="res-tabs">
+            <button class="res-tab active" onclick="toggleResTani(this, 'siklus', ${index})">Per Siklus</button>
+            <button class="res-tab" onclick="toggleResTani(this, 'tahun', ${index})">Per Tahun</button>
+          </div>
+          
+          <div id="tani-siklus-${index}" class="res-content active">
+            <div class="bd-row minus"><span>Pekerja Tanam</span><span class="bd-val">${pekTot} org</span></div>
+            <div class="bd-row minus"><span>Pekerja Panen</span><span class="bd-val">${isTebasan ? '0' : pekTot} org</span></div>
+            <div class="bd-row minus" style="margin-top:8px;"><span>Upah Tanam</span><span class="bd-val">${formatRp(upahTanam)}</span></div>
+            <div class="bd-row minus"><span>Upah Panen</span><span class="bd-val">${formatRp(upahPanen)}</span></div>
+            
+            <div class="bd-card" style="margin-top:8px;">
+              <div class="bd-row total" style="border:none; padding:0; color:#854d0e;"><span>Total Upah</span><span class="bd-val">${formatRp(totalUpah)}</span></div>
+            </div>
+            
+            <div class="bd-row minus"><span>Bajak Sawah</span><span class="bd-val">${formatRp(bBajak)}</span></div>
+            <div class="bd-row minus"><span>Benih</span><span class="bd-val">${formatRp(bBenih)}</span></div>
+            <div class="bd-row minus"><span>Pupuk Urea</span><span class="bd-val">${formatRp(bUrea)}</span></div>
+            <div class="bd-row minus"><span>Pupuk NPK</span><span class="bd-val">${formatRp(bNpk)}</span></div>
+            <div class="bd-row minus"><span>Pestisida</span><span class="bd-val">${formatRp(bPestisida)}</span></div>
+            <div class="bd-row minus"><span>Air / Irigasi</span><span class="bd-val">${formatRp(bAir)}</span></div>
+            
+            <div class="bd-card" style="margin-top:8px;">
+              <div class="bd-row total" style="border:none; padding:0; color:#854d0e;"><span>Total Produksi</span><span class="bd-val">${formatRp(totalProduksi)}</span></div>
+            </div>
+            
+            <div class="bd-card-green">
+              <div class="bd-row total" style="border:none; padding:0; color:#1b5e20;"><span>💰 TOTAL BIAYA</span><span class="bd-val">${formatRp(totalBiayaSiklus)}</span></div>
+            </div>
+            
+            <div class="bd-row minus"><span>Total Panen</span><span class="bd-val">${panenTotal.toFixed(0)} kg</span></div>
+            ${htmlMetodeDetail}
+            
+            <div class="bd-card-green" style="margin-top:8px; background:#e0f2f1; border-color:#b2dfdb;">
+              <div class="bd-row total" style="border:none; padding:0; color:#00695c;"><span>Pendapatan Kotor</span><span class="bd-val">${formatRp(pendapatanSiklus)}</span></div>
+            </div>
+            <div class="bd-card-green">
+              <div class="bd-row total" style="border:none; padding:0; color:#1b5e20;"><span>✅ LABA BERSIH</span><span class="bd-val">${formatRp(labaSiklus)}</span></div>
+            </div>
+            <div style="text-align:center; font-size:11px; color:var(--text-muted); margin-bottom:12px;">BEP Harga Gabah = <b>${formatRp(bep)}</b> /kg</div>
+          </div>
+
+          <div id="tani-tahun-${index}" class="res-content">
+            <div class="bd-row minus"><span>Siklus Per Tahun</span><span class="bd-val">${siklusPerTahun.toFixed(1)}x</span></div>
+            
+            <div class="bd-row minus" style="margin-top:8px;"><span>Upah Tanam (Tahun)</span><span class="bd-val">${formatRp(upahTanam * siklusPerTahun)}</span></div>
+            <div class="bd-row minus"><span>Upah Panen (Tahun)</span><span class="bd-val">${formatRp(upahPanen * siklusPerTahun)}</span></div>
+            <div class="bd-card" style="margin-top:8px;">
+              <div class="bd-row total" style="border:none; padding:0; color:#854d0e;"><span>Total Upah (Tahun)</span><span class="bd-val">${formatRp(totalUpah * siklusPerTahun)}</span></div>
+            </div>
+            
+            <div class="bd-row minus"><span>Bajak Sawah (Tahun)</span><span class="bd-val">${formatRp(bBajak * siklusPerTahun)}</span></div>
+            <div class="bd-row minus"><span>Benih (Tahun)</span><span class="bd-val">${formatRp(bBenih * siklusPerTahun)}</span></div>
+            <div class="bd-row minus"><span>Pupuk Urea (Tahun)</span><span class="bd-val">${formatRp(bUrea * siklusPerTahun)}</span></div>
+            <div class="bd-row minus"><span>Pupuk NPK (Tahun)</span><span class="bd-val">${formatRp(bNpk * siklusPerTahun)}</span></div>
+            <div class="bd-row minus"><span>Pestisida (Tahun)</span><span class="bd-val">${formatRp(bPestisida * siklusPerTahun)}</span></div>
+            <div class="bd-row minus"><span>Air / Irigasi (Tahun)</span><span class="bd-val">${formatRp(bAir * siklusPerTahun)}</span></div>
+            <div class="bd-card" style="margin-top:8px;">
+              <div class="bd-row total" style="border:none; padding:0; color:#854d0e;"><span>Total Produksi (Tahun)</span><span class="bd-val">${formatRp(totalProduksi * siklusPerTahun)}</span></div>
+            </div>
+            
+            <div class="bd-card-green">
+              <div class="bd-row total" style="border:none; padding:0; color:#1b5e20;"><span>💰 TOTAL BIAYA (TAHUN)</span><span class="bd-val">${formatRp(totalBiayaSiklus * siklusPerTahun)}</span></div>
+            </div>
+            
+            <div class="bd-row minus"><span>Total Panen (Tahun)</span><span class="bd-val">${(panenTotal * siklusPerTahun).toFixed(0)} kg</span></div>
+            ${htmlMetodeDetailTahun}
+            
+            <div class="bd-card-green" style="margin-top:8px; background:#e0f2f1; border-color:#b2dfdb;">
+              <div class="bd-row total" style="border:none; padding:0; color:#00695c;"><span>Pendapatan Kotor (Tahun)</span><span class="bd-val">${formatRp(pendapatanSiklus * siklusPerTahun)}</span></div>
+            </div>
+            <div class="bd-card-green">
+              <div class="bd-row total" style="border:none; padding:0; color:#1b5e20;"><span>✅ LABA BERSIH (TAHUN)</span><span class="bd-val">${formatRp(labaSiklus * siklusPerTahun)}</span></div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 12px; border-top: 2px dashed var(--border); padding-top: 12px;">
+            <div class="bd-row total" style="color: var(--text-secondary); border: none; padding-bottom: 8px;"><span><i class="ti ti-building-bank"></i> PAJAK & ASET</span></div>
+            <div class="bd-card" style="margin-bottom:0; background:#f8fafc; border-color:var(--border);">
+              <div class="bd-row minus" style="border:none; padding:4px 0;"><span>Harga Tanah Sawah</span><span class="bd-val">${formatRp(luas * njop)}</span></div>
+              <div class="bd-row minus" style="border:none; padding:4px 0;"><span>PBB / Tahun</span><span class="bd-val">${formatRp(pbbLahan)}</span></div>
+              <div class="bd-row minus" style="border:none; padding:4px 0;"><span>PBB / Siklus</span><span class="bd-val">${formatRp(pbbLahan / siklusPerTahun)}</span></div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    htmlBreakdown += `
+      <div>
+        <div class="bd-row total" style="color: var(--text-secondary); border: none; padding-bottom: 4px;"><span><i class="ti ti-building-bank"></i> Pajak & Aset (Semua Lahan)</span></div>
+        <div class="bd-row minus"><span>PBB Total / Tahun</span><span class="bd-val">${formatRp(totalPbbTahun)}</span></div>
+      </div>
+    `;
+
+    document.getElementById('r-taniPendapatan').innerText = formatRp(totalPendapatanTahun);
+    document.getElementById('r-taniLaba').innerText = formatRp(totalLabaTahun);
+
+    const boxLaba = document.getElementById('box-taniLaba');
+    const lblLaba = document.getElementById('lbl-taniLaba');
+    const valLaba = document.getElementById('r-taniLaba');
+
+    if (totalLabaTahun < 0) {
+      boxLaba.style.background = '#fff1f2';
+      boxLaba.style.borderColor = '#ffe4e6';
+      lblLaba.style.color = '#9f1239';
+      valLaba.style.color = '#e11d48';
+    } else {
+      boxLaba.style.background = '#f0fdf4';
+      boxLaba.style.borderColor = '#dcfce7';
+      lblLaba.style.color = '#166534';
+      valLaba.style.color = '#15803d';
+    }
+
+    document.getElementById('resBreakdownTani').innerHTML = htmlBreakdown;
+    document.getElementById('resPertanianBox').classList.add('vis');
+    tempPertanian = { totalPendapatan: totalPendapatanTahun, totalLaba: totalLabaTahun };
+    document.getElementById('btn-save-pertanian').classList.add('vis');
+
+    setTimeout(() => { document.getElementById('resPertanianBox').scrollIntoView({behavior: "smooth", block: "nearest"}); }, 150);
+  }
+
+function syncBiayaTenagaKerja() {
+  document.getElementById('ikanBiayaTk').value = document.getElementById('ikanUpah').value;
+}
+
+function hitungEstimasiIkan(input) {
+  const aset = input.closest('.i-aset-item');
+  const bibit = parseFloat(aset.querySelector('.i-bibit').value) || 0;
+  const luas = parseFloat(aset.querySelector('.i-luas').value) || 0;
+  const estimasi = bibit * 0.8 * 0.2;
+  aset.querySelector('.est-hasil').innerText = new Intl.NumberFormat('id-ID').format(estimasi);
+}
+
+function tambahAsetIkan() {
+  const div = document.createElement('div');
+  div.className = 'biaya-item i-aset-item';
+  div.innerHTML = `
+    <div class="biaya-item-top">
+      <input type="text" class="input-box i-nama" placeholder="Nama Aset (Contoh: Tambak Lele 1)">
+      <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <div class="fields-grid" style="margin-top: 8px;">
+      <div class="field">
+        <label>Luas Kolam (m²)</label>
+        <input type="number" class="input-box i-luas" placeholder="Cth: 100" oninput="hitungEstimasiIkan(this)">
+      </div>
+      <div class="field">
+        <label>Tebar Bibit (Ekor)</label>
+        <input type="number" class="input-box i-bibit" placeholder="Cth: 1000" oninput="hitungEstimasiIkan(this)">
+      </div>
+      <div class="field" style="grid-column: span 2;">
+        <div style="font-size:11px; color:var(--accent); font-weight:bold; padding:8px; background:var(--bg-accent); border-radius:8px;">
+          Estimasi Panen: <span class="est-hasil">0</span> Kg <br>
+          <small style="color:var(--text-muted); font-weight:normal;">(Asumsi: Hidup 80%, Berat 0.2 Kg/Ekor)</small>
+        </div>
+      </div>
+      <div class="field" style="grid-column: span 2;">
+        <label>Siklus Panen / Melaut</label>
+        <div style="display:flex; gap:4px;">
+          <input type="number" class="input-box i-siklus-val" placeholder="Nilai" value="1" style="flex:1;">
+          <select class="input-box i-siklus-tipe" style="flex:1.5;">
+            <option value="bulan_sekali">Bulan Sekali</option>
+            <option value="kali_tahun" selected>Kali Setahun</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:16px; margin-bottom:8px; font-size:12px;">Penjualan / Hasil Tangkapan</div>
+    <div class="metode-container">
+      <div class="metode-row" style="display: flex; gap: 8px; align-items: flex-end; margin-bottom: 8px; width: 100%; flex-wrap:wrap;">
+        <div class="field" style="margin-bottom:0; flex: 1 1 30%;">
+          <label style="font-size: 10px;">Hasil</label>
+          <input type="text" class="input-box i-hasil" placeholder="Cth: Ikan Nila">
+        </div>
+        <div class="field" style="margin-bottom:0; flex: 1 1 20%;">
+          <label style="font-size: 10px;">Terjual</label> 
+          <input type="number" class="input-box i-qty" placeholder="Kg" value="1">
+        </div>
+        <div class="field" style="margin-bottom:0; flex: 1 1 30%;">
+          <label style="font-size: 10px;">Periode</label> 
+          <select class="input-box i-periode-jual">
+            <option value="hari">Per Hari</option>
+            <option value="bulan">Per Bulan</option>
+            <option value="siklus" selected>Per Siklus</option>
+            <option value="tahun">Per Tahun</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:0; flex: 1 1 100%;">
+          <label style="font-size: 10px;">Harga / kg</label> 
+          <div class="input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="text" inputmode="numeric" class="i-harga" value="0" oninput="formatRupiah(this)">
+          </div>
+        </div>
+        <button class="btn-del" onclick="hapusElemen(this)" style="margin-bottom:0; width:100%; margin-top:4px;"><i class="ti ti-x"></i> Hapus</button>
+      </div>
+    </div>
+    <button class="btn-add" style="margin-top:4px; margin-bottom:8px; padding:8px; font-size:12px;" onclick="tambahHasilIkan(this)">+ Tambah Hasil Panen Lain</button>
+
+    <div class="section-label" style="margin-top:16px; margin-bottom:8px; font-size:12px;">Data Pekerja</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label>Hari Kerja / Siklus</label>
+        <input type="number" class="input-box i-hari-kerja" placeholder="Cth: 30" value="1">
+      </div>
+      <div class="field">
+        <label>Total Pekerja</label>
+        <input type="number" class="i-pek-tot input-box" placeholder="0">
+      </div>
+      <div class="field">
+        <label>Pekerja Digaji</label>
+        <input type="number" class="i-pek-gaji input-box" placeholder="0">
+      </div>
+      <div class="field">
+        <label>Pekerja Tidak Digaji</label>
+        <input type="number" class="i-pek-nogaji input-box" placeholder="0">
+      </div>
+      <div class="field" style="grid-column: span 2;">
+        <label>Upah / Hari (Yg Digaji)</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" class="i-upah" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('containerIkan').appendChild(div);
+}
+
+function tambahHasilIkan(btn) {
+  const container = btn.previousElementSibling;
+  const div = document.createElement('div');
+  div.className = 'metode-row';
+  div.style.cssText = 'display: flex; gap: 8px; align-items: flex-end; margin-bottom: 8px; width: 100%; flex-wrap:wrap; border-top:1px dashed var(--border); padding-top:8px;';
+  div.innerHTML = `
+    <div class="field" style="margin-bottom:0; flex: 1 1 30%;">
+      <label style="font-size: 10px;">Hasil</label>
+      <input type="text" class="input-box i-hasil" placeholder="Cth: Ikan Nila">
+    </div>
+    <div class="field" style="margin-bottom:0; flex: 1 1 20%;">
+      <label style="font-size: 10px;">Terjual</label> 
+      <input type="number" class="input-box i-qty" placeholder="Kg" value="1">
+    </div>
+    <div class="field" style="margin-bottom:0; flex: 1 1 30%;">
+      <label style="font-size: 10px;">Periode</label> 
+      <select class="input-box i-periode-jual">
+        <option value="hari">Per Hari</option>
+        <option value="bulan">Per Bulan</option>
+        <option value="siklus" selected>Per Siklus</option>
+        <option value="tahun">Per Tahun</option>
+      </select>
+    </div>
+    <div class="field" style="margin-bottom:0; flex: 1 1 100%;">
+      <label style="font-size: 10px;">Harga / kg</label> 
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" class="i-harga" value="0" oninput="formatRupiah(this)">
+      </div>
+    </div>
+    <button class="btn-del" onclick="hapusElemen(this)" style="margin-bottom:0; width:100%; margin-top:4px;"><i class="ti ti-x"></i> Hapus</button>
+  `;
+  container.appendChild(div);
+}
+
+function tambahOpsIkan() {
+  const div = document.createElement('div');
+  div.className = 'biaya-item i-ops-item';
+  div.innerHTML = `
+    <div class="biaya-item-top">
+      <input type="text" class="input-box o-nama" placeholder="Kebutuhan Operasional (BBM, Pakan)">
+      <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="biaya-item-bottom">
+      <div class="b-nom">
+        <span>Harga Rp</span>
+        <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
+      </div>
+      <span style="font-size: 12px; font-weight: bold; color: var(--text-muted);">x</span>
+      <input type="number" class="input-box o-freq" placeholder="1" value="1" min="1" style="flex: 0.6; text-align:center;">
+      <select class="input-box o-periode" style="flex: 1.2;">
+        <option value="hari">/ Hari</option>
+        <option value="minggu">/ Minggu</option>
+        <option value="bulan">/ Bulan</option>
+        <option value="tahun" selected>/ Tahun</option>
+      </select>
+    </div>
+  `;
+  document.getElementById('containerOpsIkan').appendChild(div);
+}
+
+function hitungPerikanan() {
+  let grandOmsetTahun = 0;
+  let grandOmsetBulan = 0;
+  let grandPengeluaranTahun = 0;
+  
+  let htmlOmsetDetail = '';
+  let htmlPekerjaDetail = '';
+  let htmlAsumsiDetail = '';
+  let htmlOpsDetail = '';
+  
+  let asumsiItems = document.querySelectorAll('#containerAsumsiIkan .asumsi-ikan-item');
+  let asumsiList = [];
+  asumsiItems.forEach(item => {
+    let nama = item.querySelector('.asm-ikan-nama').value || 'Asumsi';
+    let val = parseNum(item.querySelector('.asm-ikan-val').value) || 0; 
+    if (val > 0) asumsiList.push({ nama, val });
+  });
+
+  let asets = document.querySelectorAll('#containerIkan .i-aset-item');
+  if (asets.length > 0) {
+    htmlOmsetDetail += `<div class="bd-row total" style="border:none; padding-bottom:4px; font-size:13px; color:var(--accent);"><span>A. Rincian Pendapatan / Omzet</span></div>`;
+    htmlPekerjaDetail += `<div class="bd-row total" style="border:none; padding-bottom:4px; font-size:13px; color:var(--text-secondary); margin-top:12px;"><span>B. Pengeluaran Upah Pekerja</span></div>`;
+    
+    asets.forEach((aset, idx) => {
+      let namaAset = aset.querySelector('.i-nama').value || `Aset ${idx + 1}`;
+      let siklusVal = parseFloat(aset.querySelector('.i-siklus-val').value) || 1;
+      let siklusTipe = aset.querySelector('.i-siklus-tipe').value;
+      let hariKerja = parseFloat(aset.querySelector('.i-hari-kerja').value) || 1;
+      
+      let pengaliTahun = 1;
+      if (siklusTipe === 'bulan_sekali') pengaliTahun = 12 / siklusVal;
+      else if (siklusTipe === 'kali_tahun') pengaliTahun = siklusVal;
+      
+      let metodeRows = aset.querySelectorAll('.metode-row');
+      metodeRows.forEach(row => {
+        let hasil = row.querySelector('.i-hasil').value || 'Hasil';
+        let qty = parseFloat(row.querySelector('.i-qty').value) || 0;
+        let perJual = row.querySelector('.i-periode-jual').value;
+        let harga = parseNum(row.querySelector('.i-harga').value);
+        
+        let omsetItemDasar = qty * harga;
+        let omsetTahun = 0;
+        
+        if (perJual === 'hari') omsetTahun = omsetItemDasar * 360; 
+        else if (perJual === 'bulan') omsetTahun = omsetItemDasar * 12;
+        else if (perJual === 'tahun') omsetTahun = omsetItemDasar;
+        else omsetTahun = omsetItemDasar * pengaliTahun; 
+        
+        let omsetBulan = omsetTahun / 12; 
+        
+        if (omsetTahun > 0) {
+          grandOmsetTahun += omsetTahun;
+          grandOmsetBulan += omsetBulan;
+          htmlOmsetDetail += `
+            <div class="bd-row minus" style="padding-left:10px; align-items:flex-start;">
+              <div style="flex:1;">
+                <span style="font-weight:600; color:var(--text-primary);">+ Penjualan ${hasil}</span><br>
+                <span style="font-size:11px;">(${namaAset} - Per ${perJual})</span>
+              </div>
+              <div style="text-align:right; font-size:12px; line-height:1.4;">
+                <span style="display:block;">Bln: <strong style="color:#15803d;">${formatRp(omsetBulan)}</strong></span>
+                <span style="display:block;">Thn: <strong style="color:#15803d;">${formatRp(omsetTahun)}</strong></span>
+              </div>
+            </div>`;
+        }
+      });
+      
+      let pekDigaji = parseFloat(aset.querySelector('.i-pek-gaji').value) || 0;
+      let upahHari = parseNum(aset.querySelector('.i-upah').value);
+      let upahSiklus = pekDigaji * upahHari * hariKerja;
+      let upahTahun = upahSiklus * pengaliTahun;
+      
+      if (upahTahun > 0) {
+        grandPengeluaranTahun += upahTahun;
+        htmlPekerjaDetail += `<div class="bd-row minus" style="padding-left:10px;"><span>- Upah ${namaAset}</span><span class="bd-val">${formatRp(upahTahun)}</span></div>`;
+      }
+
+      if (asumsiList.length > 0) {
+        let hasAsumsiTitle = false;
+        asumsiList.forEach(asumsi => {
+          let biayaAsumsiTahun = asumsi.val * pengaliTahun;
+          if (biayaAsumsiTahun > 0) {
+            if (!hasAsumsiTitle) {
+              htmlAsumsiDetail += `<div class="bd-row total" style="border:none; padding-bottom:4px; font-size:13px; color:var(--text-secondary); margin-top:12px;"><span>C. Asumsi Teknis (${namaAset})</span></div>`;
+              hasAsumsiTitle = true;
+            }
+            grandPengeluaranTahun += biayaAsumsiTahun;
+            htmlAsumsiDetail += `<div class="bd-row minus" style="padding-left:10px;"><span>- ${asumsi.nama}</span><span class="bd-val">${formatRp(biayaAsumsiTahun)}</span></div>`;
+          }
+        });
+      }
+    });
+  }
+  
+  let ops = document.querySelectorAll('#containerOpsIkan .i-ops-item');
+  if (ops.length > 0) {
+    htmlOpsDetail += `<div class="bd-row total" style="border:none; padding-bottom:4px; font-size:13px; color:var(--text-secondary); margin-top:12px;"><span>D. Biaya Operasional</span></div>`;
+    ops.forEach(item => {
+      let nama = item.querySelector('.o-nama').value || 'Item Operasional';
+      let harga = parseNum(item.querySelector('.val-biaya').value);
+      let freq = parseFloat(item.querySelector('.o-freq').value) || 1;
+      let per = item.querySelector('.o-periode').value;
+      
+      let pengaliTahunan = getMultiplierTahunan(per); 
+      let opsTahun = harga * freq * pengaliTahunan;
+      
+      if (opsTahun > 0) {
+        grandPengeluaranTahun += opsTahun;
+        htmlOpsDetail += `<div class="bd-row minus" style="padding-left:10px;"><span>- ${nama} x ${freq}/${per}</span><span class="bd-val">${formatRp(opsTahun)}</span></div>`;
+      }
+    });
+  }
+  
+  let labaBersihTahun = grandOmsetTahun - grandPengeluaranTahun;
+  let labaBersihBulan = labaBersihTahun / 12;
+  
+  let htmlBreakdown = htmlOmsetDetail + htmlPekerjaDetail + htmlAsumsiDetail + htmlOpsDetail;
+  if (!htmlBreakdown) htmlBreakdown = `<div style="text-align:center; padding: 10px; color: var(--text-muted); font-size:12px;">Belum ada data.</div>`;
+  
+  document.getElementById('r-ikanOmsetBulan').innerText = formatRp(grandOmsetBulan);
+  document.getElementById('r-ikanOmset').innerText = formatRp(grandOmsetTahun);
+  document.getElementById('r-ikanPengeluaran').innerText = formatRp(grandPengeluaranTahun);
+  document.getElementById('r-ikanLaba').innerText = formatRp(labaBersihTahun);
+  document.getElementById('r-ikanLabaBulan').innerText = formatRp(labaBersihBulan); 
+
+  const boxLaba = document.getElementById('box-ikanLaba');
+  const lblLaba = document.getElementById('lbl-ikanLaba');
+  const valLaba = document.getElementById('r-ikanLaba');
+  const boxLabaBulan = document.getElementById('box-ikanLabaBulan');
+  const lblLabaBulan = document.getElementById('lbl-ikanLabaBulan');
+  const valLabaBulan = document.getElementById('r-ikanLabaBulan');
+
+  if (labaBersihTahun < 0) {
+    boxLaba.style.background = '#fff1f2'; boxLaba.style.borderColor = '#ffe4e6';
+    lblLaba.style.color = '#9f1239'; valLaba.style.color = '#e11d48';
+    boxLabaBulan.style.background = '#fff1f2'; boxLabaBulan.style.borderColor = '#ffe4e6';
+    lblLabaBulan.style.color = '#9f1239'; valLabaBulan.style.color = '#e11d48';
+  } else {
+    boxLaba.style.background = '#f0fdf4'; boxLaba.style.borderColor = '#dcfce7';
+    lblLaba.style.color = '#166534'; valLaba.style.color = '#15803d';
+    boxLabaBulan.style.background = '#f0fdf4'; boxLabaBulan.style.borderColor = '#dcfce7';
+    lblLabaBulan.style.color = '#166534'; valLabaBulan.style.color = '#15803d';
+  }
+
+  document.getElementById('resBreakdownIkan').innerHTML = htmlBreakdown;
+  document.getElementById('resPerikananBox').classList.add('vis');
+  
+  window.tempPerikanan = { totalPendapatan: grandOmsetTahun, totalLaba: labaBersihTahun };
+  document.getElementById('btn-save-perikanan').classList.add('vis');
+
+  setTimeout(() => { document.getElementById('resPerikananBox').scrollIntoView({behavior: "smooth", block: "nearest"}); }, 150);
+}
+
+function tambahPopulasiTernak() {
+  const div = document.createElement('div');
+  div.className = 'biaya-item b-ternak-item';
+  div.innerHTML = `
+    <div class="biaya-item-top">
+      <input type="text" class="input-box p-jenis" placeholder="Jenis Ternak (mis: Kambing)">
+      <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="field" style="margin-bottom:0; margin-top:8px;">
+      <div class="input-group">
+        <input type="number" class="p-jumlah" placeholder="Jumlah" style="border-radius: 8px 0 0 8px;">
+        <span class="input-group-text" style="border-left: 1px solid var(--border-strong); border-right:none;">Ekor</span>
+      </div>
+    </div>
+  `;
+  document.getElementById('containerPopulasiTernak').appendChild(div);
+}
+
+function tambahJualTernak() {
+  const div = document.createElement('div');
+  div.className = 'biaya-item j-ternak-item';
+  div.innerHTML = `
+    <div class="biaya-item-top">
+      <input type="text" class="input-box j-nama" placeholder="Item Dijual (Susu / Daging / Ekor)">
+      <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="fields-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 8px; margin-top:8px; gap:8px;">
+      <div>
+        <label style="font-size: 10px; font-weight:700; color:var(--text-muted);">JUMLAH</label>
+        <input type="number" class="input-box j-qty" placeholder="0" min="1" value="1">
+      </div>
+      <div>
+        <label style="font-size: 10px; font-weight:700; color:var(--text-muted);">PERIODE</label>
+        <select class="input-box j-periode">
+          <option value="hari">Per Hari</option>
+          <option value="bulan">Per Bulan</option>
+          <option value="tahun">Per Tahun</option>
+        </select>
+      </div>
+    </div>
+    <div class="b-nom" style="width: 100%;">
+      <span>Harga Rp</span>
+      <input type="text" inputmode="numeric" class="val-harga" placeholder="0" oninput="formatRupiah(this)">
+    </div>
+  `;
+  document.getElementById('containerJualTernak').appendChild(div);
+}
+
+function syncUpahPeternakan() {
+  let pegawai = parseInt(document.getElementById('ternakPegawai').value) || 0;
+  let upah = parseNum(document.getElementById('ternakUpah').value);
+  let totalUpahSetahun = pegawai * upah * 12;
+  
+  document.getElementById('ternakBTk').value = new Intl.NumberFormat('id-ID').format(totalUpahSetahun);
+}
+
+function hitungPeternakan() {
+  let itemsJual = document.querySelectorAll('#containerJualTernak .j-ternak-item');
+  let totalPendapatanTahun = 0;
+  let htmlJual = '';
+  
+  if (itemsJual.length > 0) {
+    htmlJual += `<div class="bd-row total" style="border:none; padding-bottom:4px; font-size:13px;"><span>Rincian Pendapatan (Tahun)</span></div>`;
+    itemsJual.forEach(item => {
+      let nama = item.querySelector('.j-nama').value || 'Penjualan';
+      let qty = parseFloat(item.querySelector('.j-qty').value) || 0;
+      let harga = parseNum(item.querySelector('.val-harga').value);
+      let per = item.querySelector('.j-periode').value;
+      
+      let multiplier = getMultiplierTahunan(per); 
+      let omzetTahun = qty * harga * multiplier;
+      
+      if(omzetTahun > 0) {
+        totalPendapatanTahun += omzetTahun;
+        htmlJual += `<div class="bd-row minus" style="padding-left:10px;"><span>+ ${nama} (${qty}x / ${per})</span><span class="bd-val" style="color:#15803d;">${formatRp(omzetTahun)}</span></div>`;
+      }
+    });
+  }
+
+  let bPakan = parseNum(document.getElementById('ternakBPakan').value);
+  let bObat = parseNum(document.getElementById('ternakBObat').value);
+  let bBibit = parseNum(document.getElementById('ternakBBibit').value);
+  let bListrik = parseNum(document.getElementById('ternakBListrik').value);
+  let bLain = parseNum(document.getElementById('ternakBLain').value);
+  let bTk = parseNum(document.getElementById('ternakBTk').value); 
+
+  let totalBiayaTahun = bPakan + bObat + bBibit + bListrik + bLain + bTk;
+  
+  let labaTahun = totalPendapatanTahun - totalBiayaTahun;
+
+  let itemsPopulasi = document.querySelectorAll('#containerPopulasiTernak .b-ternak-item');
+  let htmlPopulasi = `<div class="bd-row total" style="border:none; padding-bottom:4px; font-size:13px; margin-top:12px;"><span>Populasi Ternak</span></div>`;
+  itemsPopulasi.forEach(item => {
+    let jenis = item.querySelector('.p-jenis').value || 'Ternak';
+    let jumlah = item.querySelector('.p-jumlah').value || 0;
+    htmlPopulasi += `<div class="bd-row minus" style="padding-left:10px;"><span>- ${jenis}</span><span class="bd-val" style="color:var(--text-primary); font-weight:600;">${jumlah} ekor</span></div>`;
+  });
+
+  let htmlBiaya = `
+    <div class="bd-row total" style="border:none; padding-top:12px; padding-bottom:4px; font-size:13px;"><span>Rincian Biaya Produksi (Tahun)</span></div>
+    <div class="bd-row minus" style="padding-left:10px;"><span>- Pakan</span><span class="bd-val">${formatRp(bPakan)}</span></div>
+    <div class="bd-row minus" style="padding-left:10px;"><span>- Obat & Vaksin</span><span class="bd-val">${formatRp(bObat)}</span></div>
+    <div class="bd-row minus" style="padding-left:10px;"><span>- Bibit/Ternak</span><span class="bd-val">${formatRp(bBibit)}</span></div>
+    <div class="bd-row minus" style="padding-left:10px;"><span>- Tenaga Kerja</span><span class="bd-val">${formatRp(bTk)}</span></div>
+    <div class="bd-row minus" style="padding-left:10px;"><span>- Listrik & Air</span><span class="bd-val">${formatRp(bListrik)}</span></div>
+    <div class="bd-row minus" style="padding-left:10px;"><span>- Lain-lain</span><span class="bd-val">${formatRp(bLain)}</span></div>
+  `;
+
+  document.getElementById('r-ternakPendapatan').innerText = formatRp(totalPendapatanTahun);
+  document.getElementById('r-ternakBiaya').innerText = formatRp(totalBiayaTahun);
+  document.getElementById('r-ternakLaba').innerText = formatRp(labaTahun);
+
+  const boxLaba = document.getElementById('box-ternakLaba');
+  const lblLaba = document.getElementById('lbl-ternakLaba');
+  const valLaba = document.getElementById('r-ternakLaba');
+
+  if (labaTahun < 0) {
+    boxLaba.style.background = '#fff1f2'; boxLaba.style.borderColor = '#ffe4e6';
+    lblLaba.style.color = '#9f1239'; valLaba.style.color = '#e11d48';
+  } else {
+    boxLaba.style.background = '#f0fdf4'; boxLaba.style.borderColor = '#dcfce7';
+    lblLaba.style.color = '#166534'; valLaba.style.color = '#15803d';
+  }
+
+  document.getElementById('resBreakdownTernak').innerHTML = htmlPopulasi + htmlJual + htmlBiaya;
+  document.getElementById('resPeternakanBox').classList.add('vis');
+
+  setTimeout(() => { document.getElementById('resPeternakanBox').scrollIntoView({behavior: "smooth", block: "nearest"}); }, 150);
+
+  // Tambahkan tepat di bawah document.getElementById('resPeternakanBox').classList.add('vis');
+  window.tempPeternakan = { totalPendapatan: totalPendapatanTahun, totalLaba: labaTahun };
+  document.getElementById('btn-save-peternakan').classList.add('vis');
+}
+
+function tambahAsumsiIkan() {
+  const container = document.getElementById('containerAsumsiIkan');
+  const div = document.createElement('div');
+  div.className = 'field asumsi-ikan-item';
+  div.style.cssText = 'background: var(--surface-1); padding: 8px; border-radius: 8px; border: 1px solid var(--border);';
+  
+  div.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+      <input type="text" class="asm-ikan-nama" placeholder="NAMA ASUMSI..." style="font-size:10px; font-weight:700; color:var(--text-secondary); border:none; background:transparent; outline:none; width:85%; text-transform:uppercase;">
+      <button type="button" class="btn-del" onclick="hapusElemen(this)" style="width: 20px; height: 20px; min-height: 20px; padding: 0; font-size: 12px; background: transparent; border: none; color: var(--text-danger); cursor: pointer;"><i class="ti ti-x"></i></button>
+    </div>
+    <input type="text" inputmode="numeric" class="input-box asm-ikan-val" placeholder="0" style="height: 36px;" oninput="formatRupiah(this)">
+  `;
+  container.appendChild(div);
+}
+
+function tambahMetodeJual(btn) {
+  const container = btn.previousElementSibling;
+  const div = document.createElement('div');
+  div.className = 'metode-row';
+  div.style.cssText = 'display: flex; gap: 8px; align-items: flex-end; margin-bottom: 8px; width: 100%;';
+  div.innerHTML = `
+    <div class="field" style="margin-bottom:0; flex: 1;">
+      <label style="font-size: 10px;">Metode</label>
+      <input type="text" class="input-box t-metode" placeholder="Gabah / Beras">
+    </div>
+    <div class="field" style="margin-bottom:0; flex: 1;">
+      <label style="font-size: 10px;">Harga/kg</label>
+      <div class="input-group">
+        <span class="input-group-text" style="padding:0 8px;">Rp</span>
+        <input type="text" inputmode="numeric" class="t-harga" value="0" oninput="formatRupiah(this)">
+      </div>
+    </div>
+    <button class="btn-del" onclick="hapusElemen(this)" style="margin-bottom:0; flex-shrink: 0;"><i class="ti ti-x"></i></button>
+  `;
+  container.appendChild(div);
+}
+
+</script>
+</body>
+</html>
