@@ -894,6 +894,7 @@ input:checked + .slider .ti-moon {
         <label>NAMA USAHA (OPSIONAL)</label>
         <input type="text" class="input-box" id="namaUsaha" placeholder="Contoh: Toko Maju Jaya">
       </div>
+      
       <div class="field">
         <label>JENIS USAHA DAGANG</label>
         <select id="dagangJenis" class="input-box">
@@ -911,10 +912,6 @@ input:checked + .slider .ti-moon {
     </div>
 
     <div class="fields-grid" style="margin-top: 12px;">
-      <div class="field">
-        <label>JUMLAH PEGAWAI</label>
-        <input type="number" id="dagangPegawai" class="input-box" placeholder="0" min="0">
-      </div>
       <div class="field">
         <label>RESPONDEN MENYEBUT OMZET PER</label>
         <select id="periode" onchange="cekPeriode()">
@@ -945,6 +942,30 @@ input:checked + .slider .ti-moon {
       <div class="input-group" style="background:var(--surface-1)">
         <span class="input-group-text">Rp</span>
         <input type="text" inputmode="numeric" id="valOmzet" placeholder="0" oninput="formatRupiah(this)">
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Data Pekerja / Pegawai</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label>JUMLAH PEGAWAI</label>
+        <input type="number" id="dagangPegawai" class="input-box" placeholder="0" min="0">
+      </div>
+      <div class="field">
+        <label>PERIODE GAJI</label>
+        <select id="dagangPeriodeGaji" class="input-box">
+          <option value="hari">Per Hari</option>
+          <option value="minggu">Per Minggu</option>
+          <option value="bulan" selected>Per Bulan</option>
+          <option value="tahun">Per Tahun</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column: span 2;">
+        <label>GAJI PER PEGAWAI</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" id="dagangGaji" placeholder="0" oninput="formatRupiah(this)">
+        </div>
       </div>
     </div>
 
@@ -1455,6 +1476,8 @@ input:checked + .slider .ti-moon {
     document.getElementById('containerLahanTani').innerHTML = '';
     document.getElementById('containerEkstraTani').innerHTML = '';
     document.getElementById('containerOpsTani').innerHTML = '';
+    document.getElementById('dagangPegawai').value = '';
+    document.getElementById('dagangGaji').value = '';
     document.getElementById('asumsiTaniProd').value = '0.6';
     document.getElementById('resTaniBox').classList.remove('vis');
     showToast('Form Pertanian Berhasil Direset');
@@ -1907,6 +1930,34 @@ function renderRekap() {
       htmlBreakdown += `<div class="bd-row minus" style="align-items: center;"><span>- ${nama} ${formatRp(valInput)} (${freq}x / ${per})</span><div style="text-align: right; line-height: 1.4;"><span class="bd-val">${formatRp(nominalBulan)}/bln</span><br><span class="bd-val" style="font-size: 11px; color: var(--text-muted);">${formatRp(nominalTahun)} /thn</span></div></div>`;
     }
   });
+
+  // --- MULAI KODE HITUNG GAJI PEGAWAI ---
+  let jmlPegawai = parseInt(document.getElementById('dagangPegawai').value) || 0;
+  let gajiNom = parseNum(document.getElementById('dagangGaji').value);
+  let gajiPer = document.getElementById('dagangPeriodeGaji').value;
+  
+  if (jmlPegawai > 0 && gajiNom > 0) {
+    let multiplierGaji = 1;
+    if (gajiPer === 'hari') multiplierGaji = totalHariSebulan;
+    else if (gajiPer === 'minggu') multiplierGaji = 4.33;
+    else if (gajiPer === 'tahun') multiplierGaji = 1/12;
+    
+    let totalGajiBulan = jmlPegawai * gajiNom * multiplierGaji;
+    let totalGajiTahun = totalGajiBulan * 12;
+
+    totalBiayaBulan += totalGajiBulan;
+    totalBiayaOpsTahun += totalGajiTahun; // Masuk ke total biaya operasional
+
+    htmlBreakdown += `
+      <div class="bd-row minus" style="align-items: center;">
+        <span>- Gaji Pegawai (${jmlPegawai} Org)</span>
+        <div style="text-align: right; line-height: 1.4;">
+          <span class="bd-val">${formatRp(totalGajiBulan)}/bln</span><br>
+          <span class="bd-val" style="font-size: 11px; color: var(--text-muted);">${formatRp(totalGajiTahun)} /thn</span>
+        </div>
+      </div>`;
+  }
+  // --- AKHIR KODE HITUNG GAJI PEGAWAI ---
 
   const totalBiayaTahun = totalBiayaBulan * 12;
   let labaBulan = omzetBulan - totalBiayaBulan;
@@ -2652,8 +2703,10 @@ function tambahLahanTani() {
           <input type="number" class="input-box l-produksi" placeholder="Otomatis jika kosong" style="border-right:none;">
           <select class="input-box l-satuan" style="width: 75px; padding:0 4px; border-left: 1px solid var(--border-strong);">
             <option value="Kg">Kg</option>
+            <option value="Kwintal">Kwintal</option>
             <option value="Ton">Ton</option>
             <option value="Ikat">Ikat</option>
+            <option value="Borongan">Borongan</option>
           </select>
         </div>
         <span style="font-size: 9px; color: var(--text-muted); margin-top: 4px; display: block; line-height: 1.3;">
@@ -2766,6 +2819,7 @@ function hitungPertanian() {
     let satuan = item.querySelector('.l-satuan').value;
     let harga = parseNum(item.querySelector('.l-harga').value);
     
+    
     // Multiplier Siklus
     let multiplierTahun = (panenTipe === 'bulan') ? (12 / panenVal) : (360 / panenVal);
     rataRataSiklusTahun += multiplierTahun;
@@ -2786,10 +2840,15 @@ function hitungPertanian() {
     let produksiTahun = produksiPerPanen * multiplierTahun;
     let pendapatanTahun = produksiTahun * harga;
 
-    // Simpan Produksi Utama (Konversi ke Kg agar logis)
+    // Simpan Produksi Utama (Konversi ke Kg agar logis di rekap akhir)
     let prodDalamKg = produksiTahun;
+    if (satuan === 'Kwintal') prodDalamKg = produksiTahun * 100;
     if (satuan === 'Ton') prodDalamKg = produksiTahun * 1000;
-    if (satuan !== 'Ikat') grandTotalProduksiKg += prodDalamKg;
+    
+    // Ikat dan Borongan tidak ditambahkan ke akumulasi Kg karena satuannya tidak ekuivalen berat
+    if (satuan !== 'Ikat' && satuan !== 'Borongan') {
+      grandTotalProduksiKg += prodDalamKg;
+    }
 
     if (pendapatanTahun > 0) {
       grandPendapatanTahun += pendapatanTahun;
