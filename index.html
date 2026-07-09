@@ -886,7 +886,8 @@
       <select id="taniKategori" class="input-box" onchange="renderKomoditasList()" style="font-weight: 700;">
         <option value="pangan">🌾 Tanaman Pangan</option>
         <option value="hortikultura">🥬 Hortikultura / Sayuran</option>
-        <option value="perkebunan">🌴 Perkebunan</option>
+        <option value="buah">🍌 Buah-buahan / Perkebunan</option>
+        <option value="kebun_industri">🌴 Perkebunan Industri</option>
       </select>
     </div>
     <div class="field" style="margin-bottom: 0;">
@@ -3504,6 +3505,7 @@ function toggleMenuStandar() {
 }
 
 // --- MASTER DATA KOMODITAS PERTANIAN ---
+// --- MASTER DATA KOMODITAS PERTANIAN (VERSI 4 KATEGORI) ---
 const masterKomoditas = {
   pangan: [
     { id: 'padi', nama: 'Padi', satuan: 'Kg', hargaAcuan: 6500, produktivitas: 8000, siklus: 3, 
@@ -3516,16 +3518,32 @@ const masterKomoditas = {
   hortikultura: [
     { id: 'cabai', nama: 'Cabai', satuan: 'Kg', hargaAcuan: 35000, produktivitas: 12000, siklus: 2, 
       biaya: { olahTanah: 5000000, benih: 2000000, urea: 3000000, sp36: 2000000, pestisida: 5000000, pemeliharaan: 8000000, panen: 4000000, angkut: 1000000 } },
+    { id: 'tomat', nama: 'Tomat', satuan: 'Kg', hargaAcuan: 8000, produktivitas: 15000, siklus: 2, 
+      biaya: { olahTanah: 3000000, benih: 1000000, urea: 2000000, sp36: 1500000, pestisida: 3000000, pemeliharaan: 4000000, panen: 2500000, angkut: 800000 } },
     { id: 'bawang', nama: 'Bawang Merah', satuan: 'Kg', hargaAcuan: 25000, produktivitas: 10000, siklus: 4, 
       biaya: { olahTanah: 4000000, benih: 1500000, urea: 2000000, sp36: 1500000, pestisida: 4000000, pemeliharaan: 5000000, panen: 3000000, angkut: 800000 } },
-    { id: 'tomat', nama: 'Tomat', satuan: 'Kg', hargaAcuan: 8000, produktivitas: 15000, siklus: 2, 
-      biaya: { olahTanah: 3000000, benih: 1000000, urea: 2000000, sp36: 1500000, pestisida: 3000000, pemeliharaan: 4000000, panen: 2500000, angkut: 800000 } }
+    { id: 'sayuran', nama: 'Sayuran Daun (Sawi/Kangkung)', satuan: 'Kg', hargaAcuan: 5000, produktivitas: 10000, siklus: 6, // Panen cepat 6x setahun
+      biaya: { olahTanah: 2000000, benih: 500000, urea: 1000000, sp36: 500000, pestisida: 1000000, pemeliharaan: 2000000, panen: 1500000, angkut: 500000 } }
   ],
-  perkebunan: [
+  buah: [
+    { id: 'pisang', nama: 'Pisang', satuan: 'Tandan', hargaAcuan: 40000, produktivitas: 1000, siklus: 1, // Dihitung panen tandan per tahun
+      biaya: { olahTanah: 0, benih: 500000, urea: 1000000, sp36: 500000, pestisida: 500000, pemeliharaan: 2000000, panen: 1500000, angkut: 1000000 } },
+    { id: 'mangga', nama: 'Mangga', satuan: 'Kg', hargaAcuan: 10000, produktivitas: 12000, siklus: 1, 
+      biaya: { olahTanah: 0, benih: 0, urea: 1500000, sp36: 1000000, pestisida: 2000000, pemeliharaan: 3000000, panen: 2000000, angkut: 1500000 } },
+    { id: 'durian', nama: 'Durian', satuan: 'Buah', hargaAcuan: 50000, produktivitas: 3000, siklus: 1, 
+      biaya: { olahTanah: 0, benih: 0, urea: 2000000, sp36: 1500000, pestisida: 2500000, pemeliharaan: 4000000, panen: 3000000, angkut: 2000000 } },
+    { id: 'kelapa', nama: 'Kelapa', satuan: 'Butir', hargaAcuan: 3000, produktivitas: 12000, siklus: 4, // Asumsi panen per 3 bulan (4x setahun)
+      biaya: { olahTanah: 0, benih: 0, urea: 1000000, sp36: 500000, pestisida: 500000, pemeliharaan: 1500000, panen: 4000000, angkut: 2000000 } }
+  ],
+  kebun_industri: [
     { id: 'sawit', nama: 'Kelapa Sawit (TBS)', satuan: 'Kg', hargaAcuan: 2700, produktivitas: 24000, siklus: 1, // Prod = Total setahun, Siklus = 1 Tahun
       biaya: { olahTanah: 0, benih: 0, urea: 4000000, sp36: 3000000, pestisida: 2000000, pemeliharaan: 5000000, panen: 8000000, angkut: 3000000 } },
     { id: 'karet', nama: 'Karet (Getah)', satuan: 'Kg', hargaAcuan: 10000, produktivitas: 1500, siklus: 1, 
       biaya: { olahTanah: 0, benih: 0, urea: 2000000, sp36: 1000000, pestisida: 1000000, pemeliharaan: 3000000, panen: 5000000, angkut: 1000000 } },
+    { id: 'kopi', nama: 'Kopi', satuan: 'Kg', hargaAcuan: 30000, produktivitas: 1500, siklus: 1, 
+      biaya: { olahTanah: 0, benih: 0, urea: 1500000, sp36: 1000000, pestisida: 1000000, pemeliharaan: 3000000, panen: 3500000, angkut: 1000000 } },
+    { id: 'kakao', nama: 'Kakao (Cokelat)', satuan: 'Kg', hargaAcuan: 40000, produktivitas: 1200, siklus: 1, 
+      biaya: { olahTanah: 0, benih: 0, urea: 1500000, sp36: 1000000, pestisida: 1500000, pemeliharaan: 3500000, panen: 3000000, angkut: 1000000 } },
     { id: 'tebu', nama: 'Tebu', satuan: 'Ton', hargaAcuan: 600000, produktivitas: 80, siklus: 1, 
       biaya: { olahTanah: 3000000, benih: 2000000, urea: 2500000, sp36: 1500000, pestisida: 1000000, pemeliharaan: 2000000, panen: 10000000, angkut: 5000000 } }
   ]
