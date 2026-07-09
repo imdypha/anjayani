@@ -336,6 +336,16 @@
       <div class="ic">🎓</div>
       <span>Sektor Pendidikan</span>
     </div>
+
+<div class="home-card c-blue" onclick="sw('industri', document.getElementById('tab-home'))">
+  <div class="ic">🏭</div>
+  <span>Sektor Industri</span>
+</div>
+<div class="home-card c-navy" onclick="sw('pertambangan', document.getElementById('tab-home'))">
+      <div class="ic">⛏️</div>
+      <span>Sektor Pertambangan</span>
+    </div>
+
   </div>
 </div>
 
@@ -789,7 +799,7 @@
     <button class="btn-reset" onclick="resetForm('perikanan')"><i class="ti ti-refresh"></i> RESET FORM PERIKANAN</button>
   </div>
 
-  <div id="p-pertanian" class="panel">
+  <!-- <div id="p-pertanian" class="panel">
     <div class="section-label">Data Usaha Pertanian & Perkebunan</div>
     
     <div class="fields-grid">
@@ -864,7 +874,144 @@
 
     <button class="btn-primary" style="margin-top: 1.5rem;" onclick="hitungPertanian()"><i class="ti ti-calculator"></i> HITUNG HASIL PERTANIAN</button>
     <button class="btn-reset" onclick="resetForm('pertanian')"><i class="ti ti-refresh"></i> RESET FORM PERTANIAN</button>
+  </div> -->
+
+  <div id="p-pertanian" class="panel">
+  <div class="section-label" style="font-size: 16px; margin-bottom: 4px;">Data Usaha Pertanian (Otomatis)</div>
+  <p class="section-desc">Sistem perhitungan otomatis berbasis Standar Biaya Produksi per Hektar.</p>
+
+  <div style="background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 14px; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleMenuStandar()">
+      <strong style="font-size: 12px; color: var(--accent); display: flex; align-items: center; gap: 6px;">
+        <i class="ti ti-settings"></i> ⚙️ MENU ADMIN: STANDAR BIAYA PADI
+      </strong>
+      <span id="icon-toggle-standar" style="font-size: 12px; color: var(--text-muted);">[Buka/Tutup]</span>
+    </div>
+    
+    <div id="box-standar-biaya" style="display: none; margin-top: 12px; border-top: 1px dashed var(--border-strong); padding-top: 12px;">
+      <div class="fields-grid" style="gap: 8px;">
+        <div class="field">
+          <label>Produktivitas (Kw/Ha)</label>
+          <input type="number" id="st_produktivitas" class="input-box" value="80" oninput="liveKalkulasiTani()">
+        </div>
+        <div class="field">
+          <label>Olah Tanah / Ha</label>
+          <div class="input-group"><span class="input-group-text">Rp</span><input type="text" id="st_olahTanah" class="input-box" value="2.400.000" oninput="formatRupiah(this); liveKalkulasiTani();" style="border:none;"></div>
+        </div>
+        <div class="field">
+          <label>Benih / Ha</label>
+          <div class="input-group"><span class="input-group-text">Rp</span><input type="text" id="st_benih" class="input-box" value="800.000" oninput="formatRupiah(this); liveKalkulasiTani();" style="border:none;"></div>
+        </div>
+        <div class="field">
+          <label>Pupuk Urea / Ha</label>
+          <div class="input-group"><span class="input-group-text">Rp</span><input type="text" id="st_urea" class="input-box" value="1.400.000" oninput="formatRupiah(this); liveKalkulasiTani();" style="border:none;"></div>
+        </div>
+        <div class="field">
+          <label>Pupuk SP36 / Ha</label>
+          <div class="input-group"><span class="input-group-text">Rp</span><input type="text" id="st_sp36" class="input-box" value="1.000.000" oninput="formatRupiah(this); liveKalkulasiTani();" style="border:none;"></div>
+        </div>
+        <div class="field">
+          <label>Pestisida / Ha</label>
+          <div class="input-group"><span class="input-group-text">Rp</span><input type="text" id="st_pestisida" class="input-box" value="1.600.000" oninput="formatRupiah(this); liveKalkulasiTani();" style="border:none;"></div>
+        </div>
+        <div class="field">
+          <label>Pemeliharaan / Ha</label>
+          <div class="input-group"><span class="input-group-text">Rp</span><input type="text" id="st_pemeliharaan" class="input-box" value="1.500.000" oninput="formatRupiah(this); liveKalkulasiTani();" style="border:none;"></div>
+        </div>
+        <div class="field">
+          <label>Biaya Panen / Ha</label>
+          <div class="input-group"><span class="input-group-text">Rp</span><input type="text" id="st_panen" class="input-box" value="3.000.000" oninput="formatRupiah(this); liveKalkulasiTani();" style="border:none;"></div>
+        </div>
+        <div class="field" style="grid-column: span 2;">
+          <label>Biaya Angkut / Ha</label>
+          <div class="input-group"><span class="input-group-text">Rp</span><input type="text" id="st_angkut" class="input-box" value="800.000" oninput="formatRupiah(this); liveKalkulasiTani();" style="border:none;"></div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div class="section-label" style="margin-top: 0;">1. Data Lahan & Harga</div>
+  <div class="fields-grid">
+    <div class="field">
+      <label>LUAS LAHAN (ARE)</label>
+      <input type="number" class="input-box" id="taniLuasAre" placeholder="Cth: 50" oninput="liveKalkulasiTani()">
+    </div>
+    <div class="field">
+      <label>HARGA GABAH (RP/KG)</label>
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" id="taniHargaGabah" placeholder="Cth: 6.500" oninput="formatRupiah(this); liveKalkulasiTani();">
+      </div>
+    </div>
+  </div>
+
+  <div style="background: linear-gradient(135deg, var(--surface-1), var(--surface-2)); border: 1px solid var(--border-strong); border-radius: 12px; padding: 14px; margin-top: 12px; margin-bottom: 20px;">
+    <div class="res-grid" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom:0; gap:8px;">
+      <div style="text-align:center; padding:8px; border-right:1px dashed var(--border);">
+        <span style="font-size:10px; color:var(--text-muted); font-weight:700; display:block;">EST. KWINTAL</span>
+        <strong id="out_prodKw" style="font-size:15px; color:var(--accent); font-family:var(--font-mono);">0 Kw</strong>
+      </div>
+      <div style="text-align:center; padding:8px; border-right:1px dashed var(--border);">
+        <span style="font-size:10px; color:var(--text-muted); font-weight:700; display:block;">EST. KG</span>
+        <strong id="out_prodKg" style="font-size:15px; color:var(--accent); font-family:var(--font-mono);">0 Kg</strong>
+      </div>
+      <div style="text-align:center; padding:8px;">
+        <span style="font-size:10px; color:var(--text-muted); font-weight:700; display:block;">PENDAPATAN</span>
+        <strong id="out_pendapatanKotor" style="font-size:15px; color:var(--text-success); font-family:var(--font-mono);">Rp 0</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">2. Data Pekerja / Pegawai</div>
+  <div class="fields-grid">
+    <div class="field">
+      <label>JUMLAH PEKERJA</label>
+      <input type="number" id="taniPekerja" class="input-box" placeholder="Cth: 3" min="0" oninput="liveKalkulasiTani()">
+    </div>
+    <div class="field">
+      <label>PERIODE GAJI</label>
+      <select id="taniPeriodeGaji" class="input-box" onchange="liveKalkulasiTani()">
+        <option value="hari">Per Hari</option>
+        <option value="bulan">Per Bulan</option>
+        <option value="musim" selected>Per Musim</option>
+        <option value="tahun">Per Tahun</option>
+      </select>
+    </div>
+    <div class="field" style="grid-column: span 2;">
+      <label>GAJI / UPAH PER PEKERJA</label>
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" id="taniGaji" placeholder="Cth: 50.000" oninput="formatRupiah(this); liveKalkulasiTani();">
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top: 24px;">3. Estimasi Biaya Operasional</div>
+  <p class="section-desc">Dihitung otomatis berdasarkan luas lahan. Klik "Edit" jika ada perbedaan di lapangan.</p>
+  
+  <div id="tani-biaya-list-container" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
+    </div>
+
+  <div style="background: var(--bg-accent); border: 1px solid var(--border-accent); border-radius: var(--radius); padding: 14px;">
+    <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;">
+      <span style="color: var(--text-secondary); font-weight: 700;">TOTAL BIAYA / MUSIM:</span>
+      <strong id="lbl_taniTotalBiaya" style="color: var(--text-danger); font-family: var(--font-mono);">Rp 0</strong>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 14px; border-top: 1px dashed var(--border-accent); padding-top: 6px;">
+      <span style="color: var(--accent); font-weight: 700;">LABA BERSIH / MUSIM:</span>
+      <strong id="lbl_taniLabaBersih" style="color: var(--text-success); font-family: var(--font-mono);">Rp 0</strong>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:10px; margin-top:20px;">
+    <button class="btn-reset" onclick="resetFormTaniBaru()" style="flex:1; margin-top:0;">
+      <i class="ti ti-refresh"></i> RESET
+    </button>
+    <button class="btn-primary" onclick="hitungPertanianBaru()" style="flex:2; margin-top:0;">
+      <i class="ti ti-device-floppy"></i> SIMPAN KE BLOK 26
+    </button>
+  </div>
+</div>
 
   <div id="p-peternakan" class="panel">
     <div class="section-label">Data Usaha Peternakan</div>
@@ -990,6 +1137,237 @@
 
     <button class="btn-primary" onclick="hitungPendidikan()"><i class="ti ti-calculator"></i> HITUNG HASIL PENDIDIKAN</button>
     <button class="btn-reset" onclick="resetForm('pendidikan')"><i class="ti ti-refresh"></i> RESET FORM PENDIDIKAN</button>
+  </div>
+
+  <div id="p-industri" class="panel">
+    <div class="section-label">Data Usaha Industri / Manufaktur</div>
+    
+    <div class="fields-grid">
+      <div class="field">
+        <label>NAMA INDUSTRI (OPSIONAL)</label>
+        <input type="text" id="industriNama" class="input-box" placeholder="Contoh: Pabrik Tahu Pak Budi">
+      </div>
+      <div class="field">
+        <label>JENIS INDUSTRI</label>
+        <select id="industriJenis" class="input-box">
+          <option value="Makanan">Makanan</option>
+          <option value="Minuman">Minuman</option>
+          <option value="Konveksi">Konveksi (Pakaian)</option>
+          <option value="Furniture">Furniture</option>
+          <option value="Percetakan">Percetakan</option>
+          <option value="Logam">Logam</option>
+          <option value="Kayu">Kayu / Penggergajian</option>
+          <option value="Kerajinan">Kerajinan</option>
+          <option value="Pengolahan Hasil Pertanian">Pengolahan Hasil Pertanian</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Bagian 2: Hasil Produksi</div>
+    <div class="field">
+      <label>MODE PERHITUNGAN PENDAPATAN</label>
+      <select id="industriMode" class="input-box" onchange="ubahModeIndustri(this)">
+        <option value="produksi">Hitung dari Unit Produksi (Rekomendasi)</option>
+        <option value="omzet">Input Omzet Langsung</option>
+      </select>
+    </div>
+
+    <div id="wrapIndustriProduksi">
+      <div id="containerProdukIndustri" style="margin-top: 12px;"></div>
+      <button class="btn-add" onclick="tambahProdukIndustri()">+ Tambah Produk</button>
+    </div>
+
+    <div id="wrapIndustriOmzet" style="display: none; margin-top: 12px;">
+      <div class="fields-grid">
+        <div class="field">
+          <label>OMZET PER</label>
+          <select id="industriPeriodeOmzet" class="input-box">
+            <option value="hari">Hari</option>
+            <option value="minggu">Minggu</option>
+            <option value="bulan" selected>Bulan</option>
+            <option value="tahun">Tahun</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>NILAI OMZET KOTOR</label>
+          <div class="input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="text" inputmode="numeric" id="industriOmzet" placeholder="0" oninput="formatRupiah(this)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Data Pekerja & Jamsos (26.A)</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label>JUMLAH PEGAWAI</label>
+        <input type="number" id="industriPegawai" class="input-box" placeholder="0" min="0">
+      </div>
+      <div class="field">
+        <label>PERIODE GAJI</label>
+        <select id="industriPeriodeGaji" class="input-box">
+          <option value="hari">Per Hari</option>
+          <option value="minggu">Per Minggu</option>
+          <option value="bulan" selected>Per Bulan</option>
+          <option value="tahun">Per Tahun</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column: span 2;">
+        <label>GAJI PER PEGAWAI</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" id="industriGaji" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Biaya Produksi (26.B)</div>
+    <p class="section-desc">Bahan baku utama & penolong (Triplek, Cat, Kain, Tepung, Kedelai, Minyak, Kemasan).</p>
+    <div id="containerProdIndustri"></div>
+    <button class="btn-add" onclick="tambahItemBiaya('containerProdIndustri', 'Cth: Kedelai / Cat / Kemasan')">+ Tambah Biaya Produksi</button>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Biaya Barang Terjual (26.C)</div>
+    <p class="section-desc">Barang yang dijual tanpa diolah (Cth: Barang Titipan, Aksesoris, Sparepart).</p>
+    <div id="bbt-Industri"></div>
+    <button class="btn-add" onclick="tambahItemBiaya('bbt-Industri', 'Cth: Aksesoris')">+ Tambah Biaya Barang Terjual</button>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Biaya Operasional (26.D)</div>
+    <p class="section-desc">Listrik, Air, Solar, BBM, Transport, Sewa, Perawatan Mesin.</p>
+    <div id="containerOpsIndustri"></div>
+    <button class="btn-add" onclick="tambahItemBiaya('containerOpsIndustri', 'Cth: Listrik Mesin / Solar')">+ Tambah Biaya Operasional</button>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Biaya Non-Operasional (26.E)</div>
+    <p class="section-desc">Pajak, Bunga Bank, Administrasi, Denda.</p>
+    <div id="nonops-Industri"></div>
+    <button class="btn-add" onclick="tambahItemBiaya('nonops-Industri', 'Cth: Pajak / Bunga Bank')">+ Tambah Biaya Non-Operasional</button>
+
+    <button class="btn-primary" onclick="hitungIndustri()"><i class="ti ti-calculator"></i> HITUNG HASIL INDUSTRI</button>
+    <button class="btn-reset" onclick="resetForm('industri')"><i class="ti ti-refresh"></i> RESET FORM INDUSTRI</button>
+  </div>
+
+  <div id="p-pertambangan" class="panel">
+    <div class="section-label">Data Usaha Pertambangan / Galian</div>
+    
+    <div class="fields-grid">
+      <div class="field">
+        <label>NAMA USAHA (OPSIONAL)</label>
+        <input type="text" id="pertambanganNama" class="input-box" placeholder="Contoh: Tambang Pasir Berkah">
+      </div>
+      <div class="field">
+        <label>JENIS PERTAMBANGAN</label>
+        <select id="pertambanganJenis" class="input-box">
+          <option value="Pasir">Pasir</option>
+          <option value="Batu Kali">Batu Kali</option>
+          <option value="Sirtu">Sirtu (Pasir Batu)</option>
+          <option value="Batu Andesit">Batu Andesit</option>
+          <option value="Tanah Urug">Tanah Urug</option>
+          <option value="Tanah Liat">Tanah Liat</option>
+          <option value="Batu Kapur">Batu Kapur</option>
+          <option value="Kerikil">Kerikil</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Unit Produksi</div>
+    <div class="field">
+      <label style="display: flex; align-items: center; gap: 6px;">
+        MODE PERHITUNGAN PENDAPATAN 
+        <i class="ti ti-info-circle" style="cursor: pointer; color: var(--blue); font-size: 15px;" onclick="toggleInfoTambang()"></i>
+      </label>
+      <select id="pertambanganMode" class="input-box" onchange="ubahModePertambangan(this)">
+        <option value="produksi">Hitung dari Unit Produksi (Volume Hasil Tambang)</option>
+        <option value="omzet">Input Omzet Langsung</option>
+      </select>
+    </div>
+
+    <div id="infoModePertambangan" style="display: none; background: var(--bg-accent); border: 1px solid var(--border-accent); padding: 14px; border-radius: 10px; margin-top: -4px; margin-bottom: 12px; font-size: 12px; line-height: 1.6; animation: fadeUp 0.3s ease;">
+      <strong style="color: var(--accent); display: block; margin-bottom: 4px;"><i class="ti ti-bulb"></i> Petunjuk Pengisian:</strong>
+      Isi berdasarkan hasil produksi yang biasa dijual oleh responden.<br>
+      <strong>Contoh Kasus nyata:</strong> Jika usaha tambang pasir menghasilkan 350 m³ per bulan dengan harga jual Rp180.000 per m³, maka isi seperti berikut:
+      <ul style="margin-left: 16px; margin-top: 4px; color: var(--text-secondary);">
+        <li>Material: <span style="font-weight:600; color:var(--accent);">Pasir</span></li>
+        <li>Volume Produksi: <span style="font-weight:600; color:var(--accent);">350</span></li>
+        <li>Satuan: <span style="font-weight:600; color:var(--accent);">m³</span></li>
+        <li>Harga Jual / Satuan: <span style="font-weight:600; color:var(--accent);">180.000</span></li>
+        <li>Periode Produksi: <span style="font-weight:600; color:var(--accent);">/ Bulan</span></li>
+      </ul>
+    </div>
+
+    <div id="wrapPertambanganProduksi">
+      <div id="containerProdukPertambangan" style="margin-top: 12px;"></div>
+      <button class="btn-add" onclick="tambahProdukPertambangan()">+ Tambah Material Tambang</button>
+    </div>
+
+    <div id="wrapPertambanganOmzet" style="display: none; margin-top: 12px;">
+      <div class="fields-grid">
+        <div class="field">
+          <label>OMZET PER</label>
+          <select id="pertambanganPeriodeOmzet" class="input-box">
+            <option value="hari">Hari</option>
+            <option value="minggu">Minggu</option>
+            <option value="bulan" selected>Bulan</option>
+            <option value="tahun">Tahun</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>NILAI OMZET KOTOR</label>
+          <div class="input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="text" inputmode="numeric" id="pertambanganOmzet" placeholder="0" oninput="formatRupiah(this)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Data Pekerja & Jamsos (26.A)</div>
+    <div class="fields-grid">
+      <div class="field">
+        <label>JUMLAH PEGAWAI</label>
+        <input type="number" id="pertambanganPegawai" class="input-box" placeholder="0" min="0">
+      </div>
+      <div class="field">
+        <label>PERIODE GAJI</label>
+        <select id="pertambanganPeriodeGaji" class="input-box">
+          <option value="hari">Per Hari</option>
+          <option value="minggu">Per Minggu</option>
+          <option value="bulan" selected>Per Bulan</option>
+          <option value="tahun">Per Tahun</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column: span 2;">
+        <label>GAJI PER PEGAWAI</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" id="pertambanganGaji" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Biaya Produksi (26.B)</div>
+    <p class="section-desc">Solar, Peledakan, Pelumas, BBM, Ban, Oli, Alat Tambang, Bahan Peledak, Perawatan Mesin Tambang.</p>
+    <div id="containerProdPertambangan"></div>
+    <button class="btn-add" onclick="tambahItemBiaya('containerProdPertambangan', 'Cth: Solar / Oli / Sparepart Alat Tambang')">+ Tambah Biaya Produksi</button>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Biaya Barang Terjual (26.C)</div>
+    <p class="section-desc">Wadah pendukung penjualan material jika ada (Cth: Karung, Palet, Karung Jumbo).</p>
+    <div id="bbt-Pertambangan"></div>
+    <button class="btn-add" onclick="tambahItemBiaya('bbt-Pertambangan', 'Cth: Karung Jumbo')">+ Tambah Biaya Barang Terjual</button>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Biaya Operasional (26.D)</div>
+    <p class="section-desc">Transportasi, Listrik, Air, Sewa Alat Berat, Retribusi Galian, Perawatan Kendaraan Operasional.</p>
+    <div id="containerOpsPertambangan"></div>
+    <button class="btn-add" onclick="tambahItemBiaya('containerOpsPertambangan', 'Cth: Retribusi / Sewa Ekskavator')">+ Tambah Biaya Operasional</button>
+
+    <div class="section-label" style="margin-top: 1.5rem;">Biaya Non-Operasional (26.E)</div>
+    <p class="section-desc">Pajak Daerah, Royalti Hasil Tambang, Bunga Bank, Administrasi Kantor.</p>
+    <div id="nonops-Pertambangan"></div>
+    <button class="btn-add" onclick="tambahItemBiaya('nonops-Pertambangan', 'Cth: Pajak Daerah / Royalti Tambang')">+ Tambah Biaya Non-Operasional</button>
+
+    <button class="btn-primary" onclick="hitungPertambangan()"><i class="ti ti-calculator"></i> HITUNG HASIL PERTAMBANGAN</button>
+    <button class="btn-reset" onclick="resetForm('pertambangan')"><i class="ti ti-refresh"></i> RESET FORM PERTAMBANGAN</button>
   </div>
 
   <div id="p-blok26" class="panel">
@@ -1228,6 +1606,8 @@
       <button class="btn-filter" onclick="setFilterRekap('pertanian', this)">Pertanian & Perkebunan</button>
       <button class="btn-filter" onclick="setFilterRekap('peternakan', this)">Peternakan</button>
       <button class="btn-filter" onclick="setFilterRekap('pendidikan', this)">Pendidikan</button>
+      <button class="btn-filter" onclick="setFilterRekap('industri', this)">Industri</button>
+      <button class="btn-filter" onclick="setFilterRekap('pertambangan', this)">Pertambangan</button>
     </div>
 
     <div class="section-label" style="margin-top: 1rem;">Data Tersimpan</div>
@@ -1332,23 +1712,47 @@
   }
 
   function tambahItemBiaya(containerId, placeholder) {
-    const div = document.createElement('div');
-    div.className = 'biaya-item dynamic-b-item';
-    div.innerHTML = `
-      <div class="biaya-item-top">
+  const div = document.createElement('div');
+  div.className = 'biaya-item dynamic-b-item';
+  div.innerHTML = `
+    <div class="biaya-item-top" style="margin-bottom: 4px;">
+      <div class="field" style="flex:1; margin-bottom:0;">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700;">① PENGELUARAN UNTUK APA?</label>
         <input type="text" class="input-box dyn-nama" placeholder="${placeholder}">
-        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
       </div>
-      <div class="biaya-item-bottom">
-        <div class="b-nom"><span>Rp</span><input type="text" inputmode="numeric" class="val-biaya dyn-nom" placeholder="0" oninput="formatRupiah(this)"></div>
-        <span style="font-size:12px; font-weight:bold; color:var(--text-muted);">x</span>
-        <input type="number" class="input-box dyn-freq" placeholder="1" value="1" min="1" style="flex:0.6; text-align:center;">
-        <select class="input-box dyn-periode" style="flex:1.2;">
-          <option value="hari">/ Hari</option><option value="minggu">/ Minggu</option><option value="bulan" selected>/ Bulan</option><option value="musim">/ Musim</option><option value="tahun">/ Tahun</option>
+      <button class="btn-del" onclick="hapusElemen(this)" style="margin-top: 16px;"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="field" style="margin-bottom:4px;">
+      <label style="font-size:10px; color:var(--text-danger); font-weight:700;">② BERAPA BIAYANYA?</label>
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" class="val-biaya dyn-nom" placeholder="0" oninput="formatRupiah(this)">
+      </div>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-top:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700;">③ BERAPA KALI?</label>
+        <input type="number" class="input-box dyn-freq" placeholder="1" value="1" min="1" style="text-align:center;">
+      </div>
+      <div class="field">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700;">④ DALAM PERIODE APA?</label>
+        <select class="input-box dyn-periode">
+          <option value="hari">/ Hari</option>
+          <option value="minggu">/ Minggu</option>
+          <option value="bulan" selected>/ Bulan</option>
+          <option value="musim">/ Musim</option>
+          <option value="tahun">/ Tahun</option>
         </select>
-      </div>`;
-    document.getElementById(containerId).appendChild(div);
-  }
+      </div>
+    </div>`;
+  document.getElementById(containerId).appendChild(div);
+}
   
   function tambahBiayaJual() { tambahItemBiaya('biayaJualContainer', 'Biaya Produksi / Kulakan'); }
   function tambahBiaya() { tambahItemBiaya('biayaContainer', 'Biaya Operasional (Listrik/Air)'); }
@@ -1366,24 +1770,104 @@
   function tambahOpsTernak() { tambahItemBiaya('containerOpsTernak', 'Operasional Ternak'); }
 
   function tambahUnitSewa() {
-    const div = document.createElement('div');
-    div.className = 'biaya-item u-sewa-item';
-    div.innerHTML = `<div class="biaya-item-top"><input type="text" class="input-box u-nama" placeholder="Tipe Unit (Cth: Kamar)"><button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button></div><div class="fields-grid" style="gap:8px; margin-top:8px;"><div class="field"><label style="font-size:10px;">Total Unit</label><input type="number" class="input-box u-total" placeholder="0" value="1" min="1"></div><div class="field"><label style="font-size:10px;">Unit Aktif</label><input type="number" class="input-box u-aktif" placeholder="0" value="0" min="0"></div></div><div class="fields-grid" style="gap:8px; margin-top:4px;"><div class="field"><label style="font-size:10px;">Tarif</label><div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" class="input-box u-tarif" placeholder="0" oninput="formatRupiah(this)" style="border:none;"></div></div><div class="field"><label style="font-size:10px;">Periode</label><select class="input-box u-periode"><option value="hari">/ Hari</option><option value="minggu">/ Minggu</option><option value="bulan" selected>/ Bulan</option><option value="tahun">/ Tahun</option></select></div></div>`;
-    document.getElementById('containerUnitSewa').appendChild(div);
-  }
+  const div = document.createElement('div');
+  div.className = 'biaya-item u-sewa-item';
+  div.innerHTML = `
+    <div class="biaya-item-top" style="margin-bottom: 4px;">
+      <div class="field" style="flex:1; margin-bottom:0;">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">① NAMA TIPE UNIT?</label>
+        <input type="text" class="input-box u-nama" placeholder="Tipe Unit (Cth: Kamar VIP)">
+      </div>
+      <button class="btn-del" onclick="hapusElemen(this)" style="margin-top: 16px;"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-bottom:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">② TOTAL UNIT KESELURUHAN?</label>
+        <input type="number" class="input-box u-total" placeholder="0" value="1" min="1">
+      </div>
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">③ UNIT AKTIF (DISEWA)?</label>
+        <input type="number" class="input-box u-aktif" placeholder="0" value="0" min="0">
+      </div>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-top:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">④ BERAPA TARIF SEWANYA?</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" class="input-box u-tarif" placeholder="0" oninput="formatRupiah(this)" style="border:none;">
+        </div>
+      </div>
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">⑤ PERIODE PEMBAYARAN?</label>
+        <select class="input-box u-periode">
+          <option value="hari">/ Hari</option>
+          <option value="minggu">/ Minggu</option>
+          <option value="bulan" selected>/ Bulan</option>
+          <option value="tahun">/ Tahun</option>
+        </select>
+      </div>
+    </div>`;
+  document.getElementById('containerUnitSewa').appendChild(div);
+}
   function tambahExtraSewa() { tambahItemBiaya('containerExtraSewa', 'Layanan Ekstra (WiFi/Denda)'); }
   function tambahUnitPerikanan() {
-    const div = document.createElement('div');
-    div.className = 'biaya-item up-ikan-item';
-    div.innerHTML = `<div class="biaya-item-top"><input type="text" class="input-box u-nama" placeholder="Nama Unit"><button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button></div><div class="fields-grid" style="gap:8px; margin-top:8px;"><div class="field"><label style="font-size:10px;">PRODUKSI (KG)</label><input type="number" class="input-box u-produksi" placeholder="0" min="0"></div><div class="field"><label style="font-size:10px;">HARGA JUAL / KG</label><div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" class="u-harga" value="0" oninput="formatRupiah(this)"></div></div><div class="field" style="grid-column: span 2;"><label style="font-size:10px;">SIKLUS</label><div style="display:flex; gap:4px;"><input type="number" class="input-box u-siklus-val" placeholder="Nilai" value="1" style="flex:1;"><select class="input-box u-siklus-tipe" style="flex:1.5;"><option value="kali_tahun">Kali / Tahun</option><option value="bulan">Bulan Sekali</option><option value="hari">Hari Sekali</option></select></div></div></div>`;
-    document.getElementById('containerUnitPerikanan').appendChild(div);
-  }
+  const div = document.createElement('div');
+  div.className = 'biaya-item up-ikan-item';
+  div.innerHTML = `
+    <div class="biaya-item-top" style="margin-bottom: 4px;">
+      <div class="field" style="flex:1; margin-bottom:0;">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">① APA YANG DIHASILKAN?</label>
+        <input type="text" class="input-box u-nama" placeholder="Nama Ikan / Hasil Laut">
+      </div>
+      <button class="btn-del" onclick="hapusElemen(this)" style="margin-top: 16px;"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="field" style="margin-bottom:4px;">
+      <label style="font-size:10px; color:var(--accent); font-weight:700;">② BERAPA JUMLAHNYA (PRODUKSI DALAM KG)?</label>
+      <input type="number" class="input-box u-produksi" placeholder="0" min="0">
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-top:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">③ BERAPA HARGA JUAL/KG?</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" class="u-harga" value="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">④ DIPEROLEH SETIAP KAPAN?</label>
+        <div style="display:flex; gap:4px;">
+          <input type="number" class="input-box u-siklus-val" placeholder="Nilai" value="1" style="flex:1;">
+          <select class="input-box u-siklus-tipe" style="flex:1.5;">
+            <option value="kali_tahun">Kali / Tahun</option>
+            <option value="bulan">Bulan Sekali</option>
+            <option value="hari">Hari Sekali</option>
+          </select>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('containerUnitPerikanan').appendChild(div);
+}
 
   function tambahLahanTani() {
-    const div = document.createElement('div');
-    div.className = 'biaya-item up-tani-item';
-    div.innerHTML = `
-      <div class="biaya-item-top">
+  const div = document.createElement('div');
+  div.className = 'biaya-item up-tani-item';
+  div.innerHTML = `
+    <div class="biaya-item-top" style="margin-bottom: 4px;">
+      <div class="field" style="flex:1; margin-bottom:0;">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">① APA KOMODITASNYA?</label>
         <div style="display:flex; gap:8px; width:100%;">
           <select class="input-box l-kategori" onchange="updateKategoriKomoditas(this)" style="font-weight:600; flex:1;">
             <option value="pangan">Tanaman Pangan</option>
@@ -1391,88 +1875,97 @@
             <option value="kebun">Perkebunan</option>
           </select>
           <select class="input-box l-komoditas" onchange="updateProduktivitas(this)" style="font-weight:600; flex:1;">
-            <option value="Padi">Padi</option>
-            <option value="Jagung">Jagung</option>
-            <option value="Kedelai">Kedelai</option>
-            <option value="Lainnya">Lainnya</option>
+            <option value="Padi">Padi</option><option value="Jagung">Jagung</option><option value="Kedelai">Kedelai</option><option value="Lainnya">Lainnya</option>
           </select>
         </div>
-        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
       </div>
-      <div class="field" style="margin-top:8px;">
-        <label style="font-size:10px;">MODE PERHITUNGAN</label>
-        <select class="input-box l-mode" onchange="ubahModeTani(this)">
-          <option value="aktual">Aktual (Tahu Hasil Panen)</option>
-          <option value="estimasi">Estimasi (Dari Luas Lahan)</option>
-          <option value="omzet">Omzet Langsung</option>
-        </select>
-      </div>
-      <div class="wrap-produksi" style="display:block;">
-        <div class="wrap-estimasi" style="display:none; background:var(--surface-2); padding:10px; border-radius:8px; margin-top:8px; border:1px solid var(--border);">
-          <div class="fields-grid" style="gap:8px;">
-            <div class="field">
-              <label style="font-size:10px;">LUAS LAHAN</label>
-              <input type="number" class="input-box l-luas" placeholder="0" min="0">
-            </div>
-            <div class="field">
-              <label style="font-size:10px;">SATUAN LAHAN</label>
-              <select class="input-box l-satuan-luas">
-                <option value="1">m²</option>
-                <option value="100">Are</option>
-                <option value="10000">Hektare</option>
-              </select>
-            </div>
+      <button class="btn-del" onclick="hapusElemen(this)" style="margin-top: 16px;"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="field" style="margin-bottom:4px;">
+      <label style="font-size:10px; color:var(--accent); font-weight:700;">② BAGAIMANA MODE PERHITUNGANNYA?</label>
+      <select class="input-box l-mode" onchange="ubahModeTani(this)">
+        <option value="aktual">Aktual (Tahu Hasil Panen)</option>
+        <option value="estimasi">Estimasi (Dari Luas Lahan)</option>
+        <option value="omzet">Omzet Langsung</option>
+      </select>
+    </div>
+    
+    <div class="wrap-produksi" style="display:block;">
+      <div class="wrap-estimasi" style="display:none; background:var(--surface-2); padding:10px; border-radius:8px; margin-top:8px; border:1px solid var(--border);">
+        <div class="fields-grid" style="gap:8px;">
+          <div class="field">
+            <label style="font-size:10px; font-weight:700;">LUAS LAHAN</label>
+            <input type="number" class="input-box l-luas" placeholder="0" min="0">
           </div>
-          <div class="field" style="margin-top:8px;">
-            <label style="font-size:10px;">PRODUKTIVITAS DEFAULT (KG/m²)</label>
-            <input type="number" class="input-box l-produktivitas" value="0.65" step="0.01">
-          </div>
-        </div>
-        <div class="fields-grid" style="gap:8px; margin-top:8px;">
-          <div class="field wrap-aktual-input">
-            <label style="font-size:10px;">PRODUKSI PER PANEN</label>
-            <div class="input-group">
-              <input type="number" class="input-box l-produksi" placeholder="0" style="border-right:none;">
-              <select class="input-box l-satuan" style="width: 75px; padding:0 4px; border-left: 1px solid var(--border-strong);">
-                <option value="Kg">Kg</option>
-                <option value="Kwintal">Kwintal</option>
-                <option value="Ton">Ton</option>
-              </select>
-            </div>
-          </div>
-          <div class="field wrap-harga">
-            <label style="font-size:10px;">HARGA JUAL / SATUAN</label>
-            <div class="input-group">
-              <span class="input-group-text">Rp</span>
-              <input type="text" inputmode="numeric" class="l-harga" value="0" oninput="formatRupiah(this)" style="border:none;">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="wrap-omzet" style="display:none; margin-top:8px;">
-        <div class="field">
-          <label style="font-size:10px;">OMZET PER PANEN</label>
-          <div class="input-group">
-            <span class="input-group-text">Rp</span>
-            <input type="text" inputmode="numeric" class="l-omzet" value="0" oninput="formatRupiah(this)">
-          </div>
-        </div>
-      </div>
-      <div class="fields-grid" style="gap:8px; margin-top:8px;">
-        <div class="field">
-          <label style="font-size:10px;">PANEN SETIAP</label>
-          <div style="display:flex; gap:4px;">
-            <input type="number" class="input-box l-panen-val" placeholder="1" value="1" style="flex:1;">
-            <select class="input-box l-panen-tipe" style="flex:1.5;">
-              <option value="bulan">Bulan Sekali</option>
-              <option value="kali_tahun" selected>Kali / Tahun</option>
+          <div class="field">
+            <label style="font-size:10px; font-weight:700;">SATUAN LAHAN</label>
+            <select class="input-box l-satuan-luas">
+              <option value="1">m²</option>
+              <option value="100">Are</option>
+              <option value="10000">Hektare</option>
             </select>
           </div>
         </div>
-      </div>`;
-    document.getElementById('containerLahanTani').appendChild(div);
-  }
-
+        <div class="field" style="margin-top:8px;">
+          <label style="font-size:10px;">PRODUKTIVITAS DEFAULT (KG/m²)</label>
+          <input type="number" class="input-box l-produktivitas" value="0.65" step="0.01">
+        </div>
+      </div>
+      
+      <div style="text-align:center; color:var(--border-strong); margin: 8px 0; font-size:14px;">↓</div>
+      
+      <div class="fields-grid" style="gap:8px; margin-top:4px;">
+        <div class="field wrap-aktual-input">
+          <label style="font-size:10px; color:var(--accent); font-weight:700;">③ BERAPA HASIL PANENNYA?</label>
+          <div class="input-group">
+            <input type="number" class="input-box l-produksi" placeholder="0" style="border-right:none;">
+            <select class="input-box l-satuan" style="width: 75px; padding:0 4px; border-left: 1px solid var(--border-strong);">
+              <option value="Kg">Kg</option>
+              <option value="Kwintal">Kwintal</option>
+              <option value="Ton">Ton</option>
+            </select>
+          </div>
+        </div>
+        <div class="field wrap-harga">
+          <label style="font-size:10px; color:var(--accent); font-weight:700;">HARGA JUAL / SATUAN?</label>
+          <div class="input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="text" inputmode="numeric" class="l-harga" value="0" oninput="formatRupiah(this)" style="border:none;">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="wrap-omzet" style="display:none; margin-top:8px;">
+      <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">③ OMZET PER PANEN?</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" class="l-omzet" value="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-top:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">④ PANEN SETIAP KAPAN?</label>
+        <div style="display:flex; gap:4px;">
+          <input type="number" class="input-box l-panen-val" placeholder="1" value="1" style="flex:1;">
+          <select class="input-box l-panen-tipe" style="flex:1.5;">
+            <option value="bulan">Bulan Sekali</option>
+            <option value="kali_tahun" selected>Kali / Tahun</option>
+          </select>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('containerLahanTani').appendChild(div);
+}
   function updateKategoriKomoditas(selectEl) {
     const parent = selectEl.closest('.up-tani-item');
     const komoditasSelect = parent.querySelector('.l-komoditas');
@@ -1514,18 +2007,100 @@
 
   function tambahEkstraTani() { tambahItemBiaya('containerEkstraTani', 'Jual Jerami/Pupuk'); }
   function tambahPendapatanTernak() {
-    const div = document.createElement('div');
-    div.className = 'biaya-item up-ternak-item';
-    div.innerHTML = `<div class="biaya-item-top"><input type="text" class="input-box p-sumber" placeholder="Penjualan Telur/Susu"><button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button></div><div class="fields-grid" style="gap:8px; margin-top:8px;"><div class="field"><label style="font-size:10px;">PRODUKSI JUAL</label><input type="number" class="input-box p-produksi" placeholder="0" min="0"></div><div class="field"><label style="font-size:10px;">SATUAN</label><select class="input-box p-satuan"><option value="Ekor">Ekor</option><option value="Butir">Butir</option><option value="Kg">Kg</option><option value="Liter">Liter</option></select></div></div><div class="fields-grid" style="gap:8px; margin-top:4px;"><div class="field"><label style="font-size:10px;">HARGA/SATUAN</label><div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" class="p-harga" value="0" oninput="formatRupiah(this)"></div></div><div class="field"><label style="font-size:10px;">SIKLUS</label><div style="display:flex; gap:4px;"><input type="number" class="input-box p-siklus-val" placeholder="1" value="1" style="flex:1;"><select class="input-box p-siklus-tipe" style="flex:1.5;"><option value="kali_tahun">Kali/Tahun</option><option value="bulan">Bulan Sekali</option><option value="hari">Hari Sekali</option></select></div></div></div>`;
-    document.getElementById('containerPendapatanTernak').appendChild(div);
-  }
+  const div = document.createElement('div');
+  div.className = 'biaya-item up-ternak-item';
+  div.innerHTML = `
+    <div class="biaya-item-top" style="margin-bottom: 4px;">
+      <div class="field" style="flex:1; margin-bottom:0;">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">① APA YANG DIHASILKAN?</label>
+        <input type="text" class="input-box p-sumber" placeholder="Penjualan Sapi / Telur / Susu">
+      </div>
+      <button class="btn-del" onclick="hapusElemen(this)" style="margin-top: 16px;"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-bottom:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">② BERAPA JUMLAHNYA?</label>
+        <input type="number" class="input-box p-produksi" placeholder="0" min="0">
+      </div>
+      <div class="field">
+        <label style="font-size:10px;">SATUAN</label>
+        <select class="input-box p-satuan">
+          <option value="Ekor">Ekor</option>
+          <option value="Butir">Butir</option>
+          <option value="Kg">Kg</option>
+          <option value="Liter">Liter</option>
+        </select>
+      </div>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-top:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">③ BERAPA HARGA JUAL/SATUAN?</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" class="p-harga" value="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">④ DIPEROLEH SETIAP KAPAN?</label>
+        <div style="display:flex; gap:4px;">
+          <input type="number" class="input-box p-siklus-val" placeholder="1" value="1" style="flex:1;">
+          <select class="input-box p-siklus-tipe" style="flex:1.5;">
+            <option value="kali_tahun">Kali/Tahun</option>
+            <option value="bulan">Bulan Sekali</option>
+            <option value="hari">Hari Sekali</option>
+          </select>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('containerPendapatanTernak').appendChild(div);
+}
   
   function tambahPendapatanPendidikan() {
-    const div = document.createElement('div');
-    div.className = 'biaya-item up-pendidikan-item';
-    div.innerHTML = `<div class="biaya-item-top"><input type="text" class="input-box p-nama" placeholder="Contoh: SPP / Pendaftaran"><button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button></div><div class="fields-grid" style="gap:8px; margin-top:8px;"><div class="field"><label style="font-size:10px;">JUMLAH PESERTA</label><input type="number" class="input-box p-qty" placeholder="0" min="0"></div><div class="field"><label style="font-size:10px;">TARIF / BIAYA</label><div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" class="p-tarif" value="0" oninput="formatRupiah(this)"></div></div><div class="field" style="grid-column: span 2;"><label style="font-size:10px;">PERIODE</label><select class="input-box p-periode"><option value="bulan">Per Bulan</option><option value="tahun">Per Tahun</option><option value="program">Per Program (1x)</option></select></div></div>`;
-    document.getElementById('containerPendapatanPendidikan').appendChild(div);
-  }
+  const div = document.createElement('div');
+  div.className = 'biaya-item up-pendidikan-item';
+  div.innerHTML = `
+    <div class="biaya-item-top" style="margin-bottom: 4px;">
+      <div class="field" style="flex:1; margin-bottom:0;">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">① SUMBER PENDAPATAN?</label>
+        <input type="text" class="input-box p-nama" placeholder="Contoh: SPP / Uang Pendaftaran">
+      </div>
+      <button class="btn-del" onclick="hapusElemen(this)" style="margin-top: 16px;"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-bottom:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">② BERAPA JUMLAH PESERTANYA?</label>
+        <input type="number" class="input-box p-qty" placeholder="0" min="0">
+      </div>
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">③ TARIF / BIAYA?</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" class="p-tarif" value="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="field" style="margin-top:4px;">
+      <label style="font-size:10px; color:var(--accent); font-weight:700;">④ DIPEROLEH SETIAP KAPAN?</label>
+      <select class="input-box p-periode">
+        <option value="bulan">Per Bulan</option>
+        <option value="tahun">Per Tahun</option>
+        <option value="program">Per Program (1x bayar)</option>
+      </select>
+    </div>`;
+  document.getElementById('containerPendapatanPendidikan').appendChild(div);
+}
 
   function sumBiayaItems(selector, isIncome = false, isTani = false, rataSiklus = 1) {
     let total = 0, html = '';
@@ -1955,8 +2530,33 @@
       document.getElementById('keb15a').value = ''; document.getElementById('keb16a_val').value = ''; document.getElementById('container15b').innerHTML = ''; document.getElementById('container16b').innerHTML = ''; document.getElementById('container16c').innerHTML = ''; document.getElementById('resKebutuhan').classList.remove('vis'); showToast('Form Kebutuhan Direset');
     } else if (jenis === 'blok27') {
       document.getElementById('container27A').innerHTML = ''; document.getElementById('container27B').innerHTML = ''; document.getElementById('container27D').innerHTML = ''; document.getElementById('resBlok27Box').classList.remove('vis'); showToast('Form Blok 27 Direset');
+    } else if (jenis === 'industri') {
+    document.getElementById('industriNama').value = ''; 
+    document.getElementById('industriOmzet').value = ''; 
+    document.getElementById('industriPegawai').value = ''; 
+    document.getElementById('industriGaji').value = ''; 
+    document.getElementById('containerProdukIndustri').innerHTML = ''; 
+    document.getElementById('containerProdIndustri').innerHTML = ''; 
+    document.getElementById('bbt-Industri').innerHTML = ''; 
+    document.getElementById('containerOpsIndustri').innerHTML = ''; 
+    document.getElementById('nonops-Industri').innerHTML = ''; 
+    showToast('Form Industri Direset'); resetBlok26();
+  } else if (jenis === 'pertambangan') {
+      document.getElementById('pertambanganNama').value = ''; 
+      document.getElementById('pertambanganOmzet').value = ''; 
+      document.getElementById('pertambanganPegawai').value = ''; 
+      document.getElementById('pertambanganGaji').value = ''; 
+      document.getElementById('containerProdukPertambangan').innerHTML = ''; 
+      document.getElementById('containerProdPertambangan').innerHTML = ''; 
+      document.getElementById('bbt-Pertambangan').innerHTML = ''; 
+      document.getElementById('containerOpsPertambangan').innerHTML = ''; 
+      document.getElementById('nonops-Pertambangan').innerHTML = ''; 
+      showToast('Form Pertambangan Direset'); resetBlok26();
     }
+  
+  
   }
+  
 
   function setFilterRekap(filterType, btn) {
     currentFilter = filterType;
@@ -2015,6 +2615,8 @@
       else if (item.type === 'pendidikan') { title = 'Pendidikan'; icon = 'ti-school'; bgColor = '#dcfce7'; fgColor = '#166534'; }
       else if (item.type === 'kebutuhan') { title = 'Rumah Tangga'; icon = 'ti-basket'; bgColor = '#e2e8f0'; fgColor = '#475569'; }
       else if (item.type === 'blok27') { title = 'Blok 27'; icon = 'ti-chart-bar'; bgColor = '#e2e8f0'; fgColor = '#475569'; }
+      else if (item.type === 'industri') { title = 'Industri'; icon = 'ti-building-factory'; bgColor = '#fdf4ff'; fgColor = '#a21caf'; }
+      else if (item.type === 'pertambangan') { title = 'Pertambangan'; icon = 'ti-shovel'; bgColor = '#f5f5f4'; fgColor = '#44403c'; border = '1px solid #44403c33'; }
 
       let isRugi = laba < 0;
       let heroBg = isRugi ? 'linear-gradient(135deg, #ef4444, #991b1b)' : 'linear-gradient(135deg, #00479B, #002B5E)';
@@ -2151,10 +2753,46 @@
   }
 
   function tambahItem27A() {
-    const div = document.createElement('div'); div.className = 'biaya-item b27a-item'; 
-    div.innerHTML = `<div class="biaya-item-top"><input type="text" class="input-box i-nama" placeholder="Nama Barang/Jasa"><button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button></div><div class="fields-grid" style="margin-bottom: 8px; gap:8px;"><div><label style="font-size:10px;">BANYAK BARANG</label><input type="number" class="input-box i-qty" placeholder="0" value="1"></div><div><label style="font-size:10px;">PERIODE</label><select class="input-box i-periode"><option value="hari">Per Hari</option><option value="bulan">Per Bulan</option><option value="tahun">Per Tahun</option></select></div></div><div class="b-nom" style="width: 100%;"><span>Harga/Pcs</span><input type="text" inputmode="numeric" class="val-harga" placeholder="0" oninput="formatRupiah(this)"></div>`;
-    document.getElementById('container27A').appendChild(div);
-  }
+  const div = document.createElement('div'); 
+  div.className = 'biaya-item b27a-item'; 
+  div.innerHTML = `
+    <div class="biaya-item-top" style="margin-bottom: 4px;">
+      <div class="field" style="flex:1; margin-bottom:0;">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">① NAMA BARANG/JASA?</label>
+        <input type="text" class="input-box i-nama" placeholder="Nama Barang/Jasa">
+      </div>
+      <button class="btn-del" onclick="hapusElemen(this)" style="margin-top: 16px;"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="margin-bottom: 4px; gap:8px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">② BANYAK BARANG?</label>
+        <input type="number" class="input-box i-qty" placeholder="0" value="1">
+      </div>
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">③ HARGA / PCS?</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" class="val-harga dyn-nom" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="field">
+      <label style="font-size:10px; color:var(--accent); font-weight:700;">④ TERJUAL SETIAP KAPAN?</label>
+      <select class="input-box i-periode">
+        <option value="hari">Per Hari</option>
+        <option value="bulan">Per Bulan</option>
+        <option value="tahun">Per Tahun</option>
+      </select>
+    </div>`;
+  document.getElementById('container27A').appendChild(div);
+}
+
   function tambahItem27B() { tambahItemBiaya('container27B', 'Pendapatan Lainnya'); }
   function tambahItem27D() {
     const div = document.createElement('div'); div.className = 'biaya-item b27d-item'; 
@@ -2292,6 +2930,785 @@ function getMultiplierBulanan(periode) {
     });
     return { total, html };
   }
+
+  // --- FUNGSI UNTUK SEKTOR INDUSTRI ---
+  
+  function ubahModeIndustri(selectEl) {
+    const mode = selectEl.value;
+    document.getElementById('wrapIndustriProduksi').style.display = (mode === 'produksi') ? 'block' : 'none';
+    document.getElementById('wrapIndustriOmzet').style.display = (mode === 'omzet') ? 'block' : 'none';
+  }
+
+  function tambahProdukIndustri() {
+  const div = document.createElement('div');
+  div.className = 'biaya-item up-industri-item';
+  div.style.borderLeft = '4px solid var(--blue)';
+  div.innerHTML = `
+    <div class="biaya-item-top" style="margin-bottom: 4px;">
+      <div class="field" style="flex:1; margin-bottom:0;">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">① APA YANG DIHASILKAN?</label>
+        <input type="text" class="input-box p-nama" placeholder="Nama Produk (Cth: Tahu / Bata)">
+      </div>
+      <button class="btn-del" onclick="hapusElemen(this)" style="margin-top: 16px;"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-bottom:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">② BERAPA JUMLAHNYA?</label>
+        <input type="number" class="input-box p-qty" placeholder="0" min="0">
+      </div>
+      <div class="field">
+        <label style="font-size:10px;">SATUAN</label>
+        <input type="text" class="input-box p-satuan" placeholder="Biji/Papan">
+      </div>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-top:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">③ BERAPA HARGA JUALNYA?</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" class="p-harga" value="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">④ DIPEROLEH SETIAP KAPAN?</label>
+        <select class="input-box p-periode">
+          <option value="hari">/ Hari</option>
+          <option value="minggu">/ Minggu</option>
+          <option value="bulan" selected>/ Bulan</option>
+          <option value="tahun">/ Tahun</option>
+        </select>
+      </div>
+    </div>`;
+  document.getElementById('containerProdukIndustri').appendChild(div);
+}
+
+  function hitungIndustri() {
+    let omzetKotorTahun = 0;
+    let htmlPendapatanDetail = '';
+    let mode = document.getElementById('industriMode').value;
+
+    if (mode === 'produksi') {
+      document.querySelectorAll('#containerProdukIndustri .up-industri-item').forEach(item => {
+        let multiplier = getMultiplierTahunan(item.querySelector('.p-periode').value);
+        let pTahun = (parseFloat(item.querySelector('.p-qty').value) || 0) * parseNum(item.querySelector('.p-harga').value) * multiplier;
+        if (pTahun > 0) { 
+          omzetKotorTahun += pTahun; 
+          let pNama = item.querySelector('.p-nama').value || 'Produk';
+          let pSatuan = item.querySelector('.p-satuan').value || 'Unit';
+          let pQty = item.querySelector('.p-qty').value || 0;
+          let pPer = item.querySelector('.p-periode').options[item.querySelector('.p-periode').selectedIndex].text;
+          
+          htmlPendapatanDetail += `
+            <div class="bd-row minus" style="padding-left:10px;">
+              <span>+ ${pNama} <br><small style="font-size:10px; color:var(--text-muted)">(${pQty} ${pSatuan} ${pPer})</small></span>
+              <span class="bd-val" style="color:var(--text-success);">${formatRp(pTahun)}/thn</span>
+            </div>`; 
+        }
+      });
+    } else {
+      omzetKotorTahun = parseNum(document.getElementById('industriOmzet').value) * getMultiplierTahunan(document.getElementById('industriPeriodeOmzet').value);
+      htmlPendapatanDetail += `<div class="bd-row minus" style="padding-left:10px;"><span>+ Omzet Langsung</span><span class="bd-val" style="color:var(--text-success);">${formatRp(omzetKotorTahun)}/thn</span></div>`;
+    }
+
+    let gaji = hitungGaji('industriPegawai', 'industriGaji', 'industriPeriodeGaji', 'Pegawai & Jamsos');
+    let prod = sumBiayaItems('#containerProdIndustri .dynamic-b-item');
+    let bbt = sumBiayaItems('#bbt-Industri .dynamic-b-item');
+    let ops = sumBiayaItems('#containerOpsIndustri .dynamic-b-item');
+    let nonOps = sumBiayaItems('#nonops-Industri .dynamic-b-item');
+
+    let totalBiaya = gaji.total + prod.total + bbt.total + ops.total + nonOps.total;
+    let customPendapatan = `<div class="bd-row total" style="color:var(--accent);"><span>A. Pendapatan</span></div>${htmlPendapatanDetail}<div class="bd-row minus" style="padding-left:10px;"><span>= Omzet Bersih</span><span class="bd-val" style="color:var(--text-success); font-weight:700;">${formatRp(omzetKotorTahun - bbt.total)}/thn</span></div>`;
+    let htmlBreakdown = generateAnomaliWarning(omzetKotorTahun, totalBiaya) + customPendapatan + buildBreakdownHTML(0, 0, gaji, prod, bbt, ops, nonOps, true);
+
+    tampilkanBlok26({ 
+      tabAsal: 'industri', 
+      type: 'industri', 
+      nama: document.getElementById('industriNama').value, 
+      jenis: document.getElementById('industriJenis').value, 
+      omzetKotor: omzetKotorTahun, 
+      gaji: gaji.total, prod: prod.total, bbt: bbt.total, ops: ops.total, nonOps: nonOps.total, 
+      totalBiaya: totalBiaya, 
+      labaTahun: omzetKotorTahun - totalBiaya, 
+      labaBulan: (omzetKotorTahun - totalBiaya) / 12, 
+      rincian: htmlBreakdown 
+    });
+  }
+
+  // --- FUNGSI UNTUK SEKTOR PERTAMBANGAN ---
+  
+  function ubahModePertambangan(selectEl) {
+    const mode = selectEl.value;
+    document.getElementById('wrapPertambanganProduksi').style.display = (mode === 'produksi') ? 'block' : 'none';
+    document.getElementById('wrapPertambanganOmzet').style.display = (mode === 'omzet') ? 'block' : 'none';
+  }
+
+  // Data Master Otomatisasi Satuan Berdasarkan Material Tambang
+  const satuanMaterialDefaults = {
+    "Pasir": "m³",
+    "Batu Kali": "m³",
+    "Sirtu": "m³",
+    "Batu Andesit": "m³",
+    "Tanah Urug": "m³",
+    "Tanah Liat": "m³",
+    "Batu Kapur": "Ton",
+    "Kerikil": "m³",
+    "Batubara": "Ton",
+    "Pasir Silika": "Ton",
+    "Bijih Emas": "Gram",
+    "Lainnya": "m³"
+  };
+
+  function tambahProdukPertambangan() {
+  const div = document.createElement('div');
+  div.className = 'biaya-item up-pertambangan-item';
+  div.style.borderLeft = '4px solid var(--gold)'; 
+  div.innerHTML = `
+    <div class="biaya-item-top" style="margin-bottom: 4px;">
+      <div class="field" style="margin-bottom:0; flex:1;">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">① APA YANG DIHASILKAN (MATERIAL)?</label>
+        <select class="input-box p-nama" onchange="onMaterialChange(this)">
+          <option value="Pasir">Pasir</option>
+          <option value="Batu Kali">Batu Kali</option>
+          <option value="Sirtu">Sirtu (Pasir Batu)</option>
+          <option value="Batu Andesit">Batu Andesit</option>
+          <option value="Tanah Urug">Tanah Urug</option>
+          <option value="Tanah Liat">Tanah Liat</option>
+          <option value="Batu Kapur">Batu Kapur</option>
+          <option value="Kerikil">Kerikil</option>
+          <option value="Batubara">Batubara</option>
+          <option value="Pasir Silika">Pasir Silika</option>
+          <option value="Bijih Emas">Bijih Emas</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+      <button class="btn-del" onclick="hapusElemen(this)" style="margin-top: 16px;"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-bottom:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">② BERAPA JUMLAHNYA?</label>
+        <input type="number" class="input-box p-qty" placeholder="0" min="0" oninput="updateLiveCalcTambang(this)">
+      </div>
+      <div class="field">
+        <label style="font-size:10px;">SATUAN</label>
+        <select class="input-box p-satuan" onchange="onSatuanChange(this)">
+          <option value="m³">m³</option>
+          <option value="Ton">Ton</option>
+          <option value="Gram">Gram</option>
+          <option value="Rit">Rit</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="wrap-ritase" style="display: none; background: var(--bg-warning); padding: 12px; border-radius: 8px; margin-top: 8px; border: 1px solid var(--gold-soft);">
+      <div class="field" style="margin-bottom: 0;">
+        <label style="font-size:10px; color: var(--gold-strong); font-weight:700;">FAKTOR KONVERSI RITASE</label>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;">
+          <span>1 Rit =</span>
+          <input type="number" class="input-box p-konversi" value="7" style="width: 80px; text-align: center; height: 36px; background:#fff;" oninput="updateLiveCalcTambang(this)">
+          <span class="lbl-satuan-dasar">m³</span>
+        </div>
+      </div>
+    </div>
+    
+    <div style="text-align:center; color:var(--border-strong); margin: 4px 0 8px; font-size:14px;">↓</div>
+    
+    <div class="fields-grid" style="gap:8px; margin-top:4px;">
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">③ HARGA JUAL PER <span class="lbl-satuan-dinamis" style="color:var(--gold-strong);">m³</span>?</label>
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" class="p-harga" placeholder="0" oninput="formatRupiah(this); updateLiveCalcTambang(this);" style="border:none;">
+        </div>
+      </div>
+      <div class="field">
+        <label style="font-size:10px; color:var(--accent); font-weight:700;">④ DIPEROLEH SETIAP KAPAN?</label>
+        <select class="input-box p-periode" onchange="updateLiveCalcTambang(this)">
+          <option value="hari">Hari</option>
+          <option value="minggu">Minggu</option>
+          <option value="bulan" selected>Bulan</option>
+          <option value="tahun">Tahun</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="live-calc-box" style="display: none; margin-top: 14px; padding: 12px; background: var(--surface-2); border-radius: 8px; border: 1px dashed var(--border); font-size: 13px; color: var(--text-primary); text-align: center;">
+    </div>
+  `;
+  document.getElementById('containerProdukPertambangan').appendChild(div);
+  const newSelect = div.querySelector('.p-nama');
+  onMaterialChange(newSelect);
+}
+
+  // 1. Trigger saat material diubah -> Satuan mengikuti data master
+  function onMaterialChange(selectEl) {
+    const itemCard = selectEl.closest('.up-pertambangan-item');
+    const material = selectEl.value;
+    const satuanSelect = itemCard.querySelector('.p-satuan');
+    
+    if (satuanMaterialDefaults[material]) {
+      satuanSelect.value = satuanMaterialDefaults[material];
+    }
+    onSatuanChange(satuanSelect);
+  }
+
+  // 2. Trigger saat satuan diubah -> Tampilkan/sembunyikan kolom ritase
+  function onSatuanChange(satuanSelect) {
+    const itemCard = satuanSelect.closest('.up-pertambangan-item');
+    const materialSelect = itemCard.querySelector('.p-nama');
+    const wrapRitase = itemCard.querySelector('.wrap-ritase');
+    const lblSatuanDasar = itemCard.querySelector('.lbl-satuan-dasar');
+    const lblSatuanDinamis = itemCard.querySelector('.lbl-satuan-dinamis');
+    
+    const baseUnit = satuanMaterialDefaults[materialSelect.value] || "m³";
+    
+    if (satuanSelect.value === 'Rit') {
+      wrapRitase.style.display = 'block';
+      lblSatuanDasar.innerText = baseUnit;
+      lblSatuanDinamis.innerText = baseUnit; // Harga dihitung berdasarkan volume hasil konversi akhir (per m3/Ton)
+      
+      // Default nilai konversi cerdas (Pasir/Batu biasanya 7 m3 per rit, Batubara rata-rata 5 Ton per rit)
+      const inputKonversi = itemCard.querySelector('.p-konversi');
+      if (baseUnit === 'm³') inputKonversi.value = 7;
+      else if (baseUnit === 'Ton') inputKonversi.value = 5;
+      else inputKonversi.value = 1;
+    } else {
+      wrapRitase.style.display = 'none';
+      lblSatuanDinamis.innerText = satuanSelect.value;
+    }
+    
+    updateLiveCalcTambang(satuanSelect);
+  }
+
+  // 3. Fungsi Gambar Kotak Pratinjau Perhitungan Bertingkat
+  function updateLiveCalcTambang(el) {
+    const itemCard = el.closest('.up-pertambangan-item');
+    if (!itemCard) return;
+
+    const material = itemCard.querySelector('.p-nama').value;
+    const qty = parseFloat(itemCard.querySelector('.p-qty').value) || 0;
+    const satuan = itemCard.querySelector('.p-satuan').value;
+    const harga = parseNum(itemCard.querySelector('.p-harga').value);
+    
+    const selectPeriode = itemCard.querySelector('.p-periode');
+    const periodeNama = selectPeriode.options[selectPeriode.selectedIndex].text;
+    const calcBox = itemCard.querySelector('.live-calc-box');
+    const lblSatuanDinamis = itemCard.querySelector('.lbl-satuan-dinamis');
+
+    const baseUnit = satuanMaterialDefaults[material] || "m³";
+    let volumeFinal = qty;
+    let htmlKonversiStep = '';
+
+    if (satuan === 'Rit') {
+      const konversi = parseFloat(itemCard.querySelector('.p-konversi').value) || 1;
+      volumeFinal = qty * konversi;
+      lblSatuanDinamis.innerText = baseUnit;
+      
+      htmlKonversiStep = `
+        <div style="color: var(--gold-strong); font-weight: 600;">
+          ${qty.toLocaleString('id-ID')} Rit × ${konversi.toLocaleString('id-ID')} ${baseUnit} = ${volumeFinal.toLocaleString('id-ID')} ${baseUnit}
+        </div>
+        <div style="color: var(--text-muted); margin: 2px 0;">↓</div>
+      `;
+    } else {
+      lblSatuanDinamis.innerText = satuan;
+    }
+
+    if (qty > 0 && harga > 0) {
+      const totalHasilCard = volumeFinal * harga;
+      calcBox.style.display = 'block';
+      calcBox.innerHTML = `
+        <div style="font-size:10px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px;">Perhitungan Pendapatan (${material})</div>
+        <div style="font-family: var(--font-mono); font-size: 13.5px; color: var(--accent); text-align: center; width: 100%;">
+          ${htmlKonversiStep}
+          <div>${volumeFinal.toLocaleString('id-ID')} ${satuan === 'Rit' ? baseUnit : satuan}</div>
+          <div style="color: var(--text-muted); margin: 2px 0;">×</div>
+          <div>${formatRp(harga)} / ${satuan === 'Rit' ? baseUnit : satuan}</div>
+          <div style="border-top: 1.5px dashed var(--border); margin: 6px auto; width: 80%;"></div>
+          <div style="font-weight: 800; color: var(--text-success); font-size: 14px;">= ${formatRp(totalHasilCard)} / ${periodeNama}</div>
+        </div>
+      `;
+    } else {
+      calcBox.style.display = 'none';
+    }
+  }
+
+  function hitungPertambangan() {
+    let omzetKotorTahun = 0;
+    let htmlPendapatanDetail = '';
+    let mode = document.getElementById('pertambanganMode').value;
+
+    if (mode === 'produksi') {
+      document.querySelectorAll('#containerProdukPertambangan .up-pertambangan-item').forEach(item => {
+        let multiplier = getMultiplierTahunan(item.querySelector('.p-periode').value);
+        
+        let material = item.querySelector('.p-nama').value;
+        let qty = parseFloat(item.querySelector('.p-qty').value) || 0;
+        let satuan = item.querySelector('.p-satuan').value;
+        let harga = parseNum(item.querySelector('.p-harga').value);
+        
+        let volumeFinal = qty;
+        let baseUnit = satuanMaterialDefaults[material] || "m³";
+        let detailText = `${qty.toLocaleString('id-ID')} ${satuan}`;
+
+        // Proteksi logika konversi Ritase jika dipilih oleh user
+        if (satuan === 'Rit') {
+          let konversi = parseFloat(item.querySelector('.p-konversi').value) || 1;
+          volumeFinal = qty * konversi;
+          detailText = `${qty.toLocaleString('id-ID')} Rit (≈ ${volumeFinal.toLocaleString('id-ID')} ${baseUnit})`;
+          satuan = baseUnit;
+        }
+        
+        let pTahun = volumeFinal * harga * multiplier;
+        if (pTahun > 0) { 
+          omzetKotorTahun += pTahun; 
+          let pPer = item.querySelector('.p-periode').options[item.querySelector('.p-periode').selectedIndex].text;
+          
+          htmlPendapatanDetail += `
+            <div class="bd-row minus" style="padding-left:10px;">
+              <span>+ ${material} <br><small style="font-size:10px; color:var(--text-muted)">(${detailText} ${pPer})</small></span>
+              <span class="bd-val" style="color:var(--text-success);">${formatRp(pTahun)}/thn</span>
+            </div>`; 
+        }
+      });
+    } else {
+      omzetKotorTahun = parseNum(document.getElementById('pertambanganOmzet').value) * getMultiplierTahunan(document.getElementById('pertambanganPeriodeOmzet').value);
+      htmlPendapatanDetail += `<div class="bd-row minus" style="padding-left:10px;"><span>+ Omzet Langsung</span><span class="bd-val" style="color:var(--text-success);">${formatRp(omzetKotorTahun)}/thn</span></div>`;
+    }
+
+    let gaji = hitungGaji('pertambanganPegawai', 'pertambanganGaji', 'pertambanganPeriodeGaji', 'Pegawai & Jamsos');
+    let prod = sumBiayaItems('#containerProdPertambangan .dynamic-b-item');
+    let bbt = sumBiayaItems('#bbt-Pertambangan .dynamic-b-item');
+    let ops = sumBiayaItems('#containerOpsPertambangan .dynamic-b-item');
+    let nonOps = sumBiayaItems('#nonops-Pertambangan .dynamic-b-item');
+
+    let totalBiaya = gaji.total + prod.total + bbt.total + ops.total + nonOps.total;
+    let customPendapatan = `<div class="bd-row total" style="color:var(--accent);"><span>A. Pendapatan</span></div>${htmlPendapatanDetail}<div class="bd-row minus" style="padding-left:10px;"><span>= Omzet Bersih</span><span class="bd-val" style="color:var(--text-success); font-weight:700;">${formatRp(omzetKotorTahun - bbt.total)}/thn</span></div>`;
+    let htmlBreakdown = generateAnomaliWarning(omzetKotorTahun, totalBiaya) + customPendapatan + buildBreakdownHTML(0, 0, gaji, prod, bbt, ops, nonOps, true);
+
+    tampilkanBlok26({ 
+      tabAsal: 'pertambangan', 
+      type: 'pertambangan', 
+      nama: document.getElementById('pertambanganNama').value, 
+      jenis: 'Sektor Pertambangan', 
+      omzetKotor: omzetKotorTahun, 
+      gaji: gaji.total, prod: prod.total, bbt: bbt.total, ops: ops.total, nonOps: nonOps.total, 
+      totalBiaya: totalBiaya, 
+      labaTahun: omzetKotorTahun - totalBiaya, 
+      labaBulan: (omzetKotorTahun - totalBiaya) / 12, 
+      rincian: htmlBreakdown 
+    });
+  }
+// Fungsi untuk menampilkan/menyembunyikan petunjuk (ⓘ)
+  function toggleInfoTambang() {
+    const infoBox = document.getElementById('infoModePertambangan');
+    infoBox.style.display = (infoBox.style.display === 'none') ? 'block' : 'none';
+  }
+
+  // Fungsi kalkulator live di dalam kartu produk
+  function updateLiveCalcTambang(el) {
+    const itemCard = el.closest('.up-pertambangan-item');
+    if (!itemCard) return;
+
+    // Ambil semua data input dalam satu kartu
+    const nama = itemCard.querySelector('.p-nama').value || 'Material';
+    const qty = parseFloat(itemCard.querySelector('.p-qty').value) || 0;
+    const satuan = itemCard.querySelector('.p-satuan').value || 'unit';
+    const harga = parseNum(itemCard.querySelector('.p-harga').value);
+    
+    const selectPeriode = itemCard.querySelector('.p-periode');
+    const periodeNama = selectPeriode.options[selectPeriode.selectedIndex].text;
+
+    // Efek dinamis: Mengubah teks label harga mengikuti input satuan (misal diketik 'Rit', label ikut berubah)
+    itemCard.querySelector('.lbl-satuan-dinamis').innerText = satuan;
+
+    const calcBox = itemCard.querySelector('.live-calc-box');
+
+    // Jika user sudah mengisi kuantitas dan harga, munculkan pratinjau matematika layaknya corat-coret kertas
+    if (qty > 0 && harga > 0) {
+      const totalHasilCard = qty * harga;
+      calcBox.style.display = 'block';
+      calcBox.innerHTML = `
+        <div style="font-size:10.5px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px;">Pratinjau Perhitungan (${nama})</div>
+        <div style="font-family: var(--font-mono); font-size: 13.5px; color: var(--accent); display: inline-block; text-align: left;">
+          <div>${qty.toLocaleString('id-ID')} ${satuan}</div>
+          <div style="color: var(--text-muted); padding-left: 10px; margin: 2px 0;">×</div>
+          <div>${formatRp(harga)}</div>
+          <div style="border-top: 1.5px solid var(--border); margin: 6px 0; width: 100%;"></div>
+          <div style="font-weight: 700; color: var(--text-success); font-size: 14px;">= ${formatRp(totalHasilCard)} / ${periodeNama}</div>
+        </div>
+      `;
+    } else {
+      calcBox.style.display = 'none'; // Sembunyikan jika data belum lengkap
+    }
+  }
+
+function toggleMenuStandar() {
+  const box = document.getElementById('box-standar-biaya');
+  const txt = document.getElementById('icon-toggle-standar');
+  if (box.style.display === 'none') {
+    box.style.display = 'block';
+    txt.innerText = '[Tutup]';
+  } else {
+    box.style.display = 'none';
+    txt.innerText = '[Buka/Tutup]';
+  }
+}
+
+// // Fungsi Utama Perhitungan Real-Time Saat Mengetik Luas / Harga
+// function liveKalkulasiTani() {
+//   const luasAre = parseFloat(document.getElementById('taniLuasAre').value) || 0;
+//   const hargaGabah = parseNum(document.getElementById('taniHargaGabah').value);
+  
+//   // 1. Hitung Konversi Hasil Otomatis
+//   const luasHa = luasAre / 100;
+//   const stProd = parseFloat(document.getElementById('st_produktivitas').value) || 0;
+//   const prodKw = luasHa * stProd;
+//   const prodKg = prodKw * 100;
+//   const pendapatanKotor = prodKg * hargaGabah;
+
+//   // Render Bagian 2 ke UI
+//   document.getElementById('out_luasHa').innerText = luasHa.toFixed(2).replace('.', ',') + ' Ha';
+//   document.getElementById('out_prodKw').innerText = Math.round(prodKw) + ' Kw';
+//   document.getElementById('out_prodKg').innerText = Math.round(prodKg).toLocaleString('id-ID') + ' Kg';
+//   document.getElementById('out_pendapatanKotor').innerText = formatRp(pendapatanKotor);
+
+//   // 2. Daftar Pemetaan Kunci Komponen Biaya
+//   const komponenKeys = ['olahTanah', 'benih', 'urea', 'sp36', 'pestisida', 'pemeliharaan', 'panen', 'angkut'];
+//   const namaLabels = {
+//     olahTanah: 'Olah Tanah', benih: 'Benih', urea: 'Pupuk Urea', sp36: 'Pupuk SP36',
+//     pestisida: 'Pestisida', pemeliharaan: 'Pemeliharaan', panen: 'Biaya Panen', angkut: 'Biaya Angkut'
+//   };
+
+//   let container = document.getElementById('tani-biaya-list-container');
+//   let currentScroll = window.scrollY; // Simpan posisi agar screen tidak lompat saat mengetik
+
+//   // Simpan nilai input yang sedang diketik sebelum render ulang agar tidak hilang
+//   komponenKeys.forEach(key => {
+//     let inp = document.getElementById('inp-tani-' + key);
+//     if (inp && taniOverrides[key].isManual) {
+//       taniOverrides[key].val = parseNum(inp.value);
+//     }
+//   });
+
+//   container.innerHTML = '';
+//   let totalBiayaTani = 0;
+//   let htmlRincianMekanikal = '';
+
+//   komponenKeys.forEach(key => {
+//     // Ambil basis harga standar dari Menu Admin
+//     let hargaStandarHa = parseNum(document.getElementById('st_' + key).value);
+//     let nilaiSistem = hargaStandarHa * luasHa;
+    
+//     let nilaiFinal = nilaiSistem;
+//     if (taniOverrides[key].isManual) {
+//       nilaiFinal = taniOverrides[key].val;
+//     }
+
+//     totalBiayaTani += nilaiFinal;
+    
+//     // Siapkan baris corat-coret rincian untuk didorong ke Blok 26
+//     if (nilaiFinal > 0) {
+//       htmlRincianMekanikal += `
+//         <div class="bd-row minus" style="padding-left:10px;">
+//           <span>- Biaya ${namaLabels[key]} ${taniOverrides[key].isManual ? '(Koreksi Manual)' : ''}</span>
+//           <span class="bd-val">${formatRp(nilaiFinal)}/musim</span>
+//         </div>`;
+//     }
+
+//     // Bangun Elemen Baris dengan tombol Edit / readonly inline switcher
+//     const row = document.createElement('div');
+//     row.style = "display:flex; justify-content:space-between; align-items:center; background:var(--surface-1); padding:10px 12px; border-radius:10px; border:1px solid var(--border-strong); min-height:54px;";
+    
+//     let leftSide = `<span style="font-size:13px; font-weight:600; color:var(--text-primary);">✓ ${namaLabels[key]}</span>`;
+    
+//     let rightSide = '';
+//     if (!taniOverrides[key].isManual) {
+//       // Tampilan Default: Readonly Text
+//       rightSide = `
+//         <div style="display:flex; align-items:center; gap:8px;">
+//           <strong style="font-family:var(--font-mono); font-size:13.5px; color:var(--accent);">${formatRp(nilaiFinal)}</strong>
+//           <button onclick="aktifkanOverrideTani('${key}')" style="background:var(--bg-accent); border:1px solid var(--border-accent); border-radius:6px; color:var(--blue); padding:4px 8px; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:3px;">
+//             <i class="ti ti-pencil" style="font-size:12px;"></i> Edit
+//           </button>
+//         </div>`;
+//     } else {
+//       // Tampilan Mode Edit Aktif: Textbox Input Full Width Kecil
+//       rightSide = `
+//         <div style="display:flex; align-items:center; gap:6px;">
+//           <div class="input-group" style="width:140px; height:34px;">
+//             <span class="input-group-text" style="font-size:11px; padding:0 6px;">Rp</span>
+//             <input type="text" id="inp-tani-${key}" inputmode="numeric" class="input-box" value="${new Intl.NumberFormat('id-ID').format(nilaiFinal)}" oninput="formatRupiah(this); liveKalkulasiTani();" style="border:none; height:100%; font-size:12.5px; font-family:var(--font-mono); font-weight:600; padding:0 6px;">
+//           </div>
+//           <button onclick="matikanOverrideTani('${key}')" style="background:var(--bg-danger); border:1px solid var(--border-danger); border-radius:6px; color:var(--text-danger); padding:4px 6px; font-size:11px; cursor:pointer;" title="Kembalikan ke hitungan standar">
+//             <i class="ti ti-rotate-clockwise"></i>
+//           </button>
+//         </div>`;
+//     }
+
+//     row.innerHTML = leftSide + rightSide;
+//     container.appendChild(row);
+//   });
+
+//   // Render Resume Ringkas Sektor
+//   document.getElementById('lbl_taniTotalBiaya').innerText = formatRp(totalBiayaTani);
+//   document.getElementById('lbl_taniLabaBersih').innerText = formatRp(pendapatanKotor - totalBiayaTani);
+
+//   // Simpan payload bungkusan data untuk dilempar ke Blok 26 sewaktu-waktu tombol hitung ditekan
+//   window.currentTaniPayload = {
+//     nama: document.getElementById('taniNamaBaru').value || 'Tanpa Nama',
+//     luasHa: luasHa,
+//     omzetKotorTahun: pendapatanKotor * 3, // Asumsi kalibrasi 3x musim panen dalam 1 tahun
+//     totalBiayaTahun: totalBiayaTani * 3,
+//     rincianHtml: `
+//       <div class="bd-row total" style="color:var(--accent);"><span>A. Hasil Produksi Otomatis</span></div>
+//       <div class="bd-row minus" style="padding-left:10px;"><span>+ Omzet Kotor / Musim (${Math.round(prodKw)} Kw)</span><span class="bd-val" style="color:var(--text-success);">${formatRp(pendapatanKotor)}</span></div>
+//       <div class="bd-row minus" style="padding-left:10px; background:var(--surface-2); border-radius:6px; margin:4px 0;"><span>📦 Total Akumulasi (1 Tahun / 3 Musim)</span><span class="bd-val" style="color:var(--accent); font-weight:700;">${formatRp(pendapatanKotor * 3)}/thn</span></div>
+//       <div class="bd-row total" style="color:var(--text-secondary);"><span>B. Rincian Biaya Otomatis / Musim</span></div>
+//       ${htmlRincianMekanikal}
+//       <div class="bd-row minus" style="padding-left:10px; border-top:1px dashed var(--border-strong); margin-top:4px; padding-top:4px;"><span>• Total Pengeluaran / Musim</span><span class="bd-val" style="color:var(--text-danger);">${formatRp(totalBiayaTani)}</span></div>
+//     `
+//   };
+// }
+
+// State Override Biaya
+let taniOverrides = {
+  olahTanah: { isManual: false, val: 0 },
+  benih: { isManual: false, val: 0 },
+  urea: { isManual: false, val: 0 },
+  sp36: { isManual: false, val: 0 },
+  pestisida: { isManual: false, val: 0 },
+  pemeliharaan: { isManual: false, val: 0 },
+  panen: { isManual: false, val: 0 },
+  angkut: { isManual: false, val: 0 }
+};
+
+const komponenTaniMeta = [
+  { id: 'olahTanah', nama: 'Olah Tanah & Bajak', kat: 'ops' },
+  { id: 'benih', nama: 'Bibit / Benih', kat: 'prod' },
+  { id: 'urea', nama: 'Pupuk Urea', kat: 'prod' },
+  { id: 'sp36', nama: 'Pupuk SP36', kat: 'prod' },
+  { id: 'pestisida', nama: 'Obat & Pestisida', kat: 'prod' },
+  { id: 'pemeliharaan', nama: 'Pemeliharaan', kat: 'ops' },
+  { id: 'panen', nama: 'Biaya Panen', kat: 'ops' },
+  { id: 'angkut', nama: 'Biaya Angkut', kat: 'ops' }
+];
+
+function toggleMenuStandar() {
+  const box = document.getElementById('box-standar-biaya');
+  const txt = document.getElementById('icon-toggle-standar');
+  if (box.style.display === 'none') {
+    box.style.display = 'block';
+    txt.innerText = '[Tutup]';
+  } else {
+    box.style.display = 'none';
+    txt.innerText = '[Buka/Tutup]';
+  }
+}
+
+function liveKalkulasiTani() {
+  // 1. Ambil Input Lahan & Harga
+  const luasAre = parseFloat(document.getElementById('taniLuasAre').value) || 0;
+  const hargaGabah = parseNum(document.getElementById('taniHargaGabah').value);
+  
+  const luasHa = luasAre / 100;
+  const stProd = parseFloat(document.getElementById('st_produktivitas').value) || 0;
+  const prodKw = luasHa * stProd;
+  const prodKg = prodKw * 100;
+  const pendapatanKotor = prodKg * hargaGabah;
+
+  // Render Hasil ke UI
+  document.getElementById('out_prodKw').innerText = Math.round(prodKw).toLocaleString('id-ID') + ' Kw';
+  document.getElementById('out_prodKg').innerText = Math.round(prodKg).toLocaleString('id-ID') + ' Kg';
+  document.getElementById('out_pendapatanKotor').innerText = formatRp(pendapatanKotor);
+
+  // 2. Ambil Input Gaji Pekerja
+  const jmlPekerja = parseInt(document.getElementById('taniPekerja').value) || 0;
+  const nominalGaji = parseNum(document.getElementById('taniGaji').value);
+  const periodeGaji = document.getElementById('taniPeriodeGaji').value;
+  
+  let gajiTahunan = 0;
+  if (periodeGaji === 'hari') gajiTahunan = nominalGaji * 360 * jmlPekerja;
+  else if (periodeGaji === 'bulan') gajiTahunan = nominalGaji * 12 * jmlPekerja;
+  else if (periodeGaji === 'musim') gajiTahunan = nominalGaji * 3 * jmlPekerja;
+  else if (periodeGaji === 'tahun') gajiTahunan = nominalGaji * jmlPekerja;
+
+  let gajiPerMusim = gajiTahunan / 3;
+
+  // 3. Render Daftar Biaya Otomatis dan Pisahkan Produksi & Operasional
+  let container = document.getElementById('tani-biaya-list-container');
+  container.innerHTML = '';
+  
+  let totalBiayaMusimTani = gajiPerMusim;
+  
+  let totalProdMusim = 0;
+  let totalOpsMusim = 0;
+  let htmlRincianProduksi = '';
+  let htmlRincianOperasional = '';
+
+  komponenTaniMeta.forEach(meta => {
+    let inputSt = document.getElementById('st_' + meta.id);
+    let hargaStandarHa = inputSt ? parseNum(inputSt.value) : 0;
+    let nilaiSistem = hargaStandarHa * luasHa;
+    
+    let nilaiFinal = nilaiSistem;
+    if (taniOverrides[meta.id].isManual) {
+      let inputManual = document.getElementById('inp-tani-' + meta.id);
+      if (inputManual) taniOverrides[meta.id].val = parseNum(inputManual.value);
+      nilaiFinal = taniOverrides[meta.id].val;
+    }
+
+    totalBiayaMusimTani += nilaiFinal;
+    
+    // PEMISAHAN KATEGORI PRODUKSI (26.B) VS OPERASIONAL (26.D)
+    if (nilaiFinal > 0) {
+      let rincianHTML = `<div class="bd-row minus" style="padding-left:10px;"><span>- ${meta.nama} ${taniOverrides[meta.id].isManual ? '(Edit)' : ''}</span><span class="bd-val">${formatRp(nilaiFinal * 3)}/thn</span></div>`;
+      if (meta.kat === 'prod') {
+        totalProdMusim += nilaiFinal;
+        htmlRincianProduksi += rincianHTML;
+      } else {
+        totalOpsMusim += nilaiFinal;
+        htmlRincianOperasional += rincianHTML;
+      }
+    }
+
+    // Bangun Elemen Baris UI
+    const row = document.createElement('div');
+    row.style = "background: var(--surface-1); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 12px; display: flex; justify-content: space-between; align-items: center;";
+    
+    let leftSide = `
+      <div>
+        <span style="font-weight: 700; color: var(--text-primary); font-size: 13px;">${meta.nama}</span>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">${luasAre} Are × ${formatRp(hargaStandarHa)}/Ha</div>
+      </div>
+    `;
+    
+    let rightSide = '';
+    if (!taniOverrides[meta.id].isManual) {
+      rightSide = `
+        <div style="text-align:right;">
+          <strong style="font-family: var(--font-mono); color: var(--blue-strong); font-size: 14px; display:block; margin-bottom:4px;">${formatRp(nilaiFinal)}</strong>
+          <button onclick="aktifkanOverrideTani('${meta.id}')" style="background:var(--bg-accent); border:1px solid var(--border-accent); border-radius:6px; color:var(--blue); padding:3px 8px; font-size:10px; font-weight:700; cursor:pointer;"><i class="ti ti-pencil"></i> Edit</button>
+        </div>`;
+    } else {
+      rightSide = `
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div class="input-group" style="width:130px; height:32px;">
+            <span class="input-group-text" style="font-size:11px; padding:0 6px;">Rp</span>
+            <input type="text" id="inp-tani-${meta.id}" inputmode="numeric" class="input-box" value="${new Intl.NumberFormat('id-ID').format(nilaiFinal)}" oninput="formatRupiah(this); liveKalkulasiTani();" style="border:none; height:100%; font-size:13px; font-family:var(--font-mono); font-weight:600; padding:0 6px;">
+          </div>
+          <button onclick="matikanOverrideTani('${meta.id}')" style="background:var(--bg-danger); border:1px solid var(--border-danger); border-radius:6px; color:var(--text-danger); padding:4px 6px; font-size:12px; cursor:pointer;" title="Reset ke otomatis"><i class="ti ti-x"></i></button>
+        </div>`;
+    }
+
+    row.innerHTML = leftSide + rightSide;
+    container.appendChild(row);
+  });
+
+  // Tampilkan Total Ringkas di UI
+  document.getElementById('lbl_taniTotalBiaya').innerText = formatRp(totalBiayaMusimTani);
+  document.getElementById('lbl_taniLabaBersih').innerText = formatRp(pendapatanKotor - totalBiayaMusimTani);
+
+  let htmlGaji = gajiTahunan > 0 ? `<div class="bd-row minus" style="padding-left:10px;"><span>- Gaji Pegawai (${jmlPekerja} Org)</span><span class="bd-val">${formatRp(gajiTahunan)}/thn</span></div>` : '<span style="font-size:11px; padding-left:10px; color:var(--text-muted);">Tidak ada</span>';
+
+  // Siapkan Payload Data (Pisahkan Prod dan Ops)
+  window.currentTaniPayload = {
+    nama: 'Usaha Pertanian Padi',
+    omzetKotorTahun: pendapatanKotor * 3, 
+    totalBiayaTahun: totalBiayaMusimTani * 3, 
+    gajiTahun: gajiTahunan,
+    prodTahun: totalProdMusim * 3,  // Total 26.B Tahunan
+    opsTahun: totalOpsMusim * 3,    // Total 26.D Tahunan
+    rincianHtml: `
+      <div class="bd-row total" style="color:var(--accent);"><span>A. Pendapatan (Asumsi 3 Musim)</span></div>
+      <div class="bd-row minus" style="padding-left:10px;"><span>+ Omzet Kotor / Tahun</span><span class="bd-val" style="color:var(--text-success); font-weight:700;">${formatRp(pendapatanKotor * 3)}</span></div>
+      
+      <div class="bd-row total" style="color:var(--text-secondary);"><span>B. Gaji Pekerja & Jamsos (26.A)</span></div>
+      ${htmlGaji}
+
+      <div class="bd-row total" style="color:var(--text-secondary);"><span>C. Rincian Biaya Produksi (26.B) / Tahun</span></div>
+      ${htmlRincianProduksi || '<span style="font-size:11px; padding-left:10px; color:var(--text-muted);">Tidak ada</span>'}
+
+      <div class="bd-row total" style="color:var(--text-secondary);"><span>D. Rincian Biaya Operasional (26.D) / Tahun</span></div>
+      ${htmlRincianOperasional || '<span style="font-size:11px; padding-left:10px; color:var(--text-muted);">Tidak ada</span>'}
+    `
+  };
+}
+
+function aktifkanOverrideTani(key) {
+  taniOverrides[key].isManual = true;
+  let luasHa = (parseFloat(document.getElementById('taniLuasAre').value) || 0) / 100;
+  let inputSt = document.getElementById('st_' + meta.id);
+    let hargaStandarHa = inputSt ? parseNum(inputSt.value) : 0;
+  taniOverrides[key].val = hargaStandarHa * luasHa;
+  liveKalkulasiTani();
+}
+
+function matikanOverrideTani(key) {
+  taniOverrides[key].isManual = false;
+  taniOverrides[key].val = 0;
+  liveKalkulasiTani();
+}
+
+function hitungPertanianBaru() {
+  if (!window.currentTaniPayload || window.currentTaniPayload.omzetKotorTahun === 0) {
+    showToast("⚠️ Isi Luas Lahan dan Harga Gabah terlebih dahulu!");
+    return;
+  }
+  
+  let d = window.currentTaniPayload;
+  let labaTahun = d.omzetKotorTahun - d.totalBiayaTahun;
+
+  tampilkanBlok26({
+    tabAsal: 'pertanian',
+    type: 'pertanian',
+    nama: d.nama,
+    jenis: 'Pertanian (Otomatis)',
+    omzetKotor: d.omzetKotorTahun,
+    gaji: d.gajiTahun, 
+    prod: d.prodTahun, // <--- Dimasukkan ke Kolom 26.B
+    bbt: 0,
+    ops: d.opsTahun,   // <--- Dimasukkan ke Kolom 26.D
+    nonOps: 0,
+    totalBiaya: d.totalBiayaTahun,
+    labaTahun: labaTahun,
+    labaBulan: labaTahun / 12,
+    rincian: generateAnomaliWarning(d.omzetKotorTahun, d.totalBiayaTahun) + d.rincianHtml
+  });
+  
+  showToast("✅ Terkalkulasi ke Blok 26!");
+}
+
+function resetFormTaniBaru() {
+  document.getElementById('taniLuasAre').value = '';
+  document.getElementById('taniHargaGabah').value = '';
+  document.getElementById('taniPekerja').value = '';
+  document.getElementById('taniGaji').value = '';
+  
+  for (let key in taniOverrides) {
+    taniOverrides[key].isManual = false;
+    taniOverrides[key].val = 0;
+  }
+  
+  liveKalkulasiTani();
+  resetBlok26();
+  showToast("🔄 Form Pertanian Direset!");
+}
+
+// Render saat pertama kali menu dibuka
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('taniLuasAre')) {
+    liveKalkulasiTani();
+  }
+});
 </script>
 </body>
 </html>
