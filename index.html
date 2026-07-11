@@ -2684,7 +2684,10 @@
     document.getElementById('b26-totalBiaya').innerText = formatRp(data.totalBiaya);
     document.getElementById('b26-omzet').innerText = formatRp(data.omzetKotor);
     document.getElementById('b26-pengeluaran').innerText = formatRp(data.totalBiaya);
-    document.getElementById('b26-labaBulan').innerText = formatRp(data.labaBulan);
+    // FIX HASIKLL KOOMA PERHITUNGAN BLOK26 JIRRRR 
+    let labaBulanBulat = Math.round(data.labaTahun / 12000) * 1000;
+    document.getElementById('b26-labaBulan').innerText = formatRp(labaBulanBulat);
+    // document.getElementById('b26-labaBulan').innerText = formatRp(data.labaBulan);
     document.getElementById('b26-labaTahun').innerText = formatRp(data.labaTahun);
 
     if (data.labaTahun < 0) {
