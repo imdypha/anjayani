@@ -505,10 +505,10 @@
   <div class="section-label" style="margin-top: 1.5rem;">Rincian Pengeluaran Transportasi</div>
   <button class="btn-add" id="btnLoadBiayaTrans" onclick="loadDefaultBiayaTrans()" style="background: var(--bg-success); border: 1px dashed var(--border-success); color: var(--text-success); margin-bottom: 12px;">⚡ Fitur Isi Otomatis Biaya Ojek Online (Ojol)</button>
 
-  <div class="section-label" style="margin-top: 0; font-size: 13px;">Biaya Pendukung Operasional / Habis Pakai (26.B)</div>
-  <p class="section-desc">Pembelian yang habis dipakai (Cth: Oli mesin, ban dalam, sparepart ringan, air aki).</p>
+  <div class="section-label" style="margin-top: 0; font-size: 13px;">Biaya Produksi</div>
+  
   <div id="containerProdTrans"></div>
-  <button class="btn-add" onclick="tambahItemBiaya('containerProdTrans', 'Cth: Oli Mesin Rutin')">+ Tambah Manual Biaya Habis Pakai</button>
+  <button class="btn-add" onclick="tambahItemBiaya('containerProdTrans', 'Cth: Oli Mesin Rutin')">+ Tambah Manual Biaya Produksi</button>
 
   <div class="section-label" style="margin-top: 0.5rem; font-size: 13px;">Biaya Bahan Bakar & Retribusi (26.D)</div>
   <p class="section-desc">Bensin/Solar harian, biaya tol, parkir, setoran ke pemilik armada, atau potongan aplikasi (Ojol).</p>
@@ -2364,23 +2364,25 @@
   </div>
 </div>
 
-    <div class="rekap-filters" id="rekapFilters">
-      <button class="btn-filter active" onclick="setFilterRekap('semua', this)">Semua</button>
-      <button class="btn-filter" onclick="setFilterRekap('usaha', this)">Dagang</button>
-      <button class="btn-filter" onclick="setFilterRekap('kuliner', this)">Kuliner</button>
-      <button class="btn-filter" onclick="setFilterRekap('jasa', this)">Jasa</button>
-      <button class="btn-filter" onclick="setFilterRekap('sewa', this)">Sewa</button>
-      <button class="btn-filter" onclick="setFilterRekap('perikanan', this)">Perikanan</button>
-      <button class="btn-filter" onclick="setFilterRekap('pertanian', this)">Pertanian & Perkebunan</button>
-      <button class="btn-filter" onclick="setFilterRekap('peternakan', this)">Peternakan</button>
-      <button class="btn-filter" onclick="setFilterRekap('pendidikan', this)">Pendidikan</button>
-      <button class="btn-filter" onclick="setFilterRekap('industri', this)">Industri</button>
-      <button class="btn-filter" onclick="setFilterRekap('pertambangan', this)">Pertambangan</button>
-      <button class="btn-filter" onclick="setFilterRekap('kehutanan', this)">Kehutanan</button>
-      <button class="btn-filter" onclick="setFilterRekap('kesehatan', this)">Kesehatan</button>
-      <button class="btn-filter" onclick="setFilterRekap('keuangan', this)">Jasa Keuangan</button>
-      <button class="btn-filter" onclick="setFilterRekap('transportasi', this)">🚚 Transportasi</button>
-    </div>
+    <div class="field" style="margin-bottom: 16px;">
+  <select id="rekapFilterSelect" class="input-box" onchange="setFilterRekapDropdown(this)" style="font-weight: 700; color: var(--accent); cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+    <option value="semua">📋 Tampilkan Semua Data</option>
+    <option value="usaha">🛒 Sektor Dagang</option>
+    <option value="kuliner">🍽️ Sektor Kuliner</option>
+    <option value="jasa">🔧 Sektor Jasa</option>
+    <option value="sewa">🔑 Sektor Sewa</option>
+    <option value="perikanan">🐟 Sektor Perikanan</option>
+    <option value="pertanian">🌿 Sektor Pertanian</option>
+    <option value="peternakan">🐄 Sektor Peternakan</option>
+    <option value="pendidikan">🎓 Sektor Pendidikan</option>
+    <option value="industri">🏭 Sektor Industri</option>
+    <option value="pertambangan">⛏️ Sektor Tambang</option>
+    <option value="kehutanan">🌳 Sektor Kehutanan</option>
+    <option value="kesehatan">🩺 Sektor Kesehatan</option>
+    <option value="keuangan">💰 Jasa Keuangan</option>
+    <option value="transportasi">🚚 Sektor Transportasi</option>
+  </select>
+</div>
 
     <div class="section-label" style="margin-top: 1rem;">Data Tersimpan</div>
     <div id="rekapContainer"></div>
@@ -6574,7 +6576,10 @@ function hitungTransportasi() {
     rincian: htmlBreakdown 
   });
 }
-
+function setFilterRekapDropdown(selectEl) {
+  currentFilter = selectEl.value;
+  renderRekap();
+}
 </script>
 </body>
 </html>
