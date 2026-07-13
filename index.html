@@ -259,6 +259,10 @@
     .status-untung { background: var(--bg-success); color: var(--text-success); border: 1px solid var(--border-success); }
     .status-rugi { background: var(--bg-danger); color: var(--text-danger); border: 1px solid var(--border-danger); }
     .status-impas { background: var(--bg-warning); color: #854d0e; border: 1px solid var(--gold); }
+
+    .m-transportasi { background: #FEF3C7; border-color: #FCD34D; } 
+.m-transportasi .ic { background: #FEF3C7; color: #D97706; } 
+.m-transportasi span { color: #78350F; }
   </style>
 </head>
 <body>
@@ -409,9 +413,120 @@
         <span>Jasa Keuangan</span>
       </div>
 
+<div class="home-card m-transportasi" onclick="sw('transportasi', document.getElementById('tab-home'))">
+  <div class="ic">🚚</div>
+  <span>Transportasi</span>
+</div>
+
       </div>
     </div>
   </div>
+
+  <div id="p-transportasi" class="panel">
+  <div class="section-label">Data Usaha Transportasi</div>
+  
+  <div class="fields-grid">
+    <div class="field">
+      <label>NAMA RESPONDEN / PEMILIK</label>
+      <input type="text" id="transNama" class="input-box" placeholder="Contoh: Pak Budi (Ojol)">
+    </div>
+    <div class="field">
+      <label>JENIS TRANSPORTASI</label>
+      <select id="transJenis" class="input-box" onchange="applyMasterTransportasi()">
+        <option value="Ojek Online (Ojol)">Ojek Online (Ojol)</option>
+        <option value="Ojek Pangkalan">Ojek Pangkalan</option>
+        <option value="Sopir Travel / Rental">Sopir Travel / Rental</option>
+        <option value="Angkot / Bus">Angkot / Bus</option>
+        <option value="Truk / Pick Up Barang">Truk / Pick Up Barang</option>
+        <option value="Taxi">Taxi</option>
+        <option value="Becak / Delman">Becak / Delman</option>
+        <option value="Lainnya">Lainnya</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Metode Hitung Pendapatan / Omzet</div>
+  <div class="fields-grid" style="grid-template-columns: 1fr;">
+    <div class="field">
+      <label>PILIH METODE INPUT</label>
+      <select id="transMetode" class="input-box" onchange="cekMetodeTrans()">
+        <option value="langsung">Input Omzet Langsung (Rata-rata Pendapatan)</option>
+        <option value="order">Hitung Berdasarkan Jumlah Order / Rit</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="wrapTransLangsung" class="fields-grid" style="margin-top: 1rem;">
+    <div class="field">
+      <label>PERIODE PENDAPATAN</label>
+      <select id="transPeriode" class="input-box">
+        <option value="hari" selected>Per Hari</option>
+        <option value="minggu">Per Minggu</option>
+        <option value="bulan">Per Bulan</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>NILAI PENDAPATAN (KOTOR)</label>
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" id="transOmzetVal" placeholder="0" oninput="formatRupiah(this)">
+      </div>
+    </div>
+  </div>
+
+  <div id="wrapTransOrder" class="fields-grid" style="margin-top: 1rem; display: none;">
+    <div class="field">
+      <label>JML ORDER / RIT / TRIP (PER HARI)</label>
+      <input type="number" id="transJmlOrder" class="input-box" placeholder="Contoh: 10" min="0">
+    </div>
+    <div class="field">
+      <label>TARIF RATA-RATA PER ORDER/RIT</label>
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" id="transTarifOrder" placeholder="0" oninput="formatRupiah(this)">
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Hari Operasional Usaha</div>
+  <div class="field" style="margin-bottom: 1rem;">
+    <label>JUMLAH HARI KERJA DALAM SEBULAN</label>
+    <input type="number" id="transHariKerja" class="input-box" placeholder="Default: 26 hari" value="26" min="1" max="31">
+    <p class="section-desc">Berapa hari kendaraan beroperasi mencari muatan/penumpang dalam sebulan.</p>
+  </div>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Pekerja (Sopir / Kernet / Pengelola) - 26.A</div>
+  <div class="fields-grid">
+    <div class="field"><label>JUMLAH PEKERJA DIBAYAR</label><input type="number" id="transPegawai" class="input-box" placeholder="0" min="0" value="0"></div>
+    <div class="field"><label>PERIODE GAJI</label><select id="transPeriodeGaji" class="input-box"><option value="bulan" selected>Per Bulan</option><option value="tahun">Per Tahun</option></select></div>
+    <div class="field" style="grid-column: span 2;"><label>TOTAL GAJI (PER PEKERJA)</label><div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" id="transGaji" placeholder="0" oninput="formatRupiah(this)"></div></div>
+  </div>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Rincian Pengeluaran Transportasi</div>
+  <button class="btn-add" id="btnLoadBiayaTrans" onclick="loadDefaultBiayaTrans()" style="background: var(--bg-success); border: 1px dashed var(--border-success); color: var(--text-success); margin-bottom: 12px;">⚡ Fitur Isi Otomatis Biaya Ojek Online (Ojol)</button>
+
+  <div class="section-label" style="margin-top: 0; font-size: 13px;">Biaya Pendukung Operasional / Habis Pakai (26.B)</div>
+  <p class="section-desc">Pembelian yang habis dipakai (Cth: Oli mesin, ban dalam, sparepart ringan, air aki).</p>
+  <div id="containerProdTrans"></div>
+  <button class="btn-add" onclick="tambahItemBiaya('containerProdTrans', 'Cth: Oli Mesin Rutin')">+ Tambah Manual Biaya Habis Pakai</button>
+
+  <div class="section-label" style="margin-top: 0.5rem; font-size: 13px;">Biaya Bahan Bakar & Retribusi (26.D)</div>
+  <p class="section-desc">Bensin/Solar harian, biaya tol, parkir, setoran ke pemilik armada, atau potongan aplikasi (Ojol).</p>
+  <div id="containerOpsTrans"></div>
+  <button class="btn-add" onclick="tambahItemBiaya('containerOpsTrans', 'Cth: Bensin Harian / Potongan Aplikasi')">+ Tambah Manual BBM & Rutin</button>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Biaya Non-Operasional / Perizinan (26.E)</div>
+  <p class="section-desc">Pajak STNK tahunan, KIR kendaraan, perpanjangan izin trayek, atau bunga cicilan kendaraan.</p>
+  <div id="nonops-Trans"></div>
+  <button class="btn-add" onclick="tambahItemBiaya('nonops-Trans', 'Cth: Pajak STNK Tahunan / Uji KIR')">+ Tambah Biaya Tahunan / Izin</button>
+  
+  <div class="section-label" style="margin-top: 1.5rem; color: var(--text-success);">Pendapatan Ekstra / Tip Pasien/Penumpang (Opsional)</div>
+  <div id="ekstra-Trans"></div>
+  <button class="btn-add" onclick="tambahPendapatanEkstra('ekstra-Trans')" style="border-color: var(--border-success); color: var(--text-success); background: var(--surface-1); margin-bottom: 1.5rem;">+ Tambah Pendapatan Tip / Lainnya</button>
+
+  <button class="btn-primary" onclick="hitungTransportasi()"><i class="ti ti-calculator"></i> HITUNG HASIL TRANSPORTASI</button>
+  <button class="btn-reset" onclick="resetForm('transportasi')"><i class="ti ti-refresh"></i> RESET FORM TRANSPORTASI</button>
+</div>
 
   <div id="p-kalkulasi" class="panel">
     <div class="section-label">Data Usaha Dagang</div>
@@ -2264,6 +2379,7 @@
       <button class="btn-filter" onclick="setFilterRekap('kehutanan', this)">Kehutanan</button>
       <button class="btn-filter" onclick="setFilterRekap('kesehatan', this)">Kesehatan</button>
       <button class="btn-filter" onclick="setFilterRekap('keuangan', this)">Jasa Keuangan</button>
+      <button class="btn-filter" onclick="setFilterRekap('transportasi', this)">🚚 Transportasi</button>
     </div>
 
     <div class="section-label" style="margin-top: 1rem;">Data Tersimpan</div>
@@ -3718,7 +3834,27 @@ function applyMasterDagang() {
       applyMasterDagang(); // Kembalikan label template biaya ke default (Warung Kelontong)
       showToast('Form Dagang Direset'); resetBlok26();
 
-    }  else if (jenis === 'kuliner') {
+    }  
+    
+    else if (jenis === 'transportasi') {
+   document.getElementById('transNama').value = ''; 
+   document.getElementById('transOmzetVal').value = ''; 
+   document.getElementById('transJmlOrder').value = ''; 
+   document.getElementById('transTarifOrder').value = ''; 
+   document.getElementById('transPegawai').value = '0'; 
+   document.getElementById('transGaji').value = ''; 
+   document.getElementById('transHariKerja').value = '26';
+   document.getElementById('containerProdTrans').innerHTML = ''; 
+   document.getElementById('containerOpsTrans').innerHTML = ''; 
+   document.getElementById('nonops-Trans').innerHTML = ''; 
+   document.getElementById('ekstra-Trans').innerHTML = ''; 
+   document.getElementById('transMetode').value = 'langsung';
+   document.getElementById('transPeriode').value = 'hari';
+   cekMetodeTrans(); applyMasterTransportasi(); 
+   showToast('Form Transportasi Direset'); resetBlok26();
+}
+
+else if (jenis === 'kuliner') {
       document.getElementById('kulinerNama').value = ''; 
       document.getElementById('kulinerQty').value = ''; 
       document.getElementById('kulinerHarga').value = ''; 
@@ -4005,6 +4141,7 @@ function applyMasterDagang() {
       else if (item.type === 'pertambangan') { title = 'Pertambangan'; icon = 'ti-shovel'; bgColor = '#f5f5f4'; fgColor = '#44403c'; border = '1px solid #44403c33'; }
       else if (item.type === 'kesehatan') { title = 'Kesehatan'; icon = 'ti-stethoscope'; bgColor = '#fef2f2'; fgColor = '#991b1b'; }
       else if (item.type === 'keuangan') { title = 'Jasa Keuangan'; icon = 'ti-coin'; bgColor = '#ECFEFF'; fgColor = '#0891B2'; }
+      else if (item.type === 'transportasi') { title = 'Transportasi'; icon = 'ti-truck'; bgColor = '#FEF3C7'; fgColor = '#D97706'; }
 
       let isRugi = laba < 0;
       let heroBg = isRugi ? 'linear-gradient(135deg, #ef4444, #991b1b)' : 'linear-gradient(135deg, #00479B, #002B5E)';
@@ -6301,6 +6438,133 @@ function hitungKeuangan() {
     type: 'keuangan', 
     nama: document.getElementById('keuanganNama').value, 
     jenis: document.getElementById('keuanganJenis').value, 
+    omzetKotor: omzetUtamaTahun,
+    omzetEkstra: ekstra.total,
+    gaji: gaji.total, prod: prod.total, bbt: bbt.total, ops: ops.total, nonOps: nonOps.total, 
+    totalBiaya: totalBiaya, 
+    labaTahun: omzetKotorTahun - totalBiaya, 
+    labaBulan: (omzetKotorTahun - totalBiaya)/12, 
+    rincian: htmlBreakdown 
+  });
+}
+
+const masterTrans = {
+  'Ojek Online (Ojol)': { prod: ['Oli Mesin Bulanan', 'Service Rutin'], ops: ['Bensin Harian', 'Potongan Aplikasi (20%)', 'Kuota Internet HP'] },
+  'Ojek Pangkalan': { prod: ['Oli & Ban Luar/Dalam'], ops: ['Bensin Harian', 'Iuran Kas Pangkalan / Parkir'] },
+  'Sopir Travel / Rental': { prod: ['Ganti Oli & Service Berkala', 'Cuci Mobil'], ops: ['Bensin / Solar Per Trip', 'Biaya Tol & Parkir', 'Komisi Agen Penumpang'] },
+  'Angkot / Bus': { prod: ['Sparepart / Ban Kendaraan', 'Oli Mesin'], ops: ['Solar / Bensin Harian', 'Setoran ke Pemilik Armada', 'Retribusi Terminal / TPR'] },
+  'Truk / Pick Up Barang': { prod: ['Service Rutin & Ban Truk'], ops: ['Solar Jalan', 'Biaya Tol & Parkir Muatan', 'Uang Makan Sopir/Kernet'] },
+  'Taxi': { prod: ['Perawatan Armada'], ops: ['Bensin / Gas Harian', 'Setoran / Potongan Komisi Perusahaan'] },
+  'Becak / Delman': { prod: ['Perbaikan Ban / Rantai', 'Pakan Kuda (Delman)'], ops: ['Iuran Pangkalan'] },
+  'Lainnya': { prod: ['Biaya Perawatan Kendaraan'], ops: ['Bensin / Biaya Jalan'] }
+};
+
+function cekMetodeTrans() {
+  let metode = document.getElementById('transMetode').value;
+  document.getElementById('wrapTransLangsung').style.display = metode === 'langsung' ? 'flex' : 'none';
+  document.getElementById('wrapTransOrder').style.display = metode === 'order' ? 'flex' : 'none';
+}
+
+function applyMasterTransportasi() {
+  let jenis = document.getElementById('transJenis').value;
+  document.getElementById('btnLoadBiayaTrans').innerHTML = '⚡ Fitur Isi Otomatis Biaya ' + jenis;
+}
+
+function loadDefaultBiayaTrans() {
+  let jenis = document.getElementById('transJenis').value;
+  let data = masterTrans[jenis] || masterTrans['Lainnya'];
+  
+  let containerProd = document.getElementById('containerProdTrans');
+  let containerOps = document.getElementById('containerOpsTrans');
+  
+  containerProd.innerHTML = ''; containerOps.innerHTML = ''; 
+  
+  const buatHTMLBiaya = (namaItem) => `
+    <div style="margin-bottom: 10px;">
+      <div class="biaya-item-top" style="margin-bottom:0;">
+        <input type="text" class="input-box dyn-nama" placeholder="Biaya" value="${namaItem}">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+    </div>
+    <div style="display: flex; gap: 6px; align-items: flex-end;">
+      <div style="flex: 2;">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px;">BIAYA / BELANJA</label>
+        <div class="b-nom" style="width:100%;"><span>Rp</span><input type="text" inputmode="numeric" class="val-biaya dyn-nom" placeholder="0" oninput="formatRupiah(this)"></div>
+      </div>
+      <div style="height: 42px; display: flex; align-items: center; font-size:14px; font-weight:bold; color:var(--text-muted);">x</div>
+      <div style="flex: 0.8;">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px; text-align:center;">KALI</label>
+        <input type="number" class="input-box dyn-freq" placeholder="1" value="1" min="1" style="text-align:center; padding: 0 4px; width:100%;">
+      </div>
+      <div style="flex: 1.2;">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px;">PERIODE</label>
+        <select class="input-box dyn-periode" style="padding: 0 4px; width:100%;">
+          <option value="hari">/ Hari</option>
+          <option value="bulan" selected>/ Bln</option>
+          <option value="tahun">/ Thn</option>
+        </select>
+      </div>
+    </div>`;
+
+  if (data.prod) data.prod.forEach(item => { let div = document.createElement('div'); div.className = 'biaya-item dynamic-b-item'; div.innerHTML = buatHTMLBiaya(item); containerProd.appendChild(div); });
+  if (data.ops) data.ops.forEach(item => { let div = document.createElement('div'); div.className = 'biaya-item dynamic-b-item'; div.innerHTML = buatHTMLBiaya(item); containerOps.appendChild(div); });
+  
+  showToast('Template Biaya ' + jenis + ' Dimuat!');
+}
+
+function hitungTransportasi() {
+  let metode = document.getElementById('transMetode').value;
+  let hariKerja = parseInt(document.getElementById('transHariKerja').value) || 26;
+  
+  let omzetBulanan = 0;
+  let labelInfo = '';
+
+  if (metode === 'langsung') {
+    let periode = document.getElementById('transPeriode').value;
+    let nilaiDasar = parseNum(document.getElementById('transOmzetVal').value);
+    
+    if (periode === 'hari') {
+      omzetBulanan = nilaiDasar * hariKerja;
+      labelInfo = `(Dari input Harian × ${hariKerja} Hari Aktif)`;
+    } else if (periode === 'minggu') {
+      omzetBulanan = nilaiDasar * (52 / 12);
+      labelInfo = '(Konversi Mingguan)';
+    } else if (periode === 'bulan') {
+      omzetBulanan = nilaiDasar;
+      labelInfo = '(Input Langsung Bulanan)';
+    }
+  } else {
+    let jmlOrder = parseInt(document.getElementById('transJmlOrder').value) || 0;
+    let tarifOrder = parseNum(document.getElementById('transTarifOrder').value);
+    
+    // Perhitungan: Order harian x Tarif x Hari kerja sebulan
+    omzetBulanan = jmlOrder * tarifOrder * hariKerja;
+    labelInfo = `(Dari ${jmlOrder} Order/hari × ${formatRp(tarifOrder)} × ${hariKerja} hari)`;
+  }
+
+  let omzetUtamaTahun = omzetBulanan * 12;
+  let ekstra = sumBiayaItems('#ekstra-Trans .dynamic-income-item', true, hariKerja);
+  let omzetKotorTahun = omzetUtamaTahun + ekstra.total;
+
+  let gaji = hitungGaji('transPegawai', 'transGaji', 'transPeriodeGaji', 'Pegawai/Sopir/Kernet');
+  let prod = sumBiayaItems('#containerProdTrans .dynamic-b-item', false, hariKerja);
+  let bbt = { total: 0, html: '' }; // Sektor ini murni Jasa Angkutan, tidak punya HPP barang kulakan
+  let ops = sumBiayaItems('#containerOpsTrans .dynamic-b-item', false, hariKerja);
+  let nonOps = sumBiayaItems('#nonops-Trans .dynamic-b-item', false, hariKerja);
+
+  let totalBiaya = gaji.total + prod.total + bbt.total + ops.total + nonOps.total;
+  let omzetBersihTahun = omzetKotorTahun - bbt.total; 
+  
+  let htmlEkstra = ekstra.total > 0 ? `<div class="bd-row minus" style="padding-left:10px;"><span>+ Tip / Pendapatan Lain</span><span class="bd-val" style="color:var(--text-success);">${formatRp(ekstra.total)}/thn</span></div>` : '';
+  let customA = `<div class="bd-row total" style="color:var(--accent);"><span>A. Pendapatan Jasa Angkutan</span></div><div class="bd-row minus" style="padding-left:10px;"><span>+ Pendapatan Utama <br><small style="font-size:10px; color:var(--text-muted)">${labelInfo}</small></span><span class="bd-val" style="color:var(--text-success);">${formatRp(omzetUtamaTahun)}/thn</span></div>`;
+
+  let htmlBreakdown = generateAnomaliWarning(omzetKotorTahun, totalBiaya) + customA + htmlEkstra + buildBreakdownHTML(omzetUtamaTahun, omzetBersihTahun, gaji, prod, bbt, ops, nonOps, true);
+
+  tampilkanBlok26({ 
+    tabAsal: 'transportasi', 
+    type: 'transportasi', 
+    nama: document.getElementById('transNama').value, 
+    jenis: document.getElementById('transJenis').value, 
     omzetKotor: omzetUtamaTahun,
     omzetEkstra: ekstra.total,
     gaji: gaji.total, prod: prod.total, bbt: bbt.total, ops: ops.total, nonOps: nonOps.total, 
