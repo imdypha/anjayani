@@ -1476,49 +1476,82 @@
     <div class="fields-grid">
       <div class="field">
         <label>NAMA USAHA (OPSIONAL)</label>
-        <input type="text" id="ternakNama" class="input-box" placeholder="Contoh: Peternakan Sapi Perah Makmur">
+        <input type="text" id="ternakNama" class="input-box" placeholder="Contoh: Peternakan Sapi Maju">
       </div>
       <div class="field">
         <label>JENIS USAHA PETERNAKAN</label>
         <select id="ternakJenis" class="input-box" onchange="applyMasterTernak()">
-          <option value="Ayam Pedaging">Ayam Pedaging (Broiler)</option>
-          <option value="Ayam Petelur">Ayam Petelur (Layer)</option>
-          <option value="Bebek Petelur">Bebek Petelur</option>
           <option value="Sapi Potong">Sapi Potong</option>
           <option value="Sapi Perah">Sapi Perah</option>
           <option value="Kambing">Kambing</option>
-          <option value="Domba">Domba</option>
-          <option value="Kerbau">Kerbau</option>
-          <option value="Burung Puyuh">Burung Puyuh</option>
-          <option value="Babi">Babi</option>
-          <option value="Lebah Madu">Lebah Madu</option>
-          <option value="Lainnya">Lainnya</option>
+          <option value="Ayam Pedaging">Ayam Pedaging</option>
+          <option value="Ayam Petelur">Ayam Petelur</option>
         </select>
       </div>
     </div>
 
     <div class="section-label" style="margin-top: 1.5rem;">Pendapatan Utama</div>
     <div class="field">
-      <label>CARA MENGHITUNG PENDAPATAN</label>
+      <label>CARA MEMPEROLEH PENDAPATAN</label>
       <select id="ternakMode" class="input-box" onchange="ubahModeTernak()">
-        <option value="produksi">Berdasarkan Produksi / Penjualan</option>
-        <option value="omzet">Langsung Masukkan Omzet</option>
+        <option value="penjualan_ternak">Penjualan Ternak</option>
+        <option value="produksi">Produksi</option>
+        <option value="omzet">Omzet</option>
       </select>
     </div>
 
-    <!-- Mode 1: Berdasarkan Produksi / Penjualan -->
-    <div id="wrapTernakProduksi" style="background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent); margin-top: 12px;">
+    <!-- Mode 1: Penjualan Ternak -->
+    <div id="wrapTernakPenjualan" style="background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent); margin-top: 12px;">
       <div class="fields-grid">
         <div class="field">
-          <label id="lblTernakQty">JUMLAH PRODUKSI / TERJUAL</label>
+          <label>JUMLAH TERNAK TERJUAL</label>
+          <div class="input-group">
+            <input type="number" id="ternakTerjual" class="input-box" placeholder="0" min="0" style="border-right: none;">
+            <span class="input-group-text">Ekor</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>HARGA PER EKOR</label>
+          <div class="input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="text" inputmode="numeric" id="ternakHargaPenjualan" placeholder="0" oninput="formatRupiah(this)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Kotak Informasi Tambahan -->
+      <div style="background: var(--surface-1); padding: 12px; border-radius: 8px; border: 1px dashed var(--border-strong); margin-top: 12px;">
+        <label style="font-size: 10px; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 8px;"><i class="ti ti-info-circle"></i> INFORMASI TAMBAHAN (HANYA PENDATAAN)</label>
+        <div class="fields-grid" style="gap: 8px;">
+          <div class="field" style="margin-bottom: 0;">
+            <label style="font-size: 9px;">JUMLAH TERNAK SAAT INI</label>
+            <div class="input-group">
+              <input type="number" id="ternakSaatIni" class="input-box" placeholder="Cth: 3" min="0" style="border-right: none;">
+              <span class="input-group-text">Ekor</span>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom: 0;">
+            <label style="font-size: 9px;">ANAK TERNAK LAHIR</label>
+            <div class="input-group">
+              <input type="number" id="ternakLahir" class="input-box" placeholder="Cth: 2" min="0" style="border-right: none;">
+              <span class="input-group-text">Ekor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode 2: Produksi -->
+    <div id="wrapTernakProduksi" style="display: none; background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent); margin-top: 12px;">
+      <div class="fields-grid">
+        <div class="field">
+          <label id="lblTernakQty">JUMLAH PRODUKSI</label>
           <div class="input-group">
             <input type="number" id="ternakQty" class="input-box" placeholder="0" min="0" style="border-right: none;">
             <select id="ternakSatuan" class="input-box" style="width: 85px; border-left: 1px solid var(--border-strong); padding: 0 4px;">
-              <option value="Ekor">Ekor</option>
               <option value="Kg">Kg</option>
               <option value="Liter">Liter</option>
               <option value="Butir">Butir</option>
-              <option value="Botol">Botol</option>
             </select>
           </div>
         </div>
@@ -1532,7 +1565,7 @@
       </div>
     </div>
 
-    <!-- Mode 2: Input Omzet Langsung -->
+    <!-- Mode 3: Omzet -->
     <div id="wrapTernakOmzet" style="display: none; background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent); margin-top: 12px;">
       <div class="field">
         <label>NILAI OMZET KOTOR</label>
@@ -1544,9 +1577,9 @@
     </div>
 
     <div class="field" style="margin-top: 12px;">
-      <label>PERIODE PENDAPATAN / PRODUKSI DI ATAS</label>
+      <label>PERIODE PENDAPATAN DI ATAS</label>
       <select id="ternakPeriode" class="input-box" onchange="cekPeriodeTernak()">
-        <option value="hari">Per Hari (Produksi Harian)</option>
+        <option value="hari">Per Hari (Khusus Perah/Petelur)</option>
         <option value="minggu">Per Minggu</option>
         <option value="bulan" selected>Per Bulan</option>
         <option value="tahun">Per Tahun</option>
@@ -1563,6 +1596,7 @@
     </div>
 
     <div class="section-label" style="margin-top: 1.5rem;">Data Pekerja & Jamsos (26.A)</div>
+    <p class="section-desc">Upah pekerja bisa diisi di sini atau di bagian operasional bawah.</p>
     <div class="fields-grid">
       <div class="field"><label>JUMLAH PEGAWAI</label><input type="number" id="ternakPegawai" class="input-box" placeholder="0" min="0"></div>
       <div class="field"><label>PERIODE GAJI</label><select id="ternakPeriodeGaji" class="input-box"><option value="hari">Per Hari</option><option value="minggu">Per Minggu</option><option value="bulan" selected>Per Bulan</option><option value="tahun">Per Tahun</option></select></div>
@@ -1570,32 +1604,25 @@
     </div>
 
     <div class="section-label" style="margin-top: 1.5rem;">Rincian Pengeluaran Usaha (26.B, 26.C, 26.D)</div>
-    <p class="section-desc">Pilih tombol di bawah untuk otomatis mengisi template biaya berdasarkan jenis ternak.</p>
-
-    <button class="btn-add" id="btnLoadBiayaTernak" onclick="loadDefaultBiayaTernak()" style="background: var(--bg-success); border: 1px dashed var(--border-success); color: var(--text-success); margin-bottom: 12px;">⚡ Fitur Isi Otomatis Biaya Ayam Pedaging</button>
+    <button class="btn-add" id="btnLoadBiayaTernak" onclick="loadDefaultBiayaTernak()" style="background: var(--bg-success); border: 1px dashed var(--border-success); color: var(--text-success); margin-bottom: 12px;">⚡ Fitur Isi Otomatis Biaya Peternakan</button>
 
     <div class="section-label" style="margin-top: 0; font-size: 13px;">Biaya Produksi / Peternakan (26.B)</div>
-    <p class="section-desc">Biaya bibit/DOC, pakan, vitamin, obat, vaksin, inseminasi buatan.</p>
     <div id="containerProdTernak"></div>
     <button class="btn-add" onclick="tambahItemBiaya('containerProdTernak', 'Cth: Pakan / Vitamin')">+ Tambah Manual Biaya Produksi</button>
 
     <div class="section-label" style="margin-top: 0.5rem; font-size: 13px;">Biaya Barang Terjual (26.C)</div>
-    <p class="section-desc">Hewan/produk ternak milik orang lain yang dibeli untuk dijual kembali (Sistem Pengepul).</p>
     <div id="bbt-Ternak"></div>
-    <button class="btn-add" onclick="tambahItemBiaya('bbt-Ternak', 'Cth: Beli Telur/Susu Titipan')">+ Tambah Manual Barang Terjual</button>
+    <button class="btn-add" onclick="tambahItemBiaya('bbt-Ternak', 'Cth: Beli Hewan Titipan')">+ Tambah Manual Barang Terjual</button>
 
     <div class="section-label" style="margin-top: 0.5rem; font-size: 13px;">Biaya Operasional (26.D)</div>
-    <p class="section-desc">Biaya rutin (Listrik, Air, Sekam, BBM Transportasi, Sewa Kandang).</p>
     <div id="containerOpsTernak"></div>
-    <button class="btn-add" onclick="tambahItemBiaya('containerOpsTernak', 'Cth: Listrik / Sekam / Air')">+ Tambah Manual Operasional</button>
+    <button class="btn-add" onclick="tambahItemBiaya('containerOpsTernak', 'Cth: BBM / Upah Borongan')">+ Tambah Manual Operasional</button>
 
     <div class="section-label" style="margin-top: 1.5rem;">Biaya Non-Operasional (26.E)</div>
-    <p class="section-desc">Pengeluaran di luar operasional (Cth: Bunga bank, Pajak, Denda).</p>
     <div id="nonops-Ternak"></div>
     <button class="btn-add" onclick="tambahItemBiaya('nonops-Ternak', 'Cth: Bunga Bank, Pajak')">+ Tambah Biaya Non-Operasional</button>
     
     <div class="section-label" style="margin-top: 1.5rem; color: var(--text-success);">Pendapatan Lainnya (Opsional)</div>
-    <p class="section-desc">Pemasukan ekstra (Cth: Jual kotoran kandang/pupuk, sewa pejantan).</p>
     <div id="ekstra-Ternak"></div>
     <button class="btn-add" onclick="tambahPendapatanEkstra('ekstra-Ternak')" style="border-color: var(--border-success); color: var(--text-success); background: var(--surface-1);">
       + Tambah Pendapatan Lainnya
@@ -3620,32 +3647,22 @@ function applyMasterDagang() {
     tampilkanBlok26({ tabAsal: 'pertanian', type: 'pertanian', nama: document.getElementById('taniNama').value, jenis: document.getElementById('taniJenis').value, omzetKotor: omzetKotorTahun, gaji: gaji.total, prod: prod.total, bbt: bbt.total, ops: ops.total, nonOps: nonOps.total, totalBiaya: totalBiaya, labaTahun: omzetKotorTahun - totalBiaya, labaBulan: (omzetKotorTahun - totalBiaya)/12, rincian: htmlBreakdown });
   }
 
-  // --- MASTER DATA SEKTOR PETERNAKAN ---
   const masterTernak = {
-    'Ayam Pedaging': { unitLabel: 'JUMLAH AYAM DIPANEN / TERJUAL', tarifLabel: 'HARGA / EKOR ATAU / KG', defSatuan: 'Ekor', isHarian: false, prod: ['DOC / Bibit', 'Pakan Ayam', 'Vitamin & Obat', 'Vaksin'], ops: ['Sekam / Serbuk Gergaji', 'Listrik / Pemanas Gas', 'Air', 'Transportasi'] },
-    'Ayam Petelur': { unitLabel: 'PRODUKSI TELUR', tarifLabel: 'HARGA / KG TELUR', defSatuan: 'Kg', isHarian: true, hariLabel: 'HARI PRODUKSI TELUR / BULAN', prod: ['Pakan Layer', 'Vitamin & Obat', 'Vaksin'], ops: ['Listrik', 'Air', 'Perawatan Kandang'] },
-    'Bebek Petelur': { unitLabel: 'PRODUKSI TELUR', tarifLabel: 'HARGA / BUTIR TELUR', defSatuan: 'Butir', isHarian: true, hariLabel: 'HARI PRODUKSI TELUR / BULAN', prod: ['Pakan Bebek', 'Vitamin / Suplemen', 'Obat'], ops: ['Listrik', 'Air / Sanitasi'] },
-    'Sapi Potong': { unitLabel: 'JUMLAH SAPI TERJUAL', tarifLabel: 'HARGA RATA-RATA / EKOR', defSatuan: 'Ekor', isHarian: false, prod: ['Bibit / Pedet', 'Pakan Hijauan (Rumput)', 'Konsentrat', 'Vitamin & Obat'], ops: ['Listrik', 'Air', 'Transportasi', 'Perawatan Kandang'] },
-    'Sapi Perah': { unitLabel: 'PRODUKSI SUSU', tarifLabel: 'HARGA / LITER SUSU', defSatuan: 'Liter', isHarian: true, hariLabel: 'HARI PEMERAHAN / BULAN', prod: ['Pakan Hijauan', 'Konsentrat', 'Vitamin / Obat', 'Inseminasi Buatan (IB)'], ops: ['Listrik', 'Air Bersih', 'Perawatan Kandang'] },
-    'Kambing': { unitLabel: 'JUMLAH KAMBING TERJUAL', tarifLabel: 'HARGA RATA-RATA / EKOR', defSatuan: 'Ekor', isHarian: false, prod: ['Bibit Kambing', 'Pakan Hijauan', 'Vitamin / Obat'], ops: ['Perawatan Kandang', 'Air'] },
-    'Domba': { unitLabel: 'JUMLAH DOMBA TERJUAL', tarifLabel: 'HARGA RATA-RATA / EKOR', defSatuan: 'Ekor', isHarian: false, prod: ['Bibit Domba', 'Pakan Hijauan', 'Vitamin / Obat'], ops: ['Perawatan Kandang', 'Air'] },
-    'Kerbau': { unitLabel: 'JUMLAH KERBAU TERJUAL', tarifLabel: 'HARGA RATA-RATA / EKOR', defSatuan: 'Ekor', isHarian: false, prod: ['Bibit', 'Pakan Hijauan', 'Obat'], ops: ['Perawatan Kandang'] },
-    'Burung Puyuh': { unitLabel: 'PRODUKSI TELUR PUYUH', tarifLabel: 'HARGA / KG ATAU / BUTIR', defSatuan: 'Kg', isHarian: true, hariLabel: 'HARI PRODUKSI TELUR / BULAN', prod: ['Pakan Puyuh', 'Vitamin', 'Obat'], ops: ['Listrik', 'Air', 'Kebersihan'] },
-    'Babi': { unitLabel: 'JUMLAH BABI TERJUAL', tarifLabel: 'HARGA / EKOR ATAU / KG', defSatuan: 'Ekor', isHarian: false, prod: ['Bibit', 'Pakan Babi', 'Vitamin / Vaksin', 'Obat'], ops: ['Air Sanitasi', 'Listrik', 'Perawatan Kandang'] },
-    'Lebah Madu': { unitLabel: 'PRODUKSI MADU', tarifLabel: 'HARGA / BOTOL ATAU / LITER', defSatuan: 'Botol', isHarian: false, prod: ['Koloni Lebah', 'Pakan Tambahan (Gula/Sirup)', 'Obat Anti Hama'], ops: ['Perawatan Stup/Kotak', 'Transportasi Pindah Lahan'] },
-    'Lainnya': { unitLabel: 'JUMLAH TERJUAL / PRODUKSI', tarifLabel: 'HARGA RATA-RATA / SATUAN', defSatuan: 'Ekor', isHarian: false, prod: ['Bibit / Pakan'], ops: ['Operasional Lainnya'] }
+    'Sapi Potong': { unitLabel: 'JUMLAH DAGING (Jika Jual Daging)', tarifLabel: 'HARGA / KG', defSatuan: 'Kg', isHarian: false, prod: ['Pakan', 'Vitamin', 'Obat'], ops: ['BBM', 'Upah PekerjaLepas'] },
+    'Sapi Perah': { unitLabel: 'PRODUKSI SUSU', tarifLabel: 'HARGA / LITER', defSatuan: 'Liter', isHarian: true, hariLabel: 'HARI PEMERAHAN / BULAN', prod: ['Pakan', 'Vitamin', 'Obat'], ops: ['BBM', 'Upah PekerjaLepas'] },
+    'Kambing': { unitLabel: 'PRODUKSI DAGING', tarifLabel: 'HARGA / KG', defSatuan: 'Kg', isHarian: false, prod: ['Pakan', 'Vitamin', 'Obat'], ops: ['BBM', 'Upah PekerjaLepas'] },
+    'Ayam Pedaging': { unitLabel: 'PRODUKSI DAGING', tarifLabel: 'HARGA / KG', defSatuan: 'Kg', isHarian: false, prod: ['Pakan', 'Vitamin', 'Obat'], ops: ['BBM', 'Upah PekerjaLepas'] },
+    'Ayam Petelur': { unitLabel: 'PRODUKSI TELUR', tarifLabel: 'HARGA / KG', defSatuan: 'Kg', isHarian: true, hariLabel: 'HARI PRODUKSI TELUR / BULAN', prod: ['Pakan', 'Vitamin', 'Obat'], ops: ['BBM', 'Upah PekerjaLepas'] }
   };
 
   function applyMasterTernak() {
     let jenis = document.getElementById('ternakJenis').value;
-    let data = masterTernak[jenis] || masterTernak['Lainnya'];
+    let data = masterTernak[jenis] || masterTernak['Sapi Potong'];
     
-    // Ubah Label Input
     document.getElementById('lblTernakQty').innerText = data.unitLabel;
     document.getElementById('lblTernakTarif').innerText = data.tarifLabel;
     document.getElementById('ternakSatuan').value = data.defSatuan;
     
-    // Otomatis arahkan Periode berdasar jenis (harian untuk petelur/perah, bulanan untuk potong)
     let selectPeriode = document.getElementById('ternakPeriode');
     if (data.isHarian) {
       selectPeriode.value = 'hari';
@@ -3655,13 +3672,12 @@ function applyMasterDagang() {
     }
     cekPeriodeTernak();
     
-    // Ubah Text Tombol Load Biaya
     document.getElementById('btnLoadBiayaTernak').innerHTML = '⚡ Fitur Isi Otomatis Biaya ' + jenis;
   }
 
   function loadDefaultBiayaTernak() {
     let jenis = document.getElementById('ternakJenis').value;
-    let data = masterTernak[jenis] || masterTernak['Lainnya'];
+    let data = masterTernak[jenis] || masterTernak['Sapi Potong'];
     
     let containerProd = document.getElementById('containerProdTernak');
     let containerOps = document.getElementById('containerOpsTernak');
@@ -3691,21 +3707,15 @@ function applyMasterDagang() {
         </div>
       </div>`;
 
-    if (data.prod) data.prod.forEach(item => {
-      let div = document.createElement('div'); div.className = 'biaya-item dynamic-b-item';
-      div.innerHTML = buatHTMLBiaya(item); containerProd.appendChild(div);
-    });
-
-    if (data.ops) data.ops.forEach(item => {
-      let div = document.createElement('div'); div.className = 'biaya-item dynamic-b-item';
-      div.innerHTML = buatHTMLBiaya(item); containerOps.appendChild(div);
-    });
+    if (data.prod) data.prod.forEach(item => { let div = document.createElement('div'); div.className = 'biaya-item dynamic-b-item'; div.innerHTML = buatHTMLBiaya(item); containerProd.appendChild(div); });
+    if (data.ops) data.ops.forEach(item => { let div = document.createElement('div'); div.className = 'biaya-item dynamic-b-item'; div.innerHTML = buatHTMLBiaya(item); containerOps.appendChild(div); });
     
     showToast('Template Biaya ' + jenis + ' Berhasil Dimuat!');
   }
 
   function ubahModeTernak() {
     let mode = document.getElementById('ternakMode').value;
+    document.getElementById('wrapTernakPenjualan').style.display = mode === 'penjualan_ternak' ? 'block' : 'none';
     document.getElementById('wrapTernakProduksi').style.display = mode === 'produksi' ? 'block' : 'none';
     document.getElementById('wrapTernakOmzet').style.display = mode === 'omzet' ? 'block' : 'none';
   }
@@ -3723,12 +3733,21 @@ function applyMasterDagang() {
     let labelInfo = '';
 
     // 1. Ambil Nilai Dasar
-    if (mode === 'produksi') {
+    if (mode === 'penjualan_ternak') {
+      let qty = parseFloat(document.getElementById('ternakTerjual').value) || 0;
+      let harga = parseNum(document.getElementById('ternakHargaPenjualan').value);
+      nilaiDasar = qty * harga;
+      labelInfo = `(Jual ${qty.toLocaleString('id-ID')} Ekor × ${formatRp(harga)})`;
+      
+      // Mengambil variabel info tambahan (Jika ingin di-log ke console/database di kemudian hari)
+      let infoSaatIni = document.getElementById('ternakSaatIni').value;
+      let infoLahir = document.getElementById('ternakLahir').value;
+    } else if (mode === 'produksi') {
       let qty = parseFloat(document.getElementById('ternakQty').value) || 0;
       let harga = parseNum(document.getElementById('ternakHarga').value);
       let satuan = document.getElementById('ternakSatuan').value;
       nilaiDasar = qty * harga;
-      labelInfo = `(${qty.toLocaleString('id-ID')} ${satuan} × ${formatRp(harga)})`;
+      labelInfo = `(Produksi ${qty.toLocaleString('id-ID')} ${satuan} × ${formatRp(harga)})`;
     } else {
       nilaiDasar = parseNum(document.getElementById('ternakOmzetVal').value);
       labelInfo = '(Omzet Langsung)';
@@ -3965,6 +3984,10 @@ else if (jenis === 'kuliner') {
       document.getElementById('ekstra-Ternak').innerHTML = ''; 
       document.getElementById('ternakMode').value = 'produksi';
       document.getElementById('ternakPeriode').value = 'bulan';
+      document.getElementById('ternakTerjual').value = '';
+      document.getElementById('ternakHargaPenjualan').value = '';
+      document.getElementById('ternakSaatIni').value = '';
+      document.getElementById('ternakLahir').value = '';
       ubahModeTernak();
       applyMasterTernak(); // Reset label sesuai default (Ayam Pedaging)
       showToast('Form Peternakan Direset'); resetBlok26();
