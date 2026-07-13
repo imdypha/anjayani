@@ -92,6 +92,10 @@
 
 .main-wrapper { width: 100%; max-width: 500px; display: flex; flex-direction: column; }
     
+.m-keuangan { background: #ECFEFF; border-color: #A5F3FC; } 
+.m-keuangan .ic { background: #CFFAFE; color: #0891B2; } 
+.m-keuangan span { color: #164E63; }
+
     .app-header { background: linear-gradient(135deg, #0B2E52 0%, #071C36 100%); border-radius: 20px 20px 0 0; padding: 24px 20px 46px; position: relative; overflow: hidden; }
     .app-header::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, #EFCE8C, #C6871F, #EFCE8C); }
     .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
@@ -313,10 +317,10 @@
     </div>
   </div>
 
-  
+  <!-- PANEL HOME (VERSI TERBARU DENGAN SCREENING) -->
   <div id="p-home" class="panel active">
     
-    
+    <!-- Pertanyaan Screening Utama -->
     <div style="background: var(--surface-1); padding: 16px; border-radius: 12px; border: 1px solid var(--border-strong); margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
       <label style="font-size: 13.5px; font-weight: 800; color: var(--accent); display: block; margin-bottom: 12px;"><i class="ti ti-help-circle" style="color: var(--blue-strong);"></i> Apakah responden memiliki usaha / kegiatan ekonomi mandiri?</label>
       <div style="display: flex; gap: 10px;">
@@ -329,7 +333,7 @@
       </div>
     </div>
 
-    
+    <!-- Area Jika Tidak Punya Usaha -->
     <div id="msgNoUsaha" style="display: none; background: #FFF7ED; border: 1px solid #FFEDD5; padding: 24px 20px; border-radius: 12px; text-align: center; animation: fadeUp 0.3s ease;">
       <div style="width: 56px; height: 56px; background: #FFEDD5; color: #C2410C; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 12px;">
         <i class="ti ti-clipboard-off"></i>
@@ -345,7 +349,7 @@
       </div>
     </div>
 
-    
+    <!-- Area Grid Menu Sektor (Tampil Jika Punya Usaha) -->
     <div id="wrapMenuSektor">
       <div class="section-label" style="margin-top: 0;"><span class="idx">Sektor Usaha Responden</div>
       <p class="section-desc">Pilih sektor usaha di bawah ini untuk memulai perhitungan.</p>
@@ -399,6 +403,12 @@
           <div class="ic">🩺</div>
           <span>Sektor Kesehatan</span>
         </div>
+
+      <div class="home-card m-keuangan" onclick="sw('keuangan', document.getElementById('tab-home'))">
+        <div class="ic">💰</div>
+        <span>Jasa Keuangan</span>
+      </div>
+
       </div>
     </div>
   </div>
@@ -525,6 +535,84 @@
     <button class="btn-primary" onclick="hitungDagang()"><i class="ti ti-calculator"></i> HITUNG HASIL DAGANG</button>
     <button class="btn-reset" onclick="resetForm('usaha')"><i class="ti ti-refresh"></i> RESET FORM DAGANG</button>
   </div>
+
+  <div id="p-keuangan" class="panel">
+  <div class="section-label">Data Usaha Jasa Keuangan</div>
+  
+  <div class="fields-grid">
+    <div class="field">
+      <label>NAMA USAHA (OPSIONAL)</label>
+      <input type="text" id="keuanganNama" class="input-box" placeholder="Contoh: KSP Maju Makmur">
+    </div>
+    <div class="field">
+      <label>JENIS USAHA KEUANGAN</label>
+      <select id="keuanganJenis" class="input-box" onchange="applyMasterKeuangan()">
+        <option value="Koperasi Simpan Pinjam">Koperasi Simpan Pinjam</option>
+        <option value="BMT">BMT</option>
+        <option value="Pegadaian Swasta">Pegadaian Swasta</option>
+        <option value="Rentenir / Bank Keliling">Rentenir / Bank Keliling</option>
+        <option value="Leasing">Leasing</option>
+        <option value="Fintech">Fintech</option>
+        <option value="Lainnya">Lainnya</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Pendapatan Utama (Bunga, Jasa, Admin)</div>
+  <div class="fields-grid">
+    <div class="field">
+      <label>PERIODE PENDAPATAN</label>
+      <select id="keuanganPeriode" class="input-box">
+        <option value="hari">Per Hari</option>
+        <option value="minggu">Per Minggu</option>
+        <option value="bulan" selected>Per Bulan</option>
+        <option value="tahun">Per Tahun</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>NILAI PENDAPATAN</label>
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" id="keuanganOmzetVal" placeholder="0" oninput="formatRupiah(this)">
+      </div>
+    </div>
+  </div>
+  <p style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">
+  *Catatan: Nilai pinjaman yang diberikan atau dana tabungan nasabah JANGAN dihitung sebagai omzet. Masukkan hanya pendapatan bunga, margin, komisi, dan biaya administrasi.
+</p>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Data Pekerja & Jamsos (26.A)</div>
+  <div class="fields-grid">
+    <div class="field"><label>JUMLAH PEGAWAI</label><input type="number" id="keuanganPegawai" class="input-box" placeholder="0" min="0"></div>
+    <div class="field"><label>PERIODE GAJI</label><select id="keuanganPeriodeGaji" class="input-box"><option value="bulan" selected>Per Bulan</option><option value="tahun">Per Tahun</option></select></div>
+    <div class="field" style="grid-column: span 2;"><label>GAJI PER PEGAWAI</label><div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" id="keuanganGaji" placeholder="0" oninput="formatRupiah(this)"></div></div>
+  </div>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Rincian Pengeluaran Usaha</div>
+  <button class="btn-add" id="btnLoadBiayaKeuangan" onclick="loadDefaultBiayaKeuangan()" style="background: var(--bg-success); border: 1px dashed var(--border-success); color: var(--text-success); margin-bottom: 12px;">⚡ Fitur Isi Otomatis Biaya Koperasi Simpan Pinjam</button>
+
+  <div class="section-label" style="margin-top: 0; font-size: 13px;">Biaya Produksi (26.B)</div>
+  <p class="section-desc">Barang habis pakai (Cth: Buku tabungan, Kertas Struk, ATK).</p>
+  <div id="containerProdKeuangan"></div>
+  <button class="btn-add" onclick="tambahItemBiaya('containerProdKeuangan', 'Cth: ATK / Kuitansi')">+ Tambah Manual Biaya Produksi</button>
+
+  <div class="section-label" style="margin-top: 0.5rem; font-size: 13px;">Biaya Operasional (26.D)</div>
+  <p class="section-desc">Biaya rutin (Cth: Listrik, Air, Internet, Sewa Kantor, Bensin Penagihan).</p>
+  <div id="containerOpsKeuangan"></div>
+  <button class="btn-add" onclick="tambahItemBiaya('containerOpsKeuangan', 'Cth: Sewa Tempat / Listrik')">+ Tambah Manual Operasional</button>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Biaya Non-Operasional (26.E)</div>
+  <p class="section-desc">Pajak, Bunga Bank, atau Bagi Hasil ke Nasabah.</p>
+  <div id="nonops-Keuangan"></div>
+  <button class="btn-add" onclick="tambahItemBiaya('nonops-Keuangan', 'Cth: Bagi Hasil Nasabah / Pajak')">+ Tambah Biaya Non-Operasional</button>
+  
+  <div class="section-label" style="margin-top: 1.5rem; color: var(--text-success);">Pendapatan Lainnya (Opsional)</div>
+  <div id="ekstra-Keuangan"></div>
+  <button class="btn-add" onclick="tambahPendapatanEkstra('ekstra-Keuangan')" style="border-color: var(--border-success); color: var(--text-success); background: var(--surface-1); margin-bottom: 1.5rem;">+ Tambah Pendapatan Lainnya</button>
+
+  <button class="btn-primary" onclick="hitungKeuangan()"><i class="ti ti-calculator"></i> HITUNG HASIL KEUANGAN</button>
+  <button class="btn-reset" onclick="resetForm('keuangan')"><i class="ti ti-refresh"></i> RESET FORM KEUANGAN</button>
+</div>
 
   <div id="p-kuliner" class="panel">
     <div class="section-label">Data Usaha Kuliner / Makanan & Minuman</div>
@@ -803,7 +891,7 @@
       </select>
     </div>
 
-   
+    <!-- Mode 1: Berdasarkan Aktivitas -->
     <div id="wrapSehatAktivitas" style="background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent); margin-top: 12px;">
       <div class="fields-grid">
         <div class="field">
@@ -823,7 +911,7 @@
       </div>
     </div>
 
-    
+    <!-- Mode 2: Input Omzet Langsung -->
     <div id="wrapSehatOmzet" style="display: none; background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent); margin-top: 12px;">
       <div class="field">
         <label>NILAI OMZET KOTOR</label>
@@ -844,7 +932,7 @@
       </select>
     </div>
 
-    
+    <!-- Pilihan Hari Praktik Berbasis Checkbox -->
     <div id="wrapHariPraktikSehat" class="field" style="margin-top: 12px; display: none; background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent);">
       <label>HARI BUKA / PRAKTIK DALAM SEMINGGU</label>
       <div class="day-group" id="hariPraktikSehatGroup" style="margin-top: 8px; margin-bottom: 4px;">
@@ -1303,7 +1391,7 @@
       </select>
     </div>
 
-  
+    <!-- Mode 1: Berdasarkan Produksi / Penjualan -->
     <div id="wrapTernakProduksi" style="background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent); margin-top: 12px;">
       <div class="fields-grid">
         <div class="field">
@@ -1329,7 +1417,7 @@
       </div>
     </div>
 
-    
+    <!-- Mode 2: Input Omzet Langsung -->
     <div id="wrapTernakOmzet" style="display: none; background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent); margin-top: 12px;">
       <div class="field">
         <label>NILAI OMZET KOTOR</label>
@@ -1402,7 +1490,7 @@
     <button class="btn-reset" onclick="resetForm('peternakan')"><i class="ti ti-refresh"></i> RESET FORM PETERNAKAN</button>
   </div>
 
-  
+  <!-- PANEL PENDIDIKAN (VERSI TERBARU MASTER DATA) -->
   <div id="p-pendidikan" class="panel">
     <div class="section-label">Data Usaha Pendidikan</div>
     
@@ -1438,7 +1526,7 @@
       </select>
     </div>
 
-   
+    <!-- Mode 1: Berdasarkan Peserta Didik -->
     <div id="wrapPendidikanPeserta" style="background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent); margin-top: 12px;">
       <div class="fields-grid">
         <div class="field">
@@ -1458,7 +1546,7 @@
       </div>
     </div>
 
-    
+    <!-- Mode 2: Input Omzet Langsung -->
     <div id="wrapPendidikanOmzet" style="display: none; background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent); margin-top: 12px;">
       <div class="field">
         <label>NILAI OMZET</label>
@@ -1480,7 +1568,7 @@
       </select>
     </div>
 
-    
+    <!-- Pilihan Hari Mengajar Kondisional (Misal untuk Les Privat) -->
     <div id="wrapHariAktivitasPendidikan" class="field" style="margin-top: 12px; display: none;">
       <label id="lblPendidikanHari">HARI MENGAJAR / AKTIF DALAM 1 BULAN</label>
       <div class="input-group">
@@ -2175,6 +2263,7 @@
       <button class="btn-filter" onclick="setFilterRekap('pertambangan', this)">Pertambangan</button>
       <button class="btn-filter" onclick="setFilterRekap('kehutanan', this)">Kehutanan</button>
       <button class="btn-filter" onclick="setFilterRekap('kesehatan', this)">Kesehatan</button>
+      <button class="btn-filter" onclick="setFilterRekap('keuangan', this)">Jasa Keuangan</button>
     </div>
 
     <div class="section-label" style="margin-top: 1rem;">Data Tersimpan</div>
@@ -2684,10 +2773,8 @@
     document.getElementById('b26-totalBiaya').innerText = formatRp(data.totalBiaya);
     document.getElementById('b26-omzet').innerText = formatRp(data.omzetKotor);
     document.getElementById('b26-pengeluaran').innerText = formatRp(data.totalBiaya);
-    // FIX HASIKLL KOOMA PERHITUNGAN BLOK26 JIRRRR 
     let labaBulanBulat = Math.round(data.labaTahun / 12000) * 1000;
     document.getElementById('b26-labaBulan').innerText = formatRp(labaBulanBulat);
-    // document.getElementById('b26-labaBulan').innerText = formatRp(data.labaBulan);
     document.getElementById('b26-labaTahun').innerText = formatRp(data.labaTahun);
 
     if (data.labaTahun < 0) {
@@ -2712,7 +2799,7 @@
     tempBlok26Final = data;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
- 
+  // Tembakkan data ini ke Blok 27 agar langsung terisi otomatis
   syncBlok27();
   }
 
@@ -2772,7 +2859,7 @@
     sw('rekap', document.querySelector('.tabs button:last-child'));
   }
 
- 
+  // --- MASTER DATA SEKTOR DAGANG (DIPISAH 26B, 26C, 26D) ---
   const masterDagang = {
     'Warung Kelontong': { bbt: ['Belanja Dagangan Rutin'], prod: ['Kantong Plastik / Keresek'], ops: ['Transportasi / Bensin', 'Listrik'] },
     'Toko Sembako': { bbt: ['Beras', 'Minyak Goreng', 'Gula & Telur', 'Rokok'], prod: ['Kantong Plastik', 'Karung / Tali'], ops: ['Kuli Angkut', 'Listrik'] },
@@ -2797,7 +2884,7 @@
     let containerProd = document.getElementById('containerProdDagang');
     let containerOps = document.getElementById('containerOpsDagang');
     
-   
+    // Kosongkan agar tidak dobel
     containerBbt.innerHTML = '';
     containerProd.innerHTML = ''; 
     containerOps.innerHTML = ''; 
@@ -2863,13 +2950,37 @@
       labelInfo = `(Omzet Tahunan)`;
     }
 
+    let totalHariSebulanDagang = 30;
+
+function toggleHariDagang(btn) {
+  btn.classList.toggle('active');
+  let aktif = document.querySelectorAll('#hariKerjaDagangGroup .day-btn.active').length;
+  
+  if (aktif === 7) totalHariSebulanDagang = 30;
+  else if (aktif === 6) totalHariSebulanDagang = 26;
+  else if (aktif === 5) totalHariSebulanDagang = 22;
+  else totalHariSebulanDagang = Math.round(aktif * 4.33); // Rata-rata hari dalam sebulan
+  
+  document.getElementById('infoHariKerjaDagang').innerHTML = `${aktif} hari buka / minggu &rarr; ~${totalHariSebulanDagang} hari / bulan`;
+}
+
+function cekPeriodeDagang() {
+  let p = document.getElementById('dagangPeriode').value;
+  document.getElementById('wrapHariKerjaDagang').style.display = p === 'hari' ? 'block' : 'none';
+}
+
+function applyMasterDagang() {
+  let jenis = document.getElementById('dagangJenis').value;
+  document.getElementById('btnLoadBiayaDagang').innerHTML = '⚡ Fitur Isi Otomatis Biaya ' + jenis;
+}
+
     let omzetUtamaTahun = omzetBulanan * 12;
     let ekstra = sumBiayaItems('#ekstra-Dagang .dynamic-income-item', true);
     let omzetKotorTahun = omzetUtamaTahun + ekstra.total;
 
     let gaji = hitungGaji('dagangPegawai', 'dagangGaji', 'dagangPeriodeGaji', 'Pegawai & Jamsos');
     
-    
+    // PEMISAHAN SPESIFIK 26.B, 26.C, 26.D
     let bbt = sumBiayaItems('#bbt-Dagang .dynamic-b-item'); 
     let prod = sumBiayaItems('#containerProdDagang .dynamic-b-item'); 
     let ops = sumBiayaItems('#containerOpsDagang .dynamic-b-item'); 
@@ -2916,7 +3027,7 @@
   tampilkanBlok26({ tabAsal: 'kuliner', type: 'kuliner', nama: document.getElementById('kulinerNama').value, jenis: document.getElementById('kulinerJenis').value, omzetKotor: omzetUtamaTahun, omzetEkstra: ekstra.total, gaji: gaji.total, prod: prod.total, bbt: bbt.total, ops: ops.total, nonOps: nonOps.total, totalBiaya: totalBiaya, labaTahun: omzetKotorTahun - totalBiaya, labaBulan: (omzetKotorTahun - totalBiaya)/12, rincian: htmlBreakdown });
 }
 
- 
+  // --- MASTER DATA SEKTOR JASA ---
   const masterJasa = {
     'Bengkel': { aktivitas: 'Unit Kendaraan', tarif: 'Tarif Servis Rata-rata', defaultProd: ['Oli', 'Sparepart', 'Gemuk', 'Kampas', 'Baut'] },
     'Salon / Barbershop': { aktivitas: 'Orang Pelanggan', tarif: 'Tarif Potong / Perawatan', defaultProd: ['Shampo', 'Pomade / Gel', 'Silet / Pisau Cukur', 'Handuk'] },
@@ -2935,16 +3046,16 @@
     'Lainnya': { aktivitas: 'Jumlah Aktivitas', tarif: 'Tarif Rata-rata', defaultProd: ['Bahan Habis Pakai'] }
   };
 
-  
+  // Fungsi Dinamis Saat Dropdown Berubah
   function applyMasterJasa() {
     let jenis = document.getElementById('jasaJenis').value;
     let data = masterJasa[jenis] || masterJasa['Lainnya'];
     
-    
+    // Ubah Label Input Sesuai Jenis Usaha
     document.getElementById('lblJasaAktivitas').innerText = 'JUMLAH ' + data.aktivitas.toUpperCase();
     document.getElementById('lblJasaTarif').innerText = data.tarif.toUpperCase();
     
-    
+    // Ubah Text Tombol Load Biaya
     document.getElementById('btnLoadBiayaJasa').innerHTML = '⚡ Fitur Isi Otomatis Biaya ' + jenis;
   }
 
@@ -2953,7 +3064,7 @@
     let data = masterJasa[jenis] || masterJasa['Lainnya'];
     let container = document.getElementById('containerProdJasa');
     
-    container.innerHTML = ''; 
+    container.innerHTML = ''; // Kosongkan agar tidak dobel jika dipencet 2x
     
     data.defaultProd.forEach(item => {
        const div = document.createElement('div');
@@ -3006,7 +3117,7 @@
     document.getElementById('wrapHariBukaJasa').style.display = periode === 'hari' ? 'block' : 'none';
   }
 
-  
+  // --- FUNGSI KALKULASI HASIL AKHIR ---
   function hitungJasa() {
     let mode = document.getElementById('jasaMode').value;
     let periode = document.getElementById('jasaPeriode').value;
@@ -3015,7 +3126,7 @@
     let labelInfo = '';
     let jenisJasa = document.getElementById('jasaJenis').value;
 
-   
+    // 1. Ambil Nilai Dasar
     if (mode === 'aktivitas') {
       let qty = parseFloat(document.getElementById('jasaQty').value) || 0;
       let harga = parseNum(document.getElementById('jasaHarga').value);
@@ -3027,7 +3138,7 @@
       labelInfo = '(Omzet Langsung)';
     }
 
-    
+    // 2. Konversi Ke Bulanan
     if (periode === 'hari') {
       let hariBuka = parseFloat(document.getElementById('jasaHariBuka').value) || 0;
       omzetBulanan = nilaiDasar * hariBuka;
@@ -3043,7 +3154,7 @@
     let omzetUtamaTahun = omzetBulanan * 12;
     let htmlPendapatanDetail = `<div class="bd-row minus" style="padding-left:10px;"><span>+ Pendapatan Utama <br><small style="font-size:10px; color:var(--text-muted)">${labelInfo}</small></span><span class="bd-val" style="color:var(--text-success);">${formatRp(omzetUtamaTahun)}/thn</span></div>`;
 
-    
+    // 3. Ekstra & Pengeluaran
     let ekstra = sumBiayaItems('#ekstra-Jasa .dynamic-income-item', true);
     let omzetKotorTahun = omzetUtamaTahun + ekstra.total;
 
@@ -3055,7 +3166,7 @@
 
     let totalBiaya = gaji.total + prod.total + bbt.total + ops.total + nonOps.total;
     
-    
+    // 4. Perakitan Rincian 26 & 27
     let customPendapatan = `<div class="bd-row total" style="color:var(--accent);"><span>A. Pendapatan</span></div>${htmlPendapatanDetail}${ekstra.html}<div class="bd-row minus" style="padding-left:10px;"><span>= Omzet Bersih</span><span class="bd-val" style="color:var(--text-success); font-weight:700;">${formatRp(omzetKotorTahun - bbt.total)}/thn</span></div>`;
     let htmlBreakdown = generateAnomaliWarning(omzetKotorTahun, totalBiaya) + customPendapatan + buildBreakdownHTML(0, 0, gaji, prod, bbt, ops, nonOps, true);
 
@@ -3072,7 +3183,7 @@
     });
   }
 
- 
+  // --- MASTER DATA SEKTOR SEWA ---
   const masterSewa = {
     'Kos': { unitLabel: 'Jumlah Kamar Terisi', tarifLabel: 'Tarif / Kamar', hasDurasi: false, defaultProd: ['Perawatan Bangunan', 'Listrik', 'Air', 'Internet', 'Kebersihan'] },
     'Kontrakan': { unitLabel: 'Jumlah Rumah Terisi', tarifLabel: 'Tarif / Rumah', hasDurasi: false, defaultProd: ['Perawatan Bangunan', 'Pajak PBB'] },
@@ -3088,16 +3199,16 @@
     'Lainnya': { unitLabel: 'Jumlah Unit', durasiLabel: 'Lama Sewa (Ops.', tarifLabel: 'Tarif Sewa', hasDurasi: true, defaultProd: ['Biaya Perawatan', 'Biaya Operasional'] }
   };
 
-  
+  // Fungsi Dinamis Saat Dropdown Sewa Berubah
   function applyMasterSewa() {
     let jenis = document.getElementById('sewaJenis').value;
     let data = masterSewa[jenis] || masterSewa['Lainnya'];
     
-   
+    // Ubah Label Input
     document.getElementById('lblSewaUnit').innerText = data.unitLabel.toUpperCase();
     document.getElementById('lblSewaTarif').innerText = data.tarifLabel.toUpperCase();
     
-   
+    // Tampilkan atau Sembunyikan Input Durasi (Hari/Jam)
     if (data.hasDurasi) {
       document.getElementById('wrapSewaDurasi').style.display = 'block';
       document.getElementById('lblSewaDurasi').innerText = data.durasiLabel.toUpperCase();
@@ -3107,7 +3218,7 @@
       document.getElementById('wrapSewaTarif').style.gridColumn = 'span 1'; // Sejajarkan dengan unit
     }
     
-   
+    // Ubah Text Tombol Load Biaya
     document.getElementById('btnLoadBiayaSewa').innerHTML = '⚡ Fitur Isi Otomatis Biaya ' + jenis;
   }
 
@@ -3116,7 +3227,7 @@
     let data = masterSewa[jenis] || masterSewa['Lainnya'];
     let container = document.getElementById('containerOpsSewa');
     
-    container.innerHTML = ''; 
+    container.innerHTML = ''; // Kosongkan agar tidak dobel
     
     data.defaultProd.forEach(item => {
        const div = document.createElement('div');
@@ -3163,7 +3274,7 @@
     document.getElementById('wrapSewaOmzet').style.display = mode === 'omzet' ? 'block' : 'none';
   }
 
-  
+  // --- FUNGSI KALKULASI HASIL AKHIR SEWA ---
   function hitungSewa() {
     let mode = document.getElementById('sewaMode').value;
     let periode = document.getElementById('sewaPeriode').value; // Berlaku untuk total omzet (misal: "Hasil input di atas adalah pendapatan per Bulan")
@@ -3173,7 +3284,7 @@
     let jenisSewa = document.getElementById('sewaJenis').value;
     let meta = masterSewa[jenisSewa] || masterSewa['Lainnya'];
 
-    
+    // 1. Ambil Nilai Dasar
     if (mode === 'unit') {
       let unit = parseFloat(document.getElementById('sewaQty').value) || 0;
       let tarif = parseNum(document.getElementById('sewaHarga').value);
@@ -3191,9 +3302,11 @@
       labelInfo = '(Omzet Langsung)';
     }
 
-    
+    // 2. Konversi Ke Bulanan
+    // Catatan: Karena tidak ada lagi 'Hari Buka', jika responden memilih periode 'Hari', kita kalikan 30 default.
+    // Jika tidak ingin ada konversi ini, responden harus memilih periode "Bulan" di awal.
     if (periode === 'hari') {
-      omzetBulanan = nilaiDasar * 30; 
+      omzetBulanan = nilaiDasar * 30; // Asumsi sewa harian penuh sebulan jika tidak ditentukan lain
     } else if (periode === 'minggu') {
       omzetBulanan = nilaiDasar * (52 / 12);
     } else if (periode === 'bulan') {
@@ -3214,12 +3327,12 @@
     let bbt = sumBiayaItems('#bbt-Sewa .dynamic-b-item');
     let nonOps = sumBiayaItems('#nonops-Sewa .dynamic-b-item');
 
-    
+    // Untuk Sektor Sewa, biaya operasional dan perawatan digabung di Blok 26.D. Tidak ada Biaya Produksi (26.B).
     let prod = { total: 0, html: '' }; 
 
     let totalBiaya = gaji.total + prod.total + bbt.total + ops.total + nonOps.total;
     
-    
+    // 4. Perakitan Rincian 26 & 27
     let customPendapatan = `<div class="bd-row total" style="color:var(--accent);"><span>A. Pendapatan</span></div>${htmlPendapatanDetail}${ekstra.html}<div class="bd-row minus" style="padding-left:10px;"><span>= Omzet Bersih</span><span class="bd-val" style="color:var(--text-success); font-weight:700;">${formatRp(omzetKotorTahun - bbt.total)}/thn</span></div>`;
     let htmlBreakdown = generateAnomaliWarning(omzetKotorTahun, totalBiaya) + customPendapatan + buildBreakdownHTML(0, 0, gaji, prod, bbt, ops, nonOps, true);
 
@@ -3254,7 +3367,7 @@
     let nilaiDasar = 0;
     let labelInfo = '';
 
-    
+    // 1. Ambil Nilai Dasar Sesuai Pilihan Mode Input
     if (mode === 'produksi') {
       let qty = parseFloat(document.getElementById('ikanQty').value) || 0;
       let harga = parseNum(document.getElementById('ikanHarga').value);
@@ -3265,7 +3378,7 @@
       labelInfo = '(Omzet Langsung)';
     }
 
-    
+    // 2. Logika Konversi Presisi Ke Laba/Omzet Bulanan
     if (periode === 'hari') {
       let hariMelaut = parseFloat(document.getElementById('ikanHariMelaut').value) || 0;
       omzetBulanan = nilaiDasar * hariMelaut;
@@ -3281,7 +3394,7 @@
     let omzetUtamaTahun = omzetBulanan * 12;
     let htmlPendapatanDetail = `<div class="bd-row minus" style="padding-left:10px;"><span>+ Pendapatan Utama <br><small style="font-size:10px; color:var(--text-muted)">${labelInfo}</small></span><span class="bd-val" style="color:var(--text-success);">${formatRp(omzetUtamaTahun)}/thn</span></div>`;
 
-    
+    // 3. Hitung Pendapatan Tambahan dan Pengeluaran Biaya Komparatif
     let ekstra = sumBiayaItems('#ekstra-Perikanan .dynamic-income-item', true);
     let omzetKotorTahun = omzetUtamaTahun + ekstra.total;
 
@@ -3296,7 +3409,7 @@
     
     let htmlBreakdown = generateAnomaliWarning(omzetKotorTahun, totalBiaya) + customPendapatan + buildBreakdownHTML(0, 0, gaji, prod, bbt, ops, nonOps, true);
 
-   
+    // 4. Dorong Rekapitulasi Otomatis Ke Struktur Blok 26 & Blok 27
     tampilkanBlok26({
       tabAsal: 'perikanan', type: 'perikanan', 
       nama: document.getElementById('ikanNama').value, 
@@ -3389,7 +3502,7 @@
     tampilkanBlok26({ tabAsal: 'pertanian', type: 'pertanian', nama: document.getElementById('taniNama').value, jenis: document.getElementById('taniJenis').value, omzetKotor: omzetKotorTahun, gaji: gaji.total, prod: prod.total, bbt: bbt.total, ops: ops.total, nonOps: nonOps.total, totalBiaya: totalBiaya, labaTahun: omzetKotorTahun - totalBiaya, labaBulan: (omzetKotorTahun - totalBiaya)/12, rincian: htmlBreakdown });
   }
 
-  
+  // --- MASTER DATA SEKTOR PETERNAKAN ---
   const masterTernak = {
     'Ayam Pedaging': { unitLabel: 'JUMLAH AYAM DIPANEN / TERJUAL', tarifLabel: 'HARGA / EKOR ATAU / KG', defSatuan: 'Ekor', isHarian: false, prod: ['DOC / Bibit', 'Pakan Ayam', 'Vitamin & Obat', 'Vaksin'], ops: ['Sekam / Serbuk Gergaji', 'Listrik / Pemanas Gas', 'Air', 'Transportasi'] },
     'Ayam Petelur': { unitLabel: 'PRODUKSI TELUR', tarifLabel: 'HARGA / KG TELUR', defSatuan: 'Kg', isHarian: true, hariLabel: 'HARI PRODUKSI TELUR / BULAN', prod: ['Pakan Layer', 'Vitamin & Obat', 'Vaksin'], ops: ['Listrik', 'Air', 'Perawatan Kandang'] },
@@ -3409,12 +3522,12 @@
     let jenis = document.getElementById('ternakJenis').value;
     let data = masterTernak[jenis] || masterTernak['Lainnya'];
     
-   
+    // Ubah Label Input
     document.getElementById('lblTernakQty').innerText = data.unitLabel;
     document.getElementById('lblTernakTarif').innerText = data.tarifLabel;
     document.getElementById('ternakSatuan').value = data.defSatuan;
     
-    
+    // Otomatis arahkan Periode berdasar jenis (harian untuk petelur/perah, bulanan untuk potong)
     let selectPeriode = document.getElementById('ternakPeriode');
     if (data.isHarian) {
       selectPeriode.value = 'hari';
@@ -3424,6 +3537,7 @@
     }
     cekPeriodeTernak();
     
+    // Ubah Text Tombol Load Biaya
     document.getElementById('btnLoadBiayaTernak').innerHTML = '⚡ Fitur Isi Otomatis Biaya ' + jenis;
   }
 
@@ -3490,6 +3604,7 @@
     let nilaiDasar = 0;
     let labelInfo = '';
 
+    // 1. Ambil Nilai Dasar
     if (mode === 'produksi') {
       let qty = parseFloat(document.getElementById('ternakQty').value) || 0;
       let harga = parseNum(document.getElementById('ternakHarga').value);
@@ -3501,7 +3616,7 @@
       labelInfo = '(Omzet Langsung)';
     }
 
-    
+    // 2. Konversi Ke Bulanan
     if (periode === 'hari') {
       let hariProd = parseFloat(document.getElementById('ternakHariBuka').value) || 0;
       omzetBulanan = nilaiDasar * hariProd;
@@ -3600,7 +3715,7 @@
       document.getElementById('ekstra-Dagang').innerHTML = ''; 
       document.getElementById('dagangPeriode').value = 'bulan';
       cekPeriodeDagang();
-      applyMasterDagang(); 
+      applyMasterDagang(); // Kembalikan label template biaya ke default (Warung Kelontong)
       showToast('Form Dagang Direset'); resetBlok26();
 
     }  else if (jenis === 'kuliner') {
@@ -3620,7 +3735,7 @@
       document.getElementById('kulinerPeriode').value = 'bulan';
       ubahModeKuliner();
       cekPeriodeKuliner();
-      applyMasterKuliner(); 
+      applyMasterKuliner(); // Kembalikan ke Warung Makan
       showToast('Form Kuliner Direset'); resetBlok26();
     
     }  else if (jenis === 'jasa') {
@@ -3640,10 +3755,25 @@
       document.getElementById('jasaPeriode').value = 'bulan';
       ubahModeJasa();
       cekPeriodeJasa();
-      applyMasterJasa(); 
+      applyMasterJasa(); // Kembalikan label ke default (Bengkel)
       showToast('Form Jasa Direset'); resetBlok26();
     
-    }  else if (jenis === 'sewa') {
+    }  
+    else if (jenis === 'keuangan') {
+   document.getElementById('keuanganNama').value = ''; 
+   document.getElementById('keuanganOmzetVal').value = ''; 
+   document.getElementById('keuanganPegawai').value = ''; 
+   document.getElementById('keuanganGaji').value = ''; 
+   document.getElementById('containerProdKeuangan').innerHTML = ''; 
+   document.getElementById('containerOpsKeuangan').innerHTML = ''; 
+   document.getElementById('nonops-Keuangan').innerHTML = ''; 
+   document.getElementById('ekstra-Keuangan').innerHTML = ''; 
+   document.getElementById('keuanganPeriode').value = 'bulan';
+   applyMasterKeuangan(); 
+   showToast('Form Keuangan Direset'); resetBlok26();
+}
+    
+    else if (jenis === 'sewa') {
       document.getElementById('sewaNama').value = ''; 
       document.getElementById('sewaQty').value = ''; 
       document.getElementById('sewaDurasi').value = ''; 
@@ -3658,7 +3788,7 @@
       document.getElementById('sewaMode').value = 'unit';
       document.getElementById('sewaPeriode').value = 'bulan';
       ubahModeSewa();
-      applyMasterSewa(); 
+      applyMasterSewa(); // Reset ke Kos
       showToast('Form Sewa Direset'); resetBlok26();
     
     }  else if (jenis === 'perikanan') {
@@ -3698,7 +3828,7 @@
       document.getElementById('ternakMode').value = 'produksi';
       document.getElementById('ternakPeriode').value = 'bulan';
       ubahModeTernak();
-      applyMasterTernak(); 
+      applyMasterTernak(); // Reset label sesuai default (Ayam Pedaging)
       showToast('Form Peternakan Direset'); resetBlok26();
 
     }  else if (jenis === 'pendidikan') {
@@ -3798,10 +3928,10 @@
       document.getElementById('sehatMode').value = 'aktivitas';
       document.getElementById('sehatPeriode').value = 'bulan';
       
-     
+      // Reset Hari Praktik Checkbox
       document.querySelectorAll('#hariPraktikSehatGroup .day-btn').forEach((btn, idx) => {
-        if(idx < 6) btn.classList.add('active'); 
-        else btn.classList.remove('active'); 
+        if(idx < 6) btn.classList.add('active'); // Sen-Sab aktif
+        else btn.classList.remove('active'); // Min tidak aktif
       });
       totalHariSebulanSehat = 26;
       document.getElementById('infoHariPraktikSehat').innerHTML = `6 hari praktik / minggu &rarr; ~26 hari / bulan`;
@@ -3874,6 +4004,7 @@
       else if (item.type === 'industri') { title = 'Industri'; icon = 'ti-building-factory'; bgColor = '#fdf4ff'; fgColor = '#a21caf'; }
       else if (item.type === 'pertambangan') { title = 'Pertambangan'; icon = 'ti-shovel'; bgColor = '#f5f5f4'; fgColor = '#44403c'; border = '1px solid #44403c33'; }
       else if (item.type === 'kesehatan') { title = 'Kesehatan'; icon = 'ti-stethoscope'; bgColor = '#fef2f2'; fgColor = '#991b1b'; }
+      else if (item.type === 'keuangan') { title = 'Jasa Keuangan'; icon = 'ti-coin'; bgColor = '#ECFEFF'; fgColor = '#0891B2'; }
 
       let isRugi = laba < 0;
       let heroBg = isRugi ? 'linear-gradient(135deg, #ef4444, #991b1b)' : 'linear-gradient(135deg, #00479B, #002B5E)';
@@ -4155,7 +4286,7 @@ function tambahItem15b() {
 
   renderRekap();
 
-  
+  // ANOMALI
   function generateAnomaliWarning(totalOmzet, totalBiaya) {
   const wadah = document.getElementById('peringatanAnomali');
   
@@ -4226,7 +4357,7 @@ function getMultiplierBulanan(periode) {
     return { total, html };
   }
 
-  
+  // --- FUNGSI UNTUK SEKTOR INDUSTRI ---
   
   function ubahModeIndustri(selectEl) {
     const mode = selectEl.value;
@@ -4299,7 +4430,7 @@ function getMultiplierBulanan(periode) {
   document.getElementById('containerProdukIndustri').appendChild(div);
 }
 
-  
+  // --- MASTER DATA SEKTOR INDUSTRI ---
   const masterIndustri = {
     'Industri Makanan': { unitLabel: 'PRODUKSI MAKANAN', tarifLabel: 'HARGA / POTONG / BKS', defSatuan: 'Bungkus', isHarian: true, prod: ['Kedelai / Tepung / Bahan Utama', 'Bumbu / Garam', 'Kayu Bakar / Gas', 'Plastik Kemasan / Karet'], ops: ['Listrik', 'Air', 'Transportasi'] },
     'Industri Minuman': { unitLabel: 'PRODUKSI MINUMAN', tarifLabel: 'HARGA / BOTOL / CUP', defSatuan: 'Botol', isHarian: true, prod: ['Bahan Sirup / Gula', 'Botol / Cup', 'Segel Plastik'], ops: ['Listrik', 'Air', 'Transportasi'] },
@@ -4323,7 +4454,7 @@ function getMultiplierBulanan(periode) {
     document.getElementById('lblIndustriTarif').innerText = data.tarifLabel;
     document.getElementById('industriSatuan').value = data.defSatuan;
     
-    
+    // Otomatis arahkan Periode berdasar karakter industri (harian atau borongan/bulanan)
     let selectPeriode = document.getElementById('industriPeriode');
     if (data.isHarian) {
       selectPeriode.value = 'hari';
@@ -4332,7 +4463,7 @@ function getMultiplierBulanan(periode) {
     }
     cekPeriodeIndustri();
     
-    
+    // Ubah Text Tombol Load Biaya
     document.getElementById('btnLoadBiayaIndustri').innerHTML = '⚡ Fitur Isi Otomatis Biaya ' + (jenis.includes('Industri') ? jenis : 'Industri ' + jenis);
   }
 
@@ -4392,7 +4523,7 @@ function getMultiplierBulanan(periode) {
     let nilaiDasar = 0;
     let labelInfo = '';
 
-    
+    // 1. Ambil Nilai Dasar
     if (mode === 'produksi') {
       let qty = parseFloat(document.getElementById('industriQty').value) || 0;
       let harga = parseNum(document.getElementById('industriHarga').value);
@@ -4404,7 +4535,7 @@ function getMultiplierBulanan(periode) {
       labelInfo = '(Omzet Langsung)';
     }
 
-    
+    // 2. Konversi Ke Bulanan
     if (periode === 'hari') {
       let hariProd = parseFloat(document.getElementById('industriHariBuka').value) || 0;
       omzetBulanan = nilaiDasar * hariProd;
@@ -4451,7 +4582,7 @@ function getMultiplierBulanan(periode) {
     });
   }
 
-  
+  // --- FUNGSI UNTUK SEKTOR PERTAMBANGAN ---
   
   // function ubahModePertambangan(selectEl) {
   //   const mode = selectEl.value;
@@ -4715,7 +4846,7 @@ function getMultiplierBulanan(periode) {
 //     infoBox.style.display = (infoBox.style.display === 'none') ? 'block' : 'none';
 //   }
 
-
+// --- MASTER DATA SEKTOR PERTAMBANGAN ---
   const masterTambang = {
     'Penambangan Pasir': { satuan: 'Rit', isHarian: true, isDepot: false, prod: ['Solar Mesin Penyedot / Excavator', 'Oli / Pelumas'], ops: ['Perawatan Mesin / Alat Berat', 'Retribusi / Uang Portal', 'Transportasi / Sewa Truk'] },
     'Penambangan Batu': { satuan: 'Kubik', isHarian: true, isDepot: false, prod: ['Solar Mesin / Alat Berat', 'Bahan Peledak (Dinamit)'], ops: ['Perawatan Alat', 'Retribusi Galian C', 'Transportasi Pengiriman'] },
@@ -4734,7 +4865,7 @@ function getMultiplierBulanan(periode) {
     
     document.getElementById('tambangSatuan').value = data.satuan;
     
-    
+    // Jika Depot, otomatis ganti ke Mode Omzet & Periode Bulanan
     let modeSelect = document.getElementById('tambangMode');
     let periodeSelect = document.getElementById('tambangPeriode');
     
@@ -4810,7 +4941,7 @@ function getMultiplierBulanan(periode) {
     let nilaiDasar = 0;
     let labelInfo = '';
 
- 
+    // 1. Ambil Nilai Dasar
     if (mode === 'produksi') {
       let qty = parseFloat(document.getElementById('tambangQty').value) || 0;
       let harga = parseNum(document.getElementById('tambangHarga').value);
@@ -4822,7 +4953,7 @@ function getMultiplierBulanan(periode) {
       labelInfo = '(Omzet Langsung)';
     }
 
-  
+    // 2. Konversi Ke Bulanan
     if (periode === 'hari') {
       let hariAktif = parseFloat(document.getElementById('tambangHariAktif').value) || 0;
       omzetBulanan = nilaiDasar * hariAktif;
@@ -4869,12 +5000,12 @@ function getMultiplierBulanan(periode) {
     });
   }
 
- 
+  // Fungsi kalkulator live di dalam kartu produk
   function updateLiveCalcTambang(el) {
     const itemCard = el.closest('.up-pertambangan-item');
     if (!itemCard) return;
 
-  
+    // Ambil semua data input dalam satu kartu
     const nama = itemCard.querySelector('.p-nama').value || 'Material';
     const qty = parseFloat(itemCard.querySelector('.p-qty').value) || 0;
     const satuan = itemCard.querySelector('.p-satuan').value || 'unit';
@@ -5279,6 +5410,7 @@ function hitungPertanianBaru() {
     `${ekstra.html} <div class="bd-row total" style="color:var(--text-secondary);"><span>B. Gaji Pekerja`
   );
 
+  // Tambahkan rincian Non-Operasional ke HTML Breakdown
   finalRincian += `<div class="bd-row total" style="color:var(--text-secondary);"><span>E. Biaya Non-Operasional (26.E) / Tahun</span></div>`;
   finalRincian += nonOps.html || '<span style="font-size:11px; padding-left:10px; color:var(--text-muted);">Tidak ada</span>';
 
@@ -5331,6 +5463,7 @@ function syncBlok27() {
   document.getElementById('b27-val-b').innerText = formatRp(pendapatanLainnya);
   document.getElementById('b27-val-c').innerText = formatRp(totalPendapatan);
   
+  // Perbarui nilai pada Hero Card atas
   document.getElementById('b27-totalTahunHero').innerText = formatRp(totalPendapatan);
   
   showToast("✅ Data Blok 27 disinkronkan!");
@@ -5346,9 +5479,9 @@ function simpanRekapBlok27() {
   let savedData = { 
     nama: tempBlok26Final.nama,
     jenis: 'Pendapatan Blok 27',
-    omzetTahun: tempBlok26Final.omzetKotor, 
+    omzetTahun: tempBlok26Final.omzetKotor, // Untuk label rekap
     totalPendapatan: tempBlok26Final.omzetKotor, 
-    labaTahun: tempBlok26Final.omzetKotor, 
+    labaTahun: tempBlok26Final.omzetKotor, // Kita pasang sama agar badge hijaunya menyala
     rincian: `
       <div class="bd-row minus"><span>27.A Pendapatan Barang/Jasa</span><span class="bd-val">${formatRp(tempBlok26Final.omzetKotor)}</span></div>
       <div class="bd-row minus"><span>27.B Pendapatan Lainnya</span><span class="bd-val">Rp 0</span></div>
@@ -5437,6 +5570,7 @@ function simpanRekapBlok27() {
 //     });
 //   }
 
+// --- MASTER DATA SEKTOR KEHUTANAN ---
   const masterKehutanan = {
     'Penebangan Kayu': { labelQty: 'VOLUME PRODUKSI KAYU', labelHarga: 'HARGA JUAL PER KUBIK / BATANG', defSatuan: 'Kubik', isAktivitas: false, hasHari: true, prod: ['BBM / Solar Chainsaw', 'Oli Pelumas Mesin', 'Rantai / Sparepart Chainsaw'], ops: ['Sewa Kendaraan Angkut', 'Perawatan Alat Berat', 'Bensin Transportasi'] },
     'Getah Pinus': { labelQty: 'JUMLAH PRODUKSI GETAH', labelHarga: 'HARGA JUAL PER KG / LITER', defSatuan: 'Kg', isAktivitas: false, hasHari: true, prod: ['Pisau Sadap', 'Ember / Wadah Getah', 'Cairan Stimulan'], ops: ['Transportasi Pengumpulan', 'Retribusi Perhutani'] },
@@ -5453,10 +5587,12 @@ function simpanRekapBlok27() {
     let jenis = document.getElementById('hutanJenis').value;
     let data = masterKehutanan[jenis] || masterKehutanan['Lainnya'];
     
+    // Sesuaikan Label Input Form secara dinamis
     document.getElementById('lblHutanQty').innerText = data.isAktivitas ? data.labelAktivitas : data.labelQty;
     document.getElementById('lblHutanTarif').innerText = data.labelHarga;
     document.getElementById('hutanSatuan').value = data.defSatuan;
     
+    // Otomatisasi penentuan periode default dan ketersediaan input hari kerja
     let selectPeriode = document.getElementById('hutanPeriode');
     if (data.hasHari) {
       selectPeriode.value = 'hari';
@@ -5538,6 +5674,7 @@ function simpanRekapBlok27() {
       labelInfo = '(Omzet Langsung)';
     }
 
+    // 2. Konversi Ke Bulanan
     if (periode === 'hari') {
       let hariBuka = parseFloat(document.getElementById('hutanHariBuka').value) || 0;
       omzetBulanan = nilaiDasar * hariBuka;
@@ -5583,6 +5720,7 @@ function simpanRekapBlok27() {
     });
   }
 
+  // --- MASTER DATA SEKTOR KESEHATAN ---
   const masterKesehatan = {
     'Praktik Dokter': { engine: 'aktivitas', unitLabel: 'JUMLAH PASIEN', tarifLabel: 'TARIF RATA-RATA', satuan: 'Orang', prod: ['Obat-obatan', 'Masker', 'Sarung Tangan', 'ATK Medis'], ops: ['Listrik', 'Air', 'Kebersihan'] },
     'Praktik Dokter Gigi': { engine: 'aktivitas', unitLabel: 'JUMLAH PASIEN', tarifLabel: 'TARIF TINDAKAN / PASIEN', satuan: 'Orang', prod: ['Bahan Tambal / Cabut', 'Obat', 'Masker & Sarung Tangan'], ops: ['Listrik', 'Sewa Tempat'] },
@@ -5616,6 +5754,7 @@ function simpanRekapBlok27() {
     
     let modeSelect = document.getElementById('sehatMode');
     
+    // Sesuaikan Pilihan Engine (Aktivitas vs Omzet)
     if (data.engine === 'omzet') {
       modeSelect.value = 'omzet';
     } else {
@@ -5687,6 +5826,7 @@ function simpanRekapBlok27() {
     let nilaiDasar = 0;
     let labelInfo = '';
 
+    // 1. Ambil Nilai Dasar
     if (mode === 'aktivitas') {
       let qty = parseFloat(document.getElementById('sehatQty').value) || 0;
       let harga = parseNum(document.getElementById('sehatHarga').value);
@@ -5698,6 +5838,7 @@ function simpanRekapBlok27() {
       labelInfo = '(Omzet Langsung)';
     }
 
+    // 2. Konversi Ke Bulanan
     if (periode === 'hari') {
       omzetBulanan = nilaiDasar * totalHariSebulanSehat;
       labelInfo += ` × ${totalHariSebulanSehat} Hari Praktik`;
@@ -5740,6 +5881,7 @@ function simpanRekapBlok27() {
     });
   }
 
+  // --- MASTER DATA SEKTOR KULINER ---
   const masterKuliner = {
     'Warung Makan': { satuan: 'RATA-RATA PORSI TERJUAL', tarifLabel: 'HARGA RATA-RATA / PORSI', prod: ['Beras / Karbohidrat', 'Lauk Pauk (Ayam/Ikan/Daging)', 'Sayuran & Bumbu', 'Minyak Goreng', 'Gas LPG', 'Bungkus / Kertas Nasi', 'Air Minum'], bbt: ['Kerupuk Titipan', 'Minuman Kemasan'], ops: ['Listrik', 'Air', 'Retribusi / Kebersihan'] },
     'Rumah Makan': { satuan: 'RATA-RATA PORSI / TRANSAKSI', tarifLabel: 'RATA-RATA / TRANSAKSI', prod: ['Bahan Baku Masakan', 'Sayuran & Bumbu', 'Gas LPG Komersial', 'Minyak Goreng'], bbt: ['Minuman Botol / Kaleng', 'Snack / Kerupuk'], ops: ['Sewa Tempat', 'Listrik', 'Air', 'Kebersihan & Keamanan'] },
@@ -5877,6 +6019,7 @@ function simpanRekapBlok27() {
     });
   }
 
+  // --- MASTER DATA SEKTOR PENDIDIKAN ---
   const masterPendidikan = {
     'TK': { unitLabel: 'JUMLAH MURID', tarifLabel: 'SPP / BULAN', isHarian: false, prod: ['ATK / Kertas', 'Buku Panduan', 'Mainan Edukasi', 'Snack / Konsumsi'], ops: ['Listrik', 'Air', 'Perawatan Bangunan'] },
     'PAUD': { unitLabel: 'JUMLAH MURID', tarifLabel: 'SPP / BULAN', isHarian: false, prod: ['Mainan Edukasi', 'ATK / Krayon', 'Snack Anak'], ops: ['Listrik', 'Air Bersih', 'Kebersihan'] },
@@ -5895,9 +6038,11 @@ function simpanRekapBlok27() {
     let jenis = document.getElementById('pendidikanJenis').value;
     let data = masterPendidikan[jenis] || masterPendidikan['Lainnya'];
     
+    // Ubah Label Input
     document.getElementById('lblPendidikanQty').innerText = data.unitLabel;
     document.getElementById('lblPendidikanTarif').innerText = data.tarifLabel;
     
+    // Otomatis arahkan Periode berdasar jenis (Les Privat otomatis Harian)
     let selectPeriode = document.getElementById('pendidikanPeriode');
     if (data.isHarian) {
       selectPeriode.value = 'hari';
@@ -5907,6 +6052,7 @@ function simpanRekapBlok27() {
     }
     cekPeriodePendidikan();
     
+    // Ubah Text Tombol Load Biaya
     document.getElementById('btnLoadBiayaPendidikan').innerHTML = '⚡ Fitur Isi Otomatis Biaya ' + jenis;
   }
 
@@ -5967,6 +6113,7 @@ function simpanRekapBlok27() {
     let nilaiDasar = 0;
     let labelInfo = '';
 
+    // 1. Ambil Nilai Dasar
     if (mode === 'peserta') {
       let qty = parseFloat(document.getElementById('pendidikanQty').value) || 0;
       let harga = parseNum(document.getElementById('pendidikanHarga').value);
@@ -5977,6 +6124,7 @@ function simpanRekapBlok27() {
       labelInfo = '(Omzet Langsung)';
     }
 
+    // 2. Konversi Ke Bulanan
     if (periode === 'hari') {
       let hariAktif = parseFloat(document.getElementById('pendidikanHariAktif').value) || 0;
       omzetBulanan = nilaiDasar * hariAktif;
@@ -5998,7 +6146,7 @@ function simpanRekapBlok27() {
 
     let gaji = hitungGaji('pendidikanPegawai', 'pendidikanGaji', 'pendidikanPeriodeGaji', 'Tenaga Pengajar');
     
-   
+    // PEMISAHAN SPESIFIK BIAYA
     let prod = sumBiayaItems('#containerProdPendidikan .dynamic-b-item');
     let bbt = sumBiayaItems('#bbt-Pendidikan .dynamic-b-item'); 
     let ops = sumBiayaItems('#containerOpsPendidikan .dynamic-b-item'); 
@@ -6027,6 +6175,7 @@ function simpanRekapBlok27() {
     });
   }
 
+  // Fungsi Kendali Pertanyaan Screening Usaha di Menu Home
   function toggleUsaha(hasUsaha) {
     const btnYa = document.getElementById('btnUsahaYa');
     const btnTidak = document.getElementById('btnUsahaTidak');
@@ -6034,31 +6183,134 @@ function simpanRekapBlok27() {
     const msgNoUsaha = document.getElementById('msgNoUsaha');
 
     if (hasUsaha) {
-    
+      // Styling Tombol YA aktif
       btnYa.style.background = 'var(--accent)';
       btnYa.style.color = '#fff';
       btnYa.style.borderColor = 'var(--accent)';
 
-      
+      // Styling Tombol TIDAK non-aktif
       btnTidak.style.background = 'var(--surface-2)';
       btnTidak.style.color = 'var(--text-secondary)';
       btnTidak.style.borderColor = 'var(--border-strong)';
 
-        wrapSektor.style.display = 'block';
+      // Tampilkan Grid Menu, Sembunyikan Pesan
+      wrapSektor.style.display = 'block';
       msgNoUsaha.style.display = 'none';
     } else {
+      // Styling Tombol TIDAK aktif (Warna Peringatan)
       btnTidak.style.background = '#FEF2F2';
       btnTidak.style.color = '#DC2626';
       btnTidak.style.borderColor = '#DC2626';
 
+      // Styling Tombol YA non-aktif
       btnYa.style.background = 'var(--surface-2)';
       btnYa.style.color = 'var(--text-secondary)';
       btnYa.style.borderColor = 'var(--border-strong)';
 
+      // Sembunyikan Grid Menu, Tampilkan Pesan Lanjut ke Konsumsi
       wrapSektor.style.display = 'none';
       msgNoUsaha.style.display = 'block';
     }
   }
+
+// --- MASTER DATA SEKTOR JASA KEUANGAN ---
+const masterKeuangan = {
+  'Koperasi Simpan Pinjam': { prod: ['ATK & Alat Tulis', 'Buku Tabungan Nasabah', 'Kuitansi & Stempel'], ops: ['Listrik', 'Sewa Kantor', 'Transportasi Penagihan'] },
+  'BMT': { prod: ['Buku Tabungan', 'Kuitansi', 'Brosur'], ops: ['Sewa Kantor', 'Listrik', 'Internet'] },
+  'Pegadaian Swasta': { prod: ['Nota Gadai', 'Plastik Pembungkus', 'Kertas Segel'], ops: ['Listrik', 'Sewa Tempat', 'Biaya Keamanan'] },
+  'Rentenir / Bank Keliling': { prod: ['Buku Catatan Kecil', 'Pulpen'], ops: ['Bensin Motor / Transportasi'] },
+  'Leasing': { prod: ['Kertas Kontrak', 'Materai', 'ATK'], ops: ['Listrik', 'Sewa Kantor', 'Internet / Sistem'] },
+  'Fintech': { prod: ['Langganan Server / Cloud', 'ATK'], ops: ['Listrik', 'Sewa Kantor', 'Internet'] },
+  'Lainnya': { prod: ['ATK & Kertas'], ops: ['Biaya Operasional'] }
+};
+
+function applyMasterKeuangan() {
+  let jenis = document.getElementById('keuanganJenis').value;
+  document.getElementById('btnLoadBiayaKeuangan').innerHTML = '⚡ Fitur Isi Otomatis Biaya ' + jenis;
+}
+
+function loadDefaultBiayaKeuangan() {
+  let jenis = document.getElementById('keuanganJenis').value;
+  let data = masterKeuangan[jenis] || masterKeuangan['Lainnya'];
+  
+  let containerProd = document.getElementById('containerProdKeuangan');
+  let containerOps = document.getElementById('containerOpsKeuangan');
+  
+  containerProd.innerHTML = ''; containerOps.innerHTML = ''; 
+  
+  const buatHTMLBiaya = (namaItem) => `
+    <div style="margin-bottom: 10px;">
+      <div class="biaya-item-top" style="margin-bottom:0;">
+        <input type="text" class="input-box dyn-nama" placeholder="Biaya" value="${namaItem}">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+    </div>
+    <div style="display: flex; gap: 6px; align-items: flex-end;">
+      <div style="flex: 2;">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px;">BIAYA / BELANJA</label>
+        <div class="b-nom" style="width:100%;"><span>Rp</span><input type="text" inputmode="numeric" class="val-biaya dyn-nom" placeholder="0" oninput="formatRupiah(this)"></div>
+      </div>
+      <div style="height: 42px; display: flex; align-items: center; font-size:14px; font-weight:bold; color:var(--text-muted);">x</div>
+      <div style="flex: 0.8;">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px; text-align:center;">KALI</label>
+        <input type="number" class="input-box dyn-freq" placeholder="1" value="1" min="1" style="text-align:center; padding: 0 4px; width:100%;">
+      </div>
+      <div style="flex: 1.2;">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px;">PERIODE</label>
+        <select class="input-box dyn-periode" style="padding: 0 4px; width:100%;"><option value="bulan" selected>/ Bln</option><option value="tahun">/ Thn</option></select>
+      </div>
+    </div>`;
+
+  if (data.prod) data.prod.forEach(item => { let div = document.createElement('div'); div.className = 'biaya-item dynamic-b-item'; div.innerHTML = buatHTMLBiaya(item); containerProd.appendChild(div); });
+  if (data.ops) data.ops.forEach(item => { let div = document.createElement('div'); div.className = 'biaya-item dynamic-b-item'; div.innerHTML = buatHTMLBiaya(item); containerOps.appendChild(div); });
+  
+  showToast('Template Biaya ' + jenis + ' Berhasil Dimuat!');
+}
+
+function hitungKeuangan() {
+  let periode = document.getElementById('keuanganPeriode').value;
+  let nilaiDasar = parseNum(document.getElementById('keuanganOmzetVal').value);
+  let omzetBulanan = 0;
+  let labelInfo = '(Pendapatan Bunga / Jasa)';
+
+  if (periode === 'hari') omzetBulanan = nilaiDasar * 30; // Asumsi 30 hari operasional
+  else if (periode === 'minggu') omzetBulanan = nilaiDasar * (52 / 12);
+  else if (periode === 'bulan') omzetBulanan = nilaiDasar;
+  else if (periode === 'tahun') omzetBulanan = nilaiDasar / 12;
+
+  let omzetUtamaTahun = omzetBulanan * 12;
+  let ekstra = sumBiayaItems('#ekstra-Keuangan .dynamic-income-item', true);
+  let omzetKotorTahun = omzetUtamaTahun + ekstra.total;
+
+  let gaji = hitungGaji('keuanganPegawai', 'keuanganGaji', 'keuanganPeriodeGaji', 'Pegawai & Jamsos');
+  let prod = sumBiayaItems('#containerProdKeuangan .dynamic-b-item');
+  let bbt = { total: 0, html: '' }; // Biasanya jasa keuangan tidak ada HPP Kulakan
+  let ops = sumBiayaItems('#containerOpsKeuangan .dynamic-b-item');
+  let nonOps = sumBiayaItems('#nonops-Keuangan .dynamic-b-item');
+
+  let totalBiaya = gaji.total + prod.total + bbt.total + ops.total + nonOps.total;
+  let omzetBersihTahun = omzetKotorTahun - bbt.total; 
+  
+  let htmlEkstra = ekstra.total > 0 ? `<div class="bd-row minus" style="padding-left:10px;"><span>+ Pendapatan Lainnya</span><span class="bd-val" style="color:var(--text-success);">${formatRp(ekstra.total)}/thn</span></div>` : '';
+  let customA = `<div class="bd-row total" style="color:var(--accent);"><span>A. Pendapatan</span></div><div class="bd-row minus" style="padding-left:10px;"><span>+ Pendapatan Utama <br><small style="font-size:10px; color:var(--text-muted)">${labelInfo}</small></span><span class="bd-val" style="color:var(--text-success);">${formatRp(omzetUtamaTahun)}/thn</span></div>`;
+
+  let htmlBreakdown = generateAnomaliWarning(omzetKotorTahun, totalBiaya) + customA + htmlEkstra + buildBreakdownHTML(omzetUtamaTahun, omzetBersihTahun, gaji, prod, bbt, ops, nonOps, true);
+
+  tampilkanBlok26({ 
+    tabAsal: 'keuangan', 
+    type: 'keuangan', 
+    nama: document.getElementById('keuanganNama').value, 
+    jenis: document.getElementById('keuanganJenis').value, 
+    omzetKotor: omzetUtamaTahun,
+    omzetEkstra: ekstra.total,
+    gaji: gaji.total, prod: prod.total, bbt: bbt.total, ops: ops.total, nonOps: nonOps.total, 
+    totalBiaya: totalBiaya, 
+    labaTahun: omzetKotorTahun - totalBiaya, 
+    labaBulan: (omzetKotorTahun - totalBiaya)/12, 
+    rincian: htmlBreakdown 
+  });
+}
+
 </script>
 </body>
 </html>
