@@ -2411,10 +2411,21 @@
   <div id="p-rekap" class="panel">
     <div class="section-label" style="margin-top:0;">Dashboard Rekapitulasi</div>
     
-    <div class="rekap-dashboard" id="rekapDashboard" style="grid-template-columns: 1fr;">
-  <div class="rd-card" style="padding: 20px; background: #eef2fb; border: 1px solid #d4def1;">
-    <span style="font-size: 11px; color: #5a719d; letter-spacing: 0.5px;">TOTAL DATA TERSIMPAN</span>
-    <strong id="rd-responden" style="font-size: 28px; color: #0B2E52; margin-top: 8px; display: block;">0</strong>
+    <div class="rekap-dashboard" id="rekapDashboard" style="grid-template-columns: repeat(2, 1fr); gap: 12px;">
+  <!-- Kartu Total Usaha -->
+  <div class="rd-card" style="padding: 16px; background: #eef2fb; border: 1px solid #d4def1; border-radius: 12px; text-align: center; box-shadow: 0 4px 10px rgba(0,71,155,0.05);">
+    <span style="display:flex; align-items:center; justify-content:center; gap:6px; font-size: 10.5px; color: #00479b; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">
+      <i class="ti ti-building-store" style="font-size:16px;"></i> Total Usaha
+    </span>
+    <strong id="rd-usaha" style="font-size: 26px; color: #0B2E52; margin-top: 8px; display: block; font-family: var(--font-mono);">0</strong>
+  </div>
+
+  <!-- Kartu Total Rumah Tangga -->
+  <div class="rd-card" style="padding: 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; text-align: center; box-shadow: 0 4px 10px rgba(22,101,52,0.05);">
+    <span style="display:flex; align-items:center; justify-content:center; gap:6px; font-size: 10.5px; color: #166534; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">
+      <i class="ti ti-home" style="font-size:16px;"></i> Rumah Tangga
+    </span>
+    <strong id="rd-rt" style="font-size: 26px; color: #15803d; margin-top: 8px; display: block; font-family: var(--font-mono);">0</strong>
   </div>
 </div>
 
@@ -2849,34 +2860,37 @@
   document.getElementById('containerLahanTani').appendChild(div);
 }
   function updateKategoriKomoditas(selectEl) {
-    const parent = selectEl.closest('.up-tani-item');
-    const komoditasSelect = parent.querySelector('.l-komoditas');
-    const kategori = selectEl.value;
-    
-    let options = '';
-    if (kategori === 'pangan') {
-      options = '<option value="Padi">Padi</option><option value="Jagung">Jagung</option><option value="Kedelai">Kedelai</option><option value="Lainnya">Lainnya</option>';
-    } else if (kategori === 'horti') {
-      options = '<option value="Cabai">Cabai</option><option value="Bawang Merah">Bawang Merah</option><option value="Lainnya">Lainnya</option>';
-    } else if (kategori === 'kebun') {
-      options = '<option value="Sawit">Sawit</option><option value="Karet">Karet</option><option value="Kopi">Kopi</option><option value="Kakao">Kakao</option><option value="Kelapa">Kelapa</option><option value="Tebu">Tebu</option><option value="Cengkeh">Cengkeh</option><option value="Teh">Teh</option><option value="Lada">Lada</option><option value="Pala">Pala</option><option value="Lainnya">Lainnya</option>';
-    }
-    
-    komoditasSelect.innerHTML = options;
-    updateProduktivitas(komoditasSelect);
+  const parent = selectEl.closest('.up-tani-item');
+  const komoditasSelect = parent.querySelector('.l-komoditas');
+  const kategori = selectEl.value;
+  
+  let options = '';
+  if (kategori === 'pangan') {
+    options = '<option value="Padi">Padi</option><option value="Jagung Manis">Jagung Manis</option><option value="Jagung Ayam (Pakan)">Jagung Ayam (Pakan)</option><option value="Kedelai">Kedelai</option><option value="Ubi Kayu (Singkong)">Ubi Kayu (Singkong)</option><option value="Ubi Jalar">Ubi Jalar</option><option value="Lainnya">Lainnya</option>';
+  } else if (kategori === 'horti') {
+    options = '<option value="Cabai">Cabai</option><option value="Bawang Merah">Bawang Merah</option><option value="Tomat">Tomat</option><option value="Sayuran Daun">Sayuran Daun</option><option value="Sereh">Sereh</option><option value="Lengkuas">Lengkuas (Laos)</option><option value="Kunyit">Kunyit</option><option value="Lainnya">Lainnya</option>';
+  } else if (kategori === 'kebun') {
+    options = '<option value="Sawit">Sawit</option><option value="Karet">Karet</option><option value="Kopi">Kopi</option><option value="Kakao">Kakao</option><option value="Kelapa">Kelapa</option><option value="Tebu">Tebu</option><option value="Cengkeh">Cengkeh</option><option value="Teh">Teh</option><option value="Lada">Lada</option><option value="Pala">Pala</option><option value="Lainnya">Lainnya</option>';
   }
+  
+  komoditasSelect.innerHTML = options;
+  updateProduktivitas(komoditasSelect);
+}
 
   function updateProduktivitas(selectEl) {
-    const parent = selectEl.closest('.up-tani-item');
-    const prodInput = parent.querySelector('.l-produktivitas');
-    const vals = { 
-      "Padi": 0.65, "Jagung": 0.80, "Kedelai": 0.25,
-      "Cabai": 1.20, "Bawang Merah": 1.10,
-      "Sawit": 1.80, "Karet": 0.15, "Kopi": 0.08, "Kakao": 0.10, "Kelapa": 0.60, "Tebu": 6.50, "Cengkeh": 0.05, "Teh": 0.20, "Lada": 0.12, "Pala": 0.07,
-      "Lainnya": 0.50 
-    };
-    prodInput.value = vals[selectEl.value] || 0.50;
-  }
+  const parent = selectEl.closest('.up-tani-item');
+  const prodInput = parent.querySelector('.l-produktivitas');
+  
+  // Konversi produktivitas ke Kg / m2 (dari standar per Ha / 10.000m2)
+  const vals = { 
+    "Padi": 0.80, "Jagung Manis": 1.20, "Jagung Ayam (Pakan)": 0.70, "Kedelai": 0.22, "Ubi Kayu (Singkong)": 2.50, "Ubi Jalar": 2.00,
+    "Cabai": 1.20, "Bawang Merah": 1.00, "Tomat": 1.50, "Sayuran Daun": 1.00, "Sereh": 2.00, "Lengkuas": 2.00, "Kunyit": 1.50,
+    "Sawit": 2.40, "Karet": 0.15, "Kopi": 0.15, "Kakao": 0.12, "Kelapa": 0.60, "Tebu": 8.00, "Cengkeh": 0.05, "Teh": 0.20, "Lada": 0.12, "Pala": 0.07,
+    "Lainnya": 0.50 
+  };
+  
+  prodInput.value = vals[selectEl.value] || 0.50;
+}
 
   function ubahModeTani(selectEl) {
     const parent = selectEl.closest('.up-tani-item');
@@ -3059,23 +3073,39 @@
 } 
   
   function simpanRekap(jenis) {
-    const now = new Date().toLocaleString('id-ID', { hour12: false });
-    let savedData = {};
-    if (jenis === 'kebutuhan') {
-      if (!tempKebutuhan) return;
-      savedData = tempKebutuhan;
-    } else if (jenis === 'blok27') {
-      if (!tempBlok27) return;
-      savedData = tempBlok27;
-    }
-    dataRekap.unshift({ id: Date.now(), type: jenis, waktu: now, data: savedData });
-    localStorage.setItem('rekapSensusData', JSON.stringify(dataRekap));
-    renderRekap();
-    showToast('Data Tersimpan!');
-    sw('rekap', document.querySelector('.tabs button:last-child'));
+  const now = new Date().toLocaleString('id-ID', { hour12: false });
+  let savedData = {};
+  
+  if (jenis === 'kebutuhan') {
+    if (!tempKebutuhan) return;
+    
+    
+    let defaultNama = tempKebutuhan.nama === 'Kebutuhan RT' ? '' : tempKebutuhan.nama;
+    let namaInput = prompt("Masukkan Nama Kepala Keluarga / Responden untuk menyimpan data Rumah Tangga ini:", defaultNama);
+    
+    
+    if (namaInput === null) return; 
+    
+    
+    tempKebutuhan.nama = namaInput.trim() !== "" ? namaInput.trim() : "Keluarga Tanpa Nama";
+    
+    savedData = tempKebutuhan;
+    
+  } else if (jenis === 'blok27') {
+    if (!tempBlok27) return;
+    savedData = tempBlok27;
   }
+  
+  dataRekap.unshift({ id: Date.now(), type: jenis, waktu: now, data: savedData });
+  localStorage.setItem('rekapSensusData', JSON.stringify(dataRekap));
+  renderRekap();
+  
+  let namaTipe = jenis === 'kebutuhan' ? 'Rumah Tangga' : 'Blok 27';
+  showToast('Data ' + namaTipe + ' Tersimpan!');
+  sw('rekap', document.querySelector('.tabs button:last-child'));
+}
 
-  // --- MASTER DATA SEKTOR DAGANG (DIPISAH 26B, 26C, 26D) ---
+  
   const masterDagang = {
     'Warung Kelontong': { bbt: ['Belanja Dagangan Rutin'], prod: ['Kantong Plastik / Keresek'], ops: ['Transportasi / Bensin', 'Listrik'] },
     'Toko Sembako': { bbt: ['Beras', 'Minyak Goreng', 'Gula & Telur', 'Rokok'], prod: ['Kantong Plastik', 'Karung / Tali'], ops: ['Kuli Angkut', 'Listrik'] },
@@ -4197,110 +4227,153 @@ else if (jenis === 'kuliner') {
   }
 
   function getStatusBadge(laba) {
-    if (laba > 0) return `<span class="status-badge status-untung">🟢 Untung</span>`;
-    if (laba < 0) return `<span class="status-badge status-rugi">🔴 Rugi</span>`;
-    return `<span class="status-badge status-impas">🟡 Impas</span>`;
-  }
+  if (laba > 0) return `<span class="status-badge status-untung" style="display:inline-flex; align-items:center; gap:4px;"><i class="ti ti-trending-up"></i> Untung</span>`;
+  if (laba < 0) return `<span class="status-badge status-rugi" style="display:inline-flex; align-items:center; gap:4px;"><i class="ti ti-trending-down"></i> Rugi</span>`;
+  return `<span class="status-badge status-impas" style="display:inline-flex; align-items:center; gap:4px;"><i class="ti ti-minus"></i> Impas</span>`;
+}
 
   function renderRekap() {
-    const container = document.getElementById('rekapContainer');
-    let filteredData = dataRekap.filter(item => currentFilter === 'semua' || item.type === currentFilter);
-    
-    let tResponden = filteredData.length;
-    let rdRespondenEl = document.getElementById('rd-responden');
-    if (rdRespondenEl) rdRespondenEl.innerText = tResponden;
+  const container = document.getElementById('rekapContainer');
+  let filteredData = dataRekap.filter(item => currentFilter === 'semua' || item.type === currentFilter);
 
-    if (filteredData.length === 0) {
-      container.innerHTML = `<div class="rekap-empty"><i class="ti ti-database-off" style="font-size:36px; color:var(--border-strong); display:block; margin-bottom:12px;"></i>Belum ada data.</div>`;
-      return;
-    }
+  let totalUsaha = dataRekap.filter(item => item.type !== 'kebutuhan' && item.type !== 'blok27').length;
+  let totalRT = dataRekap.filter(item => item.type === 'kebutuhan').length;
+  
+  let rdUsahaEl = document.getElementById('rd-usaha');
+  let rdRTEl = document.getElementById('rd-rt');
+  
+  if (rdUsahaEl) rdUsahaEl.innerText = totalUsaha;
+  if (rdRTEl) rdRTEl.innerText = totalRT;
+  
+  let tResponden = filteredData.length;
+  let rdRespondenEl = document.getElementById('rd-responden');
+  if (rdRespondenEl) rdRespondenEl.innerText = tResponden;
 
-    let html = '';
-    filteredData.forEach(item => {
-      let d = item.data; let title = '', icon = '', bgColor = '', fgColor = '';
-      let omzet = d.omzetTahun !== undefined ? d.omzetTahun : (d.totalPendapatan !== undefined ? d.totalPendapatan : (d.totalTahun || 0));
-      let laba = d.labaTahun !== undefined ? d.labaTahun : (d.totalLaba !== undefined ? d.totalLaba : (d.totalTahun || 0));
-      let biaya = d.biayaTahun !== undefined ? d.biayaTahun : (d.totalBulan !== undefined ? d.totalBulan * 12 : 0);
-
-      if (item.type === 'usaha') { title = 'Dagang'; icon = 'ti-building-store'; bgColor = '#eff6ff'; fgColor = '#00479b'; } 
-      else if (item.type === 'peternakan') { title = 'Peternakan'; icon = 'ti-shredder'; bgColor = '#fef3c7'; fgColor = '#b45309'; } 
-      else if (item.type === 'pertanian') { title = 'Pertanian'; icon = 'ti-tractor'; bgColor = '#e0f2f1'; fgColor = '#00695c'; } 
-      else if (item.type === 'perikanan') { title = 'Perikanan'; icon = 'ti-fish'; bgColor = '#e0f2fe'; fgColor = '#0369a1'; } 
-      else if (item.type === 'jasa') { title = 'Jasa'; icon = 'ti-tool'; bgColor = '#e0e7ff'; fgColor = '#3730a3'; } 
-      else if (item.type === 'kuliner') { title = 'Kuliner'; icon = 'ti-cookie'; bgColor = '#ffedd5'; fgColor = '#9a3412'; } 
-      else if (item.type === 'sewa') { title = `Sewa`; icon = 'ti-key'; bgColor = '#f3e8ff'; fgColor = '#6b21a8'; }
-      else if (item.type === 'pendidikan') { title = 'Pendidikan'; icon = 'ti-school'; bgColor = '#dcfce7'; fgColor = '#166534'; }
-      else if (item.type === 'kebutuhan') { title = 'Rumah Tangga'; icon = 'ti-basket'; bgColor = '#e2e8f0'; fgColor = '#475569'; }
-      else if (item.type === 'blok27') { title = 'Blok 27'; icon = 'ti-chart-bar'; bgColor = '#e2e8f0'; fgColor = '#475569'; }
-      else if (item.type === 'industri') { title = 'Industri'; icon = 'ti-building-factory'; bgColor = '#fdf4ff'; fgColor = '#a21caf'; }
-      else if (item.type === 'pertambangan') { title = 'Pertambangan'; icon = 'ti-shovel'; bgColor = '#f5f5f4'; fgColor = '#44403c'; border = '1px solid #44403c33'; }
-      else if (item.type === 'kesehatan') { title = 'Kesehatan'; icon = 'ti-stethoscope'; bgColor = '#fef2f2'; fgColor = '#991b1b'; }
-      else if (item.type === 'keuangan') { title = 'Jasa Keuangan'; icon = 'ti-coin'; bgColor = '#ECFEFF'; fgColor = '#0891B2'; }
-      else if (item.type === 'transportasi') { title = 'Transportasi'; icon = 'ti-truck'; bgColor = '#FEF3C7'; fgColor = '#D97706'; }
-
-      let isRugi = laba < 0;
-      let heroBg = isRugi ? 'linear-gradient(135deg, #ef4444, #991b1b)' : 'linear-gradient(135deg, #00479B, #002B5E)';
-      let heroShadow = isRugi ? 'rgba(153,27,27,0.4)' : 'rgba(0,71,155,0.4)';
-      let heroLabel = isRugi ? (item.type === 'kebutuhan' ? 'DEFISIT DANA / BULAN' : 'TOTAL RUGI BERSIH / TAHUN') : (item.type === 'kebutuhan' ? 'SISA DANA SEBULAN' : 'TOTAL LABA BERSIH / TAHUN');
-      if (item.type === 'blok27') heroLabel = 'TOTAL PENDAPATAN / TAHUN';
-
-      let labelPeriode = item.type === 'kebutuhan' ? 'Bln' : 'Thn';
-      let labelSisa = item.type === 'kebutuhan' ? 'Sisa Dana' : (item.type === 'blok27' ? 'Total' : 'Laba');
-
-      html += `
-        <div class="rekap-item" onclick="toggleDetailRekap(${item.id})">
-          <div class="rekap-head">
-            <span class="rekap-badge" style="background:${bgColor}; color:${fgColor}; border: 1px solid ${fgColor}33;"><i class="ti ${icon}"></i> Rekap ${title}</span>
-            <span class="rekap-time" style="color:#8A93A6;">${item.waktu}</span>
-          </div>
-          <div class="rekap-body"><strong>${d.nama || 'Tanpa Nama'}</strong><br>
-              <div style="display:flex; justify-content:space-between; margin-top:8px;">
-                <span>${item.type === 'kebutuhan' ? 'Pemasukan' : 'Omzet'}/${labelPeriode}:</span> <strong style="font-family:var(--font-mono); color:#0B2E52;">${formatRp(omzet)}</strong>
-              </div>
-              <div style="display:flex; justify-content:space-between; border-top:1px dashed #C9D9EC; padding-top:6px; margin-top:6px; margin-bottom:8px;">
-                <span>${labelSisa}/${labelPeriode}:</span> <strong style="font-family:var(--font-mono); color:${isRugi ? '#e11d48' : '#15803d'};">${formatRp(laba)}</strong>
-              </div>
-              ${item.type !== 'blok27' ? getStatusBadge(laba) : `<span class="status-badge status-untung">🟢 Selesai</span>`}
-          </div>
-
-          <div id="detail-${item.id}" style="display:none; margin-top:14px; border-top:2px solid #E3D9C0; padding-top:14px; cursor:default;" onclick="event.stopPropagation()">
-              
-              <div style="background: #eef2fb; border: 1px solid #d4def1; border-radius: 10px; padding: 12px; margin-bottom: 8px; text-align: center;">
-                <span style="display: block; font-size: 10px; font-weight: 700; color: #5a719d; margin-bottom: 4px;">TOTAL PEMASUKAN / OMZET KOTOR ${item.type === 'kebutuhan' ? '(BULAN)' : '(TAHUN)'}</span>
-                <strong style="font-family: var(--font-mono); font-size: 16px; color: #0B2E52;">${formatRp(omzet)}</strong>
-              </div>
-              
-              <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: 10px; padding: 12px; margin-bottom: 8px; text-align: center;">
-                <span style="display: block; font-size: 10px; font-weight: 700; color: #9f1239; margin-bottom: 4px;">TOTAL PENGELUARAN KESELURUHAN ${item.type === 'kebutuhan' ? '(BULAN)' : '(TAHUN)'}</span>
-                <strong style="font-family: var(--font-mono); font-size: 16px; color: #e11d48;">${formatRp(item.type === 'kebutuhan' ? d.totalBulan : biaya)}</strong>
-              </div>
-              
-              <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px; margin-bottom: 8px; text-align: center;">
-                <span style="display: block; font-size: 10px; font-weight: 700; color: #166534; margin-bottom: 4px;">${item.type === 'kebutuhan' ? 'SISA DANA / BULAN' : 'LABA BERSIH / BULAN'}</span>
-                <strong style="font-family: var(--font-mono); font-size: 16px; color: #15803d;">${formatRp(item.type === 'kebutuhan' ? laba : laba / 12)}</strong>
-              </div>
-              
-              <div style="background: ${heroBg}; border-radius: 12px; padding: 16px; text-align: center; color: #fff; margin-bottom: 12px; box-shadow: 0 8px 16px -6px ${heroShadow};">
-                <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; opacity: 0.85; color:#fff;">${heroLabel}</span>
-                <strong style="display: block; font-family: var(--font-mono); font-size: 20px; margin-top: 4px; color:#fff;">${formatRp(laba)}</strong>
-              </div>
-              
-              <div style="background: #F4EFE4; border: 1px solid #E3D9C0; border-radius: 10px; padding: 14px;">
-                <span style="font-size:12px; font-weight:700; color:#0B2E52; display:block; margin-bottom:8px; border-bottom:1px solid #E3D9C0; padding-bottom:6px;">Rincian Kalkulasi</span>
-                <div class="breakdown" style="margin-top: 0; font-size: 12.5px; text-align: left; padding-top:0; background:transparent; border:none;">
-                  ${d.rincian || '<div class="bd-row">Tidak ada rincian yang disimpan.</div>'}
-                </div>
-              </div>
-          </div>
-          
-          <div class="rekap-action" style="margin-top:14px; display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:11px; color:#8A93A6;"><i class="ti ti-hand-click"></i> Klik kartu untuk lihat detail</span>
-            <button class="btn-del-rekap" onclick="event.stopPropagation(); hapusRekap(${item.id})"><i class="ti ti-trash"></i> Hapus</button>
-          </div>
-        </div>`;
-    });
-    container.innerHTML = html;
+  if (filteredData.length === 0) {
+    container.innerHTML = `<div class="rekap-empty"><i class="ti ti-database-off" style="font-size:36px; color:var(--border-strong); display:block; margin-bottom:12px;"></i>Belum ada data tersimpan.</div>`;
+    return;
   }
+
+  let html = '';
+  filteredData.forEach(item => {
+    let d = item.data; 
+    let title = '', icon = '', bgColor = '', fgColor = '';
+    let omzet = d.omzetTahun !== undefined ? d.omzetTahun : (d.totalPendapatan !== undefined ? d.totalPendapatan : (d.totalTahun || 0));
+    let laba = d.labaTahun !== undefined ? d.labaTahun : (d.totalLaba !== undefined ? d.totalLaba : (d.totalTahun || 0));
+    let biaya = d.biayaTahun !== undefined ? d.biayaTahun : (d.totalBulan !== undefined ? d.totalBulan * 12 : 0);
+
+    // Pemetaan Ikon Tabler Spesifik Tiap Sektor
+    if (item.type === 'usaha') { title = 'Dagang'; icon = 'ti-building-store'; bgColor = '#eff6ff'; fgColor = '#00479b'; } 
+    else if (item.type === 'peternakan') { title = 'Peternakan'; icon = 'ti-paw'; bgColor = '#fef3c7'; fgColor = '#b45309'; } 
+    else if (item.type === 'pertanian') { title = 'Pertanian'; icon = 'ti-tractor'; bgColor = '#e0f2f1'; fgColor = '#00695c'; } 
+    else if (item.type === 'perikanan') { title = 'Perikanan'; icon = 'ti-fish'; bgColor = '#e0f2fe'; fgColor = '#0369a1'; } 
+    else if (item.type === 'jasa') { title = 'Jasa'; icon = 'ti-tool'; bgColor = '#e0e7ff'; fgColor = '#3730a3'; } 
+    else if (item.type === 'kuliner') { title = 'Kuliner'; icon = 'ti-cookie'; bgColor = '#ffedd5'; fgColor = '#9a3412'; } 
+    else if (item.type === 'sewa') { title = 'Sewa'; icon = 'ti-key'; bgColor = '#f3e8ff'; fgColor = '#6b21a8'; }
+    else if (item.type === 'pendidikan') { title = 'Pendidikan'; icon = 'ti-school'; bgColor = '#dcfce7'; fgColor = '#166534'; }
+    else if (item.type === 'kebutuhan') { title = 'Rumah Tangga'; icon = 'ti-home'; bgColor = '#e2e8f0'; fgColor = '#475569'; }
+    else if (item.type === 'blok27') { title = 'Blok 27'; icon = 'ti-chart-bar'; bgColor = '#e2e8f0'; fgColor = '#475569'; }
+    else if (item.type === 'industri') { title = 'Industri'; icon = 'ti-building-factory'; bgColor = '#fdf4ff'; fgColor = '#a21caf'; }
+    else if (item.type === 'pertambangan') { title = 'Pertambangan'; icon = 'ti-shovel'; bgColor = '#f5f5f4'; fgColor = '#44403c'; }
+    else if (item.type === 'kesehatan') { title = 'Kesehatan'; icon = 'ti-stethoscope'; bgColor = '#fef2f2'; fgColor = '#991b1b'; }
+    else if (item.type === 'keuangan') { title = 'Jasa Keuangan'; icon = 'ti-coin'; bgColor = '#ECFEFF'; fgColor = '#0891B2'; }
+    else if (item.type === 'transportasi') { title = 'Transportasi'; icon = 'ti-truck'; bgColor = '#FEF3C7'; fgColor = '#D97706'; }
+
+    let isRugi = laba < 0;
+    let heroBg = isRugi ? 'linear-gradient(135deg, #ef4444, #991b1b)' : 'linear-gradient(135deg, #00479B, #002B5E)';
+    let heroShadow = isRugi ? 'rgba(153,27,27,0.4)' : 'rgba(0,71,155,0.4)';
+    let heroLabel = isRugi ? (item.type === 'kebutuhan' ? 'DEFISIT DANA / BULAN' : 'TOTAL RUGI BERSIH / TAHUN') : (item.type === 'kebutuhan' ? 'SISA DANA SEBULAN' : 'TOTAL LABA BERSIH / TAHUN');
+    if (item.type === 'blok27') heroLabel = 'TOTAL PENDAPATAN / TAHUN';
+
+    let labelPeriode = item.type === 'kebutuhan' ? 'Bln' : 'Thn';
+    let labelPendapatan = item.type === 'kebutuhan' ? 'Pendapatan' : 'Omzet';
+    let labelSisa = item.type === 'kebutuhan' ? 'Sisa Dana' : 'Laba Bersih';
+    let labelBiaya = item.type === 'kebutuhan' ? 'Pengeluaran' : 'Total Biaya';
+    let valBiaya = item.type === 'kebutuhan' ? d.totalBulan : biaya;
+
+    html += `
+      <div class="rekap-item" onclick="toggleDetailRekap(${item.id})">
+        <div class="rekap-head">
+          <span class="rekap-badge" style="background:${bgColor}; color:${fgColor}; border: 1px solid ${fgColor}33;">
+            <i class="ti ${icon}"></i> Rekap ${title}
+          </span>
+          <span class="rekap-time" style="color:#8A93A6; display:flex; align-items:center; gap:4px;">
+            <i class="ti ti-clock"></i> ${item.waktu}
+          </span>
+        </div>
+        
+        <!-- === TAMPILAN BARU REKAP BODY MENGGUNAKAN TABLER ICONS === -->
+        <div class="rekap-body">
+            <!-- Nama Responden -->
+            <div style="font-weight:800; font-size:14.5px; color:var(--text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+              <i class="ti ti-user" style="color:var(--accent); font-size:18px;"></i> ${d.nama || 'Tanpa Nama'}
+            </div>
+            
+            <!-- Pendapatan / Omzet -->
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12.5px; color:var(--text-secondary);">
+              <span style="display:flex; align-items:center; gap:6px;"><i class="ti ti-wallet" style="color:var(--gold-strong); font-size:16px;"></i> ${labelPendapatan}/${labelPeriode}</span> 
+              <strong style="font-family:var(--font-mono); color:var(--text-primary);">${formatRp(omzet)}</strong>
+            </div>
+            
+            <!-- Pengeluaran / Biaya -->
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12.5px; color:var(--text-secondary);">
+              <span style="display:flex; align-items:center; gap:6px;"><i class="ti ti-receipt" style="color:var(--text-danger); font-size:16px;"></i> ${labelBiaya}/${labelPeriode}</span> 
+              <strong style="font-family:var(--font-mono); color:var(--text-danger);">${formatRp(valBiaya)}</strong>
+            </div>
+
+            <!-- Sisa Dana / Laba -->
+            <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border-strong); padding-top:10px; margin-top:10px; margin-bottom:12px; font-size:13px;">
+              <span style="display:flex; align-items:center; gap:6px; color:var(--accent); font-weight:700;"><i class="ti ti-cash" style="color:var(--text-success); font-size:16px;"></i> ${labelSisa}/${labelPeriode}</span> 
+              <strong style="font-family:var(--font-mono); font-size:14.5px; color:${isRugi ? 'var(--text-danger)' : 'var(--text-success)'};">${formatRp(laba)}</strong>
+            </div>
+            
+            <!-- Badge Status -->
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              ${item.type !== 'blok27' ? getStatusBadge(laba) : `<span class="status-badge status-untung" style="display:inline-flex; align-items:center; gap:4px;"><i class="ti ti-check"></i> Selesai</span>`}
+            </div>
+        </div>
+        <!-- === END OF TAMPILAN BARU REKAP BODY === -->
+
+        <!-- Area Detail Expander (Muncul Saat di Klik) -->
+        <div id="detail-${item.id}" style="display:none; margin-top:14px; border-top:2px solid #E3D9C0; padding-top:14px; cursor:default;" onclick="event.stopPropagation()">
+            <div style="background: #eef2fb; border: 1px solid #d4def1; border-radius: 10px; padding: 12px; margin-bottom: 8px; text-align: center;">
+              <span style="display: block; font-size: 10px; font-weight: 700; color: #5a719d; margin-bottom: 4px;">TOTAL ${labelPendapatan.toUpperCase()} ${item.type === 'kebutuhan' ? '(BULAN)' : '(TAHUN)'}</span>
+              <strong style="font-family: var(--font-mono); font-size: 16px; color: #0B2E52;">${formatRp(omzet)}</strong>
+            </div>
+            
+            <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: 10px; padding: 12px; margin-bottom: 8px; text-align: center;">
+              <span style="display: block; font-size: 10px; font-weight: 700; color: #9f1239; margin-bottom: 4px;">TOTAL ${labelBiaya.toUpperCase()} ${item.type === 'kebutuhan' ? '(BULAN)' : '(TAHUN)'}</span>
+              <strong style="font-family: var(--font-mono); font-size: 16px; color: #e11d48;">${formatRp(valBiaya)}</strong>
+            </div>
+            
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px; margin-bottom: 8px; text-align: center;">
+              <span style="display: block; font-size: 10px; font-weight: 700; color: #166534; margin-bottom: 4px;">${item.type === 'kebutuhan' ? 'SISA DANA / BULAN' : 'LABA BERSIH / BULAN'}</span>
+              <strong style="font-family: var(--font-mono); font-size: 16px; color: #15803d;">${formatRp(item.type === 'kebutuhan' ? laba : laba / 12)}</strong>
+            </div>
+            
+            <div style="background: ${heroBg}; border-radius: 12px; padding: 16px; text-align: center; color: #fff; margin-bottom: 12px; box-shadow: 0 8px 16px -6px ${heroShadow};">
+              <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; opacity: 0.85; color:#fff;">${heroLabel}</span>
+              <strong style="display: block; font-family: var(--font-mono); font-size: 20px; margin-top: 4px; color:#fff;">${formatRp(laba)}</strong>
+            </div>
+            
+            <div style="background: #F4EFE4; border: 1px solid #E3D9C0; border-radius: 10px; padding: 14px;">
+              <span style="font-size:12px; font-weight:700; color:#0B2E52; display:flex; align-items:center; gap:6px; margin-bottom:8px; border-bottom:1px solid #E3D9C0; padding-bottom:8px;">
+                <i class="ti ti-list-details" style="font-size:16px;"></i> Rincian Kalkulasi
+              </span>
+              <div class="breakdown" style="margin-top: 0; font-size: 12.5px; text-align: left; padding-top:0; background:transparent; border:none;">
+                ${d.rincian || '<div class="bd-row">Tidak ada rincian yang disimpan.</div>'}
+              </div>
+            </div>
+        </div>
+        
+        <div class="rekap-action" style="margin-top:14px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:11px; color:#8A93A6; display:flex; align-items:center; gap:4px;"><i class="ti ti-hand-click" style="font-size:14px;"></i> Klik kartu untuk rincian</span>
+          <button class="btn-del-rekap" onclick="event.stopPropagation(); hapusRekap(${item.id})"><i class="ti ti-trash"></i> Hapus</button>
+        </div>
+      </div>`;
+  });
+  container.innerHTML = html;
+}
 
 function tambahItem15b() { 
     tambahItemBiaya('container15b', 'Cth: Pulsa / Paket Data / WiFi'); 
@@ -5484,10 +5557,16 @@ const masterKomoditas = {
   pangan: [
     { id: 'padi', nama: 'Padi', satuan: 'Kg', hargaAcuan: 6500, produktivitas: 8000, siklus: 3, 
       biaya: { olahTanah: 2400000, benih: 800000, urea: 1400000, sp36: 1000000, pestisida: 1600000, pemeliharaan: 1500000, panen: 3000000, angkut: 800000 } },
-    { id: 'jagung', nama: 'Jagung', satuan: 'Kg', hargaAcuan: 4500, produktivitas: 6500, siklus: 3, 
+    { id: 'jagung_manis', nama: 'Jagung Manis', satuan: 'Kg', hargaAcuan: 4500, produktivitas: 12000, siklus: 3, 
+      biaya: { olahTanah: 2000000, benih: 800000, urea: 1200000, sp36: 800000, pestisida: 1200000, pemeliharaan: 1000000, panen: 2500000, angkut: 800000 } },
+    { id: 'jagung_ayam', nama: 'Jagung Ayam (Pakan)', satuan: 'Kg', hargaAcuan: 5500, produktivitas: 7000, siklus: 3, 
       biaya: { olahTanah: 2000000, benih: 600000, urea: 1200000, sp36: 800000, pestisida: 1000000, pemeliharaan: 1000000, panen: 2000000, angkut: 500000 } },
     { id: 'kedelai', nama: 'Kedelai', satuan: 'Kg', hargaAcuan: 9000, produktivitas: 2200, siklus: 3, 
-      biaya: { olahTanah: 1500000, benih: 500000, urea: 800000, sp36: 600000, pestisida: 800000, pemeliharaan: 800000, panen: 1500000, angkut: 400000 } }
+      biaya: { olahTanah: 1500000, benih: 500000, urea: 800000, sp36: 600000, pestisida: 800000, pemeliharaan: 800000, panen: 1500000, angkut: 400000 } },
+    { id: 'ubi_kayu', nama: 'Ubi Kayu (Singkong)', satuan: 'Kg', hargaAcuan: 2000, produktivitas: 25000, siklus: 1, 
+      biaya: { olahTanah: 2500000, benih: 500000, urea: 1000000, sp36: 500000, pestisida: 500000, pemeliharaan: 1500000, panen: 3500000, angkut: 1500000 } },
+    { id: 'ubi_jalar', nama: 'Ubi Jalar', satuan: 'Kg', hargaAcuan: 3500, produktivitas: 20000, siklus: 2, 
+      biaya: { olahTanah: 2500000, benih: 800000, urea: 1200000, sp36: 800000, pestisida: 800000, pemeliharaan: 1500000, panen: 3000000, angkut: 1200000 } }
   ],
   hortikultura: [
     { id: 'cabai', nama: 'Cabai', satuan: 'Kg', hargaAcuan: 35000, produktivitas: 12000, siklus: 2, 
@@ -5496,17 +5575,23 @@ const masterKomoditas = {
       biaya: { olahTanah: 3000000, benih: 1000000, urea: 2000000, sp36: 1500000, pestisida: 3000000, pemeliharaan: 4000000, panen: 2500000, angkut: 800000 } },
     { id: 'bawang', nama: 'Bawang Merah', satuan: 'Kg', hargaAcuan: 25000, produktivitas: 10000, siklus: 4, 
       biaya: { olahTanah: 4000000, benih: 1500000, urea: 2000000, sp36: 1500000, pestisida: 4000000, pemeliharaan: 5000000, panen: 3000000, angkut: 800000 } },
-    { id: 'sayuran', nama: 'Sayuran Daun (Sawi/Kangkung)', satuan: 'Kg', hargaAcuan: 5000, produktivitas: 10000, siklus: 6, // Panen cepat 6x setahun
-      biaya: { olahTanah: 2000000, benih: 500000, urea: 1000000, sp36: 500000, pestisida: 1000000, pemeliharaan: 2000000, panen: 1500000, angkut: 500000 } }
+    { id: 'sayuran', nama: 'Sayuran Daun (Sawi/Kangkung)', satuan: 'Kg', hargaAcuan: 5000, produktivitas: 10000, siklus: 6, 
+      biaya: { olahTanah: 2000000, benih: 500000, urea: 1000000, sp36: 500000, pestisida: 1000000, pemeliharaan: 2000000, panen: 1500000, angkut: 500000 } },
+    { id: 'sereh', nama: 'Sereh', satuan: 'Kg', hargaAcuan: 3000, produktivitas: 20000, siklus: 2, 
+      biaya: { olahTanah: 1500000, benih: 1000000, urea: 800000, sp36: 500000, pestisida: 500000, pemeliharaan: 1000000, panen: 2000000, angkut: 1000000 } },
+    { id: 'lengkuas', nama: 'Lengkuas (Laos)', satuan: 'Kg', hargaAcuan: 4000, produktivitas: 20000, siklus: 1, 
+      biaya: { olahTanah: 2000000, benih: 1500000, urea: 1000000, sp36: 800000, pestisida: 500000, pemeliharaan: 1200000, panen: 3000000, angkut: 1200000 } },
+    { id: 'kunyit', nama: 'Kunyit', satuan: 'Kg', hargaAcuan: 5000, produktivitas: 15000, siklus: 1, 
+      biaya: { olahTanah: 2000000, benih: 1500000, urea: 1000000, sp36: 800000, pestisida: 500000, pemeliharaan: 1200000, panen: 2500000, angkut: 1000000 } }
   ],
   buah: [
-    { id: 'pisang', nama: 'Pisang', satuan: 'Tandan', hargaAcuan: 40000, produktivitas: 1000, siklus: 1, // Dihitung panen tandan per tahun
+    { id: 'pisang', nama: 'Pisang', satuan: 'Tandan', hargaAcuan: 40000, produktivitas: 1000, siklus: 1, 
       biaya: { olahTanah: 0, benih: 500000, urea: 1000000, sp36: 500000, pestisida: 500000, pemeliharaan: 2000000, panen: 1500000, angkut: 1000000 } },
     { id: 'mangga', nama: 'Mangga', satuan: 'Kg', hargaAcuan: 10000, produktivitas: 12000, siklus: 1, 
       biaya: { olahTanah: 0, benih: 0, urea: 1500000, sp36: 1000000, pestisida: 2000000, pemeliharaan: 3000000, panen: 2000000, angkut: 1500000 } },
     { id: 'durian', nama: 'Durian', satuan: 'Buah', hargaAcuan: 50000, produktivitas: 3000, siklus: 1, 
       biaya: { olahTanah: 0, benih: 0, urea: 2000000, sp36: 1500000, pestisida: 2500000, pemeliharaan: 4000000, panen: 3000000, angkut: 2000000 } },
-    { id: 'kelapa', nama: 'Kelapa', satuan: 'Butir', hargaAcuan: 3000, produktivitas: 12000, siklus: 4, // Asumsi panen per 3 bulan (4x setahun)
+    { id: 'kelapa', nama: 'Kelapa', satuan: 'Butir', hargaAcuan: 3000, produktivitas: 12000, siklus: 4, 
       biaya: { olahTanah: 0, benih: 0, urea: 1000000, sp36: 500000, pestisida: 500000, pemeliharaan: 1500000, panen: 4000000, angkut: 2000000 } }
   ],
   kebun_industri: [
