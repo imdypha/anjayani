@@ -2449,9 +2449,17 @@
   </select>
 </div>
 
-    <div class="section-label" style="margin-top: 1rem;">Data Tersimpan</div>
-    <div id="rekapContainer"></div>
+    <div class="section-label">Data Tersimpan</div>
+
+<!-- Input Search Baru -->
+<div class="field" style="margin-bottom: 12px;">
+  <div class="input-group">
+    <span class="input-group-text"><i class="ti ti-search"></i></span>
+    <input type="text" id="rekapSearchInput" placeholder="Cari berdasarkan nama..." oninput="renderRekap()" style="width:100%; border:none; height:42px; padding:0 12px;">
   </div>
+</div>
+
+<div id="rekapContainer"></div>
 
 </div> 
 </div> 
@@ -4234,23 +4242,29 @@ else if (jenis === 'kuliner') {
 
   function renderRekap() {
   const container = document.getElementById('rekapContainer');
-  let filteredData = dataRekap.filter(item => currentFilter === 'semua' || item.type === currentFilter);
-
+  const searchQ = document.getElementById('rekapSearchInput').value.toLowerCase();
+  
+  // 1. Filter berdasarkan kategori (Usaha/RT) DAN Pencarian Nama
+  let filteredData = dataRekap.filter(item => {
+    let matchFilter = (currentFilter === 'semua' || item.type === currentFilter);
+    let matchSearch = (item.data.nama || '').toLowerCase().includes(searchQ);
+    return matchFilter && matchSearch;
+  });
+  
+  // 2. Update Dashboard Angka (Tetap hitung total keseluruhan tanpa filter pencarian)
   let totalUsaha = dataRekap.filter(item => item.type !== 'kebutuhan' && item.type !== 'blok27').length;
   let totalRT = dataRekap.filter(item => item.type === 'kebutuhan').length;
   
-  let rdUsahaEl = document.getElementById('rd-usaha');
-  let rdRTEl = document.getElementById('rd-rt');
-  
-  if (rdUsahaEl) rdUsahaEl.innerText = totalUsaha;
-  if (rdRTEl) rdRTEl.innerText = totalRT;
-  
-  let tResponden = filteredData.length;
-  let rdRespondenEl = document.getElementById('rd-responden');
-  if (rdRespondenEl) rdRespondenEl.innerText = tResponden;
+  document.getElementById('rd-usaha').innerText = totalUsaha;
+  document.getElementById('rd-rt').innerText = totalRT;
 
+  // 3. Render List
   if (filteredData.length === 0) {
-    container.innerHTML = `<div class="rekap-empty"><i class="ti ti-database-off" style="font-size:36px; color:var(--border-strong); display:block; margin-bottom:12px;"></i>Belum ada data tersimpan.</div>`;
+    container.innerHTML = `
+      <div class="rekap-empty">
+        <i class="ti ti-search" style="font-size:36px; color:var(--border-strong); display:block; margin-bottom:12px;"></i>
+        Data tidak ditemukan.
+      </div>`;
     return;
   }
 
@@ -5208,7 +5222,7 @@ function getMultiplierBulanan(periode) {
 //     infoBox.style.display = (infoBox.style.display === 'none') ? 'block' : 'none';
 //   }
 
-// --- MASTER DATA SEKTOR PERTAMBANGAN ---
+
   const masterTambang = {
     'Penambangan Pasir': { satuan: 'Rit', isHarian: true, isDepot: false, prod: ['Solar Mesin Penyedot / Excavator', 'Oli / Pelumas'], ops: ['Perawatan Mesin / Alat Berat', 'Retribusi / Uang Portal', 'Transportasi / Sewa Truk'] },
     'Penambangan Batu': { satuan: 'Kubik', isHarian: true, isDepot: false, prod: ['Solar Mesin / Alat Berat', 'Bahan Peledak (Dinamit)'], ops: ['Perawatan Alat', 'Retribusi Galian C', 'Transportasi Pengiriman'] },
@@ -5227,7 +5241,7 @@ function getMultiplierBulanan(periode) {
     
     document.getElementById('tambangSatuan').value = data.satuan;
     
-    // Jika Depot, otomatis ganti ke Mode Omzet & Periode Bulanan
+    
     let modeSelect = document.getElementById('tambangMode');
     let periodeSelect = document.getElementById('tambangPeriode');
     
@@ -5303,7 +5317,7 @@ function getMultiplierBulanan(periode) {
     let nilaiDasar = 0;
     let labelInfo = '';
 
-    // 1. Ambil Nilai Dasar
+    
     if (mode === 'produksi') {
       let qty = parseFloat(document.getElementById('tambangQty').value) || 0;
       let harga = parseNum(document.getElementById('tambangHarga').value);
@@ -5315,7 +5329,7 @@ function getMultiplierBulanan(periode) {
       labelInfo = '(Omzet Langsung)';
     }
 
-    // 2. Konversi Ke Bulanan
+    
     if (periode === 'hari') {
       let hariAktif = parseFloat(document.getElementById('tambangHariAktif').value) || 0;
       omzetBulanan = nilaiDasar * hariAktif;
@@ -5362,12 +5376,12 @@ function getMultiplierBulanan(periode) {
     });
   }
 
-  // Fungsi kalkulator live di dalam kartu produk
+  
   function updateLiveCalcTambang(el) {
     const itemCard = el.closest('.up-pertambangan-item');
     if (!itemCard) return;
 
-    // Ambil semua data input dalam satu kartu
+    
     const nama = itemCard.querySelector('.p-nama').value || 'Material';
     const qty = parseFloat(itemCard.querySelector('.p-qty').value) || 0;
     const satuan = itemCard.querySelector('.p-satuan').value || 'unit';
@@ -5771,7 +5785,7 @@ function hitungPertanianBaru() {
   let d = window.currentTaniPayload;
   let ekstra = sumBiayaItems('#ekstra-Pertanian .dynamic-income-item', true);
   
-  // Ambil nilai Biaya Non-Operasional
+  
   let nonOps = sumBiayaItems('#nonops-PertanianBaru .dynamic-b-item', false);
   
   let omzetUtama = d.omzetKotorTahun;
@@ -5784,7 +5798,7 @@ function hitungPertanianBaru() {
     `${ekstra.html} <div class="bd-row total" style="color:var(--text-secondary);"><span>B. Gaji Pekerja`
   );
 
-  // Tambahkan rincian Non-Operasional ke HTML Breakdown
+  
   finalRincian += `<div class="bd-row total" style="color:var(--text-secondary);"><span>E. Biaya Non-Operasional (26.E) / Tahun</span></div>`;
   finalRincian += nonOps.html || '<span style="font-size:11px; padding-left:10px; color:var(--text-muted);">Tidak ada</span>';
 
@@ -5837,7 +5851,7 @@ function syncBlok27() {
   document.getElementById('b27-val-b').innerText = formatRp(pendapatanLainnya);
   document.getElementById('b27-val-c').innerText = formatRp(totalPendapatan);
   
-  // Perbarui nilai pada Hero Card atas
+ 
   document.getElementById('b27-totalTahunHero').innerText = formatRp(totalPendapatan);
   
   showToast("✅ Data Blok 27 disinkronkan!");
@@ -5944,7 +5958,7 @@ function simpanRekapBlok27() {
 //     });
 //   }
 
-// --- MASTER DATA SEKTOR KEHUTANAN ---
+
   const masterKehutanan = {
     'Penebangan Kayu': { labelQty: 'VOLUME PRODUKSI KAYU', labelHarga: 'HARGA JUAL PER KUBIK / BATANG', defSatuan: 'Kubik', isAktivitas: false, hasHari: true, prod: ['BBM / Solar Chainsaw', 'Oli Pelumas Mesin', 'Rantai / Sparepart Chainsaw'], ops: ['Sewa Kendaraan Angkut', 'Perawatan Alat Berat', 'Bensin Transportasi'] },
     'Getah Pinus': { labelQty: 'JUMLAH PRODUKSI GETAH', labelHarga: 'HARGA JUAL PER KG / LITER', defSatuan: 'Kg', isAktivitas: false, hasHari: true, prod: ['Pisau Sadap', 'Ember / Wadah Getah', 'Cairan Stimulan'], ops: ['Transportasi Pengumpulan', 'Retribusi Perhutani'] },
@@ -5961,12 +5975,12 @@ function simpanRekapBlok27() {
     let jenis = document.getElementById('hutanJenis').value;
     let data = masterKehutanan[jenis] || masterKehutanan['Lainnya'];
     
-    // Sesuaikan Label Input Form secara dinamis
+    
     document.getElementById('lblHutanQty').innerText = data.isAktivitas ? data.labelAktivitas : data.labelQty;
     document.getElementById('lblHutanTarif').innerText = data.labelHarga;
     document.getElementById('hutanSatuan').value = data.defSatuan;
     
-    // Otomatisasi penentuan periode default dan ketersediaan input hari kerja
+    
     let selectPeriode = document.getElementById('hutanPeriode');
     if (data.hasHari) {
       selectPeriode.value = 'hari';
@@ -6036,7 +6050,7 @@ function simpanRekapBlok27() {
     let labelInfo = '';
     let jenisHutan = document.getElementById('hutanJenis').value;
 
-    // 1. Ambil Nilai Dasar
+    
     if (mode === 'produksi') {
       let qty = parseFloat(document.getElementById('hutanQty').value) || 0;
       let harga = parseNum(document.getElementById('hutanHarga').value);
@@ -6048,7 +6062,7 @@ function simpanRekapBlok27() {
       labelInfo = '(Omzet Langsung)';
     }
 
-    // 2. Konversi Ke Bulanan
+   
     if (periode === 'hari') {
       let hariBuka = parseFloat(document.getElementById('hutanHariBuka').value) || 0;
       omzetBulanan = nilaiDasar * hariBuka;
@@ -6094,7 +6108,7 @@ function simpanRekapBlok27() {
     });
   }
 
-  // --- MASTER DATA SEKTOR KESEHATAN ---
+  
   const masterKesehatan = {
     'Praktik Dokter': { engine: 'aktivitas', unitLabel: 'JUMLAH PASIEN', tarifLabel: 'TARIF RATA-RATA', satuan: 'Orang', prod: ['Obat-obatan', 'Masker', 'Sarung Tangan', 'ATK Medis'], ops: ['Listrik', 'Air', 'Kebersihan'] },
     'Praktik Dokter Gigi': { engine: 'aktivitas', unitLabel: 'JUMLAH PASIEN', tarifLabel: 'TARIF TINDAKAN / PASIEN', satuan: 'Orang', prod: ['Bahan Tambal / Cabut', 'Obat', 'Masker & Sarung Tangan'], ops: ['Listrik', 'Sewa Tempat'] },
@@ -6128,7 +6142,7 @@ function simpanRekapBlok27() {
     
     let modeSelect = document.getElementById('sehatMode');
     
-    // Sesuaikan Pilihan Engine (Aktivitas vs Omzet)
+    
     if (data.engine === 'omzet') {
       modeSelect.value = 'omzet';
     } else {
@@ -6200,7 +6214,7 @@ function simpanRekapBlok27() {
     let nilaiDasar = 0;
     let labelInfo = '';
 
-    // 1. Ambil Nilai Dasar
+   
     if (mode === 'aktivitas') {
       let qty = parseFloat(document.getElementById('sehatQty').value) || 0;
       let harga = parseNum(document.getElementById('sehatHarga').value);
@@ -6212,7 +6226,7 @@ function simpanRekapBlok27() {
       labelInfo = '(Omzet Langsung)';
     }
 
-    // 2. Konversi Ke Bulanan
+    
     if (periode === 'hari') {
       omzetBulanan = nilaiDasar * totalHariSebulanSehat;
       labelInfo += ` × ${totalHariSebulanSehat} Hari Praktik`;
@@ -6255,7 +6269,7 @@ function simpanRekapBlok27() {
     });
   }
 
-  // --- MASTER DATA SEKTOR KULINER ---
+ 
   const masterKuliner = {
     'Warung Makan': { satuan: 'RATA-RATA PORSI TERJUAL', tarifLabel: 'HARGA RATA-RATA / PORSI', prod: ['Beras / Karbohidrat', 'Lauk Pauk (Ayam/Ikan/Daging)', 'Sayuran & Bumbu', 'Minyak Goreng', 'Gas LPG', 'Bungkus / Kertas Nasi', 'Air Minum'], bbt: ['Kerupuk Titipan', 'Minuman Kemasan'], ops: ['Listrik', 'Air', 'Retribusi / Kebersihan'] },
     'Rumah Makan': { satuan: 'RATA-RATA PORSI / TRANSAKSI', tarifLabel: 'RATA-RATA / TRANSAKSI', prod: ['Bahan Baku Masakan', 'Sayuran & Bumbu', 'Gas LPG Komersial', 'Minyak Goreng'], bbt: ['Minuman Botol / Kaleng', 'Snack / Kerupuk'], ops: ['Sewa Tempat', 'Listrik', 'Air', 'Kebersihan & Keamanan'] },
@@ -6393,7 +6407,7 @@ function simpanRekapBlok27() {
     });
   }
 
-  // --- MASTER DATA SEKTOR PENDIDIKAN ---
+  
   const masterPendidikan = {
     'TK': { unitLabel: 'JUMLAH MURID', tarifLabel: 'SPP / BULAN', isHarian: false, prod: ['ATK / Kertas', 'Buku Panduan', 'Mainan Edukasi', 'Snack / Konsumsi'], ops: ['Listrik', 'Air', 'Perawatan Bangunan'] },
     'PAUD': { unitLabel: 'JUMLAH MURID', tarifLabel: 'SPP / BULAN', isHarian: false, prod: ['Mainan Edukasi', 'ATK / Krayon', 'Snack Anak'], ops: ['Listrik', 'Air Bersih', 'Kebersihan'] },
@@ -6412,11 +6426,11 @@ function simpanRekapBlok27() {
     let jenis = document.getElementById('pendidikanJenis').value;
     let data = masterPendidikan[jenis] || masterPendidikan['Lainnya'];
     
-    // Ubah Label Input
+   
     document.getElementById('lblPendidikanQty').innerText = data.unitLabel;
     document.getElementById('lblPendidikanTarif').innerText = data.tarifLabel;
     
-    // Otomatis arahkan Periode berdasar jenis (Les Privat otomatis Harian)
+   
     let selectPeriode = document.getElementById('pendidikanPeriode');
     if (data.isHarian) {
       selectPeriode.value = 'hari';
@@ -6426,7 +6440,7 @@ function simpanRekapBlok27() {
     }
     cekPeriodePendidikan();
     
-    // Ubah Text Tombol Load Biaya
+    
     document.getElementById('btnLoadBiayaPendidikan').innerHTML = '⚡ Fitur Isi Otomatis Biaya ' + jenis;
   }
 
@@ -6487,7 +6501,7 @@ function simpanRekapBlok27() {
     let nilaiDasar = 0;
     let labelInfo = '';
 
-    // 1. Ambil Nilai Dasar
+    
     if (mode === 'peserta') {
       let qty = parseFloat(document.getElementById('pendidikanQty').value) || 0;
       let harga = parseNum(document.getElementById('pendidikanHarga').value);
@@ -6498,7 +6512,7 @@ function simpanRekapBlok27() {
       labelInfo = '(Omzet Langsung)';
     }
 
-    // 2. Konversi Ke Bulanan
+    
     if (periode === 'hari') {
       let hariAktif = parseFloat(document.getElementById('pendidikanHariAktif').value) || 0;
       omzetBulanan = nilaiDasar * hariAktif;
@@ -6520,7 +6534,6 @@ function simpanRekapBlok27() {
 
     let gaji = hitungGaji('pendidikanPegawai', 'pendidikanGaji', 'pendidikanPeriodeGaji', 'Tenaga Pengajar');
     
-    // PEMISAHAN SPESIFIK BIAYA
     let prod = sumBiayaItems('#containerProdPendidikan .dynamic-b-item');
     let bbt = sumBiayaItems('#bbt-Pendidikan .dynamic-b-item'); 
     let ops = sumBiayaItems('#containerOpsPendidikan .dynamic-b-item'); 
@@ -6549,7 +6562,7 @@ function simpanRekapBlok27() {
     });
   }
 
-  // Fungsi Kendali Pertanyaan Screening Usaha di Menu Home
+
   function toggleUsaha(hasUsaha) {
     const btnYa = document.getElementById('btnUsahaYa');
     const btnTidak = document.getElementById('btnUsahaTidak');
@@ -6557,37 +6570,37 @@ function simpanRekapBlok27() {
     const msgNoUsaha = document.getElementById('msgNoUsaha');
 
     if (hasUsaha) {
-      // Styling Tombol YA aktif
+      
       btnYa.style.background = 'var(--accent)';
       btnYa.style.color = '#fff';
       btnYa.style.borderColor = 'var(--accent)';
 
-      // Styling Tombol TIDAK non-aktif
+    
       btnTidak.style.background = 'var(--surface-2)';
       btnTidak.style.color = 'var(--text-secondary)';
       btnTidak.style.borderColor = 'var(--border-strong)';
 
-      // Tampilkan Grid Menu, Sembunyikan Pesan
+      
       wrapSektor.style.display = 'block';
       msgNoUsaha.style.display = 'none';
     } else {
-      // Styling Tombol TIDAK aktif (Warna Peringatan)
+     
       btnTidak.style.background = '#FEF2F2';
       btnTidak.style.color = '#DC2626';
       btnTidak.style.borderColor = '#DC2626';
 
-      // Styling Tombol YA non-aktif
+     
       btnYa.style.background = 'var(--surface-2)';
       btnYa.style.color = 'var(--text-secondary)';
       btnYa.style.borderColor = 'var(--border-strong)';
 
-      // Sembunyikan Grid Menu, Tampilkan Pesan Lanjut ke Konsumsi
+     
       wrapSektor.style.display = 'none';
       msgNoUsaha.style.display = 'block';
     }
   }
 
-// --- MASTER DATA SEKTOR JASA KEUANGAN ---
+
 const masterKeuangan = {
   'Koperasi Simpan Pinjam': { prod: ['ATK & Alat Tulis', 'Buku Tabungan Nasabah', 'Kuitansi & Stempel'], ops: ['Listrik', 'Sewa Kantor', 'Transportasi Penagihan'] },
   'BMT': { prod: ['Buku Tabungan', 'Kuitansi', 'Brosur'], ops: ['Sewa Kantor', 'Listrik', 'Internet'] },
@@ -6647,7 +6660,7 @@ function hitungKeuangan() {
   let omzetBulanan = 0;
   let labelInfo = '(Pendapatan Bunga / Jasa)';
 
-  if (periode === 'hari') omzetBulanan = nilaiDasar * 30; // Asumsi 30 hari operasional
+  if (periode === 'hari') omzetBulanan = nilaiDasar * 30; 
   else if (periode === 'minggu') omzetBulanan = nilaiDasar * (52 / 12);
   else if (periode === 'bulan') omzetBulanan = nilaiDasar;
   else if (periode === 'tahun') omzetBulanan = nilaiDasar / 12;
@@ -6658,7 +6671,7 @@ function hitungKeuangan() {
 
   let gaji = hitungGaji('keuanganPegawai', 'keuanganGaji', 'keuanganPeriodeGaji', 'Pegawai & Jamsos');
   let prod = sumBiayaItems('#containerProdKeuangan .dynamic-b-item');
-  let bbt = { total: 0, html: '' }; // Biasanya jasa keuangan tidak ada HPP Kulakan
+  let bbt = { total: 0, html: '' }; 
   let ops = sumBiayaItems('#containerOpsKeuangan .dynamic-b-item');
   let nonOps = sumBiayaItems('#nonops-Keuangan .dynamic-b-item');
 
@@ -6774,7 +6787,6 @@ function hitungTransportasi() {
     let jmlOrder = parseInt(document.getElementById('transJmlOrder').value) || 0;
     let tarifOrder = parseNum(document.getElementById('transTarifOrder').value);
     
-    // Perhitungan: Order harian x Tarif x Hari kerja sebulan
     omzetBulanan = jmlOrder * tarifOrder * hariKerja;
     labelInfo = `(Dari ${jmlOrder} Order/hari × ${formatRp(tarifOrder)} × ${hariKerja} hari)`;
   }
@@ -6785,7 +6797,7 @@ function hitungTransportasi() {
 
   let gaji = hitungGaji('transPegawai', 'transGaji', 'transPeriodeGaji', 'Pegawai/Sopir/Kernet');
   let prod = sumBiayaItems('#containerProdTrans .dynamic-b-item', false, hariKerja);
-  let bbt = { total: 0, html: '' }; // Sektor ini murni Jasa Angkutan, tidak punya HPP barang kulakan
+  let bbt = { total: 0, html: '' }; 
   let ops = sumBiayaItems('#containerOpsTrans .dynamic-b-item', false, hariKerja);
   let nonOps = sumBiayaItems('#nonops-Trans .dynamic-b-item', false, hariKerja);
 
@@ -6818,7 +6830,7 @@ function setFilterRekapDropdown(selectEl) {
 
 function importLabaUsaha() {
   let rekap = JSON.parse(localStorage.getItem('rekapSensusData')) || [];
-  // Ambil data selain kebutuhan RT dan Blok 27
+ 
   let usahaList = rekap.filter(item => item.type !== 'kebutuhan' && item.type !== 'blok27');
   
   if (usahaList.length === 0) {
@@ -6829,17 +6841,17 @@ function importLabaUsaha() {
   let importedCount = 0;
 
   usahaList.forEach(u => {
-    // Hindari import ganda berdasarkan ID
+   
     if (document.querySelector(`.imported-id-${u.id}`)) return;
 
     let labaBulan = u.data.labaBulan || 0;
-    if (labaBulan <= 0) return; // Hanya import jika ada laba (tidak rugi)
+    if (labaBulan <= 0) return; 
 
     const div = document.createElement('div');
     div.className = `biaya-item p-gaji-item imported-id-${u.id}`;
-    div.style.borderLeft = "4px solid var(--text-success)"; // Penanda visual
+    div.style.borderLeft = "4px solid var(--text-success)"; 
     
-    // Format HTML sesuai permintaan (Badge Informasi Terhubung)
+
     div.innerHTML = `
       <div style="background: var(--bg-accent); border: 1px dashed var(--border-strong); border-radius: 8px; padding: 8px 12px; margin-bottom: 10px;">
         <span style="font-size: 10.5px; font-weight: 700; color: var(--blue-strong); display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
@@ -6875,7 +6887,7 @@ function importLabaUsaha() {
 
 function importLabaUsaha() {
   document.getElementById('modalImportLaba').classList.add('active');
-  document.getElementById('searchImport').value = ''; // Kosongkan search tiap kali dibuka
+  document.getElementById('searchImport').value = ''; 
   renderImportList();
 }
 
@@ -6889,7 +6901,6 @@ function renderImportList() {
   const container = document.getElementById('listImportLaba');
   const searchQ = document.getElementById('searchImport').value.toLowerCase();
   
-  // Filter hanya data sektoral (kecualikan data rt/kebutuhan/blok27)
   const validTypes = ['usaha', 'kuliner', 'jasa', 'sewa', 'perikanan', 'pertanian', 'peternakan', 'pendidikan', 'industri', 'pertambangan', 'kesehatan', 'keuangan', 'transportasi'];
   
   let filtered = dataRekap.filter(item => 
@@ -6940,7 +6951,7 @@ function pilihImportLaba(id) {
 
   const div = document.createElement('div');
   div.className = 'biaya-item p-gaji-item';
-  div.setAttribute('data-is-import', 'true'); // Penanda khusus untuk kalkulator
+  div.setAttribute('data-is-import', 'true'); 
   div.setAttribute('data-kategori', jenis);
   div.style.border = '1px solid var(--border-success)';
   div.style.borderLeft = '6px solid var(--text-success)';
