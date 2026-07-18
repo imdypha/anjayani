@@ -263,6 +263,19 @@
     .m-transportasi { background: #FEF3C7; border-color: #FCD34D; } 
 .m-transportasi .ic { background: #FEF3C7; color: #D97706; } 
 .m-transportasi span { color: #78350F; }
+
+.modal-import { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11,46,82,0.6); z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  .modal-import.active { display: flex; animation: fadeIn 0.2s ease; }
+  .modal-import-content { background: var(--surface-1); width: 90%; max-width: 420px; border-radius: 16px; padding: 20px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+  .modal-import-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed var(--border-strong); padding-bottom: 12px; }
+  .modal-import-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-top: 15px; padding-right: 4px; }
+  .modal-import-list::-webkit-scrollbar { width: 4px; }
+  .modal-import-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+  
+  .import-card { border: 1px solid var(--border-strong); border-radius: 12px; padding: 14px; display: flex; justify-content: space-between; align-items: center; background: #ffffff; transition: 0.2s; cursor: pointer; }
+  .import-card:hover { border-color: var(--blue-strong); box-shadow: 0 4px 10px rgba(0,71,155,0.08); transform: translateY(-2px); }
+  .import-card .badge-tipe { font-size: 9px; background: var(--bg-accent); color: var(--blue-strong); padding: 3px 8px; border-radius: 20px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; display: inline-block; }
+
   </style>
 </head>
 <body>
@@ -2232,20 +2245,34 @@
     <p class="section-desc">Isi rincian pendapatan dan pengeluaran rumah tangga di bawah ini.</p>
     
     <div class="section-label" style="margin-top:1.5rem">Pendapatan Keluarga</div>
+    <button class="btn-add" onclick="importLabaUsaha()" style="background: #E1F3E7; color: #1E7A4C; border-color: #BEE3CB; margin-bottom: 12px;">
+      <i class="ti ti-download"></i> ↓ Import Laba Usaha (Dari Rekap Blok 26)
+    </button>
     <div id="containerPendapatan">
-      <div class="biaya-item p-gaji-item">
-        <div class="biaya-item-top">
-          <input type="text" class="input-box i-nama" placeholder="Gaji Kepala Keluarga" value="Gaji Kepala Keluarga">
-          <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
-        </div>
-        <div class="field" style="margin-bottom:0;">
-          <div class="input-group">
-            <span class="input-group-text">Rp</span>
-            <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
-          </div>
-        </div>
+  <div class="biaya-item p-gaji-item manual-income">
+    <div class="biaya-item-top" style="margin-bottom:8px;">
+      <select class="input-box i-kategori" style="width: 45%; font-weight:700; color:var(--accent); padding: 0 8px;">
+        <option value="Gaji" data-icon="👤">Gaji</option>
+        <option value="Usaha" data-icon="💼">Usaha</option>
+        <option value="Online Shop" data-icon="🛒">Online Shop</option>
+        <option value="Investasi" data-icon="📈">Investasi</option>
+        <option value="Kontrakan" data-icon="🏠">Kontrakan</option>
+        <option value="Dividen" data-icon="💸">Dividen</option>
+        <option value="Pensiun" data-icon="🧓">Pensiun</option>
+        <option value="Kiriman Anak" data-icon="💌">Kiriman Anak</option>
+        <option value="Lainnya" data-icon="📌">Lainnya</option>
+      </select>
+      <input type="text" class="input-box i-nama" placeholder="Keterangan..." value="Gaji Kepala Keluarga" style="flex:1;">
+      <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="field" style="margin-bottom:0;">
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
       </div>
     </div>
+  </div>
+</div>
     <button class="btn-add" onclick="tambahPendapatan()">+ Tambah Pendapatan Keluarga Lain</button>
 
     <div class="section-label" style="margin-top:1.5rem">15.a Pengeluaran Listrik Sebulan</div>
@@ -2416,7 +2443,26 @@
   </div>
 
 </div> 
-</div> </div> 
+</div> 
+</div> 
+
+<div class="modal-import" id="modalImportLaba" onclick="closeImportModal(event)">
+  <div class="modal-import-content" onclick="event.stopPropagation()">
+    <div class="modal-import-header">
+      <h3 style="font-size:16px; color:var(--accent); margin:0;"><i class="ti ti-download"></i> Pilih Data Rekap</h3>
+      <button class="btn-del" onclick="closeImportModal(event)" style="width:32px; height:32px; border-radius:8px;"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <!-- Kolom Search Realtime -->
+    <div class="input-group" style="box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+      <span class="input-group-text"><i class="ti ti-search"></i></span>
+      <input type="text" id="searchImport" placeholder="Cari Nama Responden / Usaha..." oninput="renderImportList()" style="width:100%; border:none; height:42px; padding:0 12px; outline:none; font-family:var(--font-sans); font-size:13.5px;">
+    </div>
+
+    <!-- List Output Data -->
+    <div class="modal-import-list" id="listImportLaba"></div>
+  </div>
+</div>
 
 <button class="fab-calc" onclick="toggleCalc()">
   <i class="ti ti-calculator"></i>
@@ -2424,8 +2470,10 @@
 
 <div class="toast-wrap">
 <div class="toast-wrap">
-  <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 </div>  
+
+
 
 <script>
   const formatRp = (num) => 'Rp ' + new Intl.NumberFormat('id-ID').format(Math.round(num));
@@ -2949,43 +2997,66 @@
   }
 
   function tambahPendapatan() {
-    const div = document.createElement('div');
-    div.className = 'biaya-item p-gaji-item';
-    div.innerHTML = `
-      <div class="biaya-item-top">
-        <input type="text" class="input-box i-nama" placeholder="Sumber Pendapatan">
-        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+  const div = document.createElement('div');
+  div.className = 'biaya-item p-gaji-item manual-income';
+  div.innerHTML = `
+    <div class="biaya-item-top" style="margin-bottom:8px;">
+      <select class="input-box i-kategori" style="width: 45%; font-weight:700; color:var(--accent); padding: 0 8px;">
+        <option value="Gaji" data-icon="👤">Gaji</option>
+        <option value="Usaha" data-icon="💼">Usaha</option>
+        <option value="Online Shop" data-icon="🛒">Online Shop</option>
+        <option value="Investasi" data-icon="📈">Investasi</option>
+        <option value="Kontrakan" data-icon="🏠">Kontrakan</option>
+        <option value="Dividen" data-icon="💸">Dividen</option>
+        <option value="Pensiun" data-icon="🧓">Pensiun</option>
+        <option value="Kiriman Anak" data-icon="💌">Kiriman Anak</option>
+        <option value="Lainnya" data-icon="📌">Lainnya</option>
+      </select>
+      <input type="text" class="input-box i-nama" placeholder="Keterangan..." style="flex:1;">
+      <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="field" style="margin-bottom:0;">
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
       </div>
-      <div class="field" style="margin-bottom:0;">
-        <div class="input-group">
-          <span class="input-group-text">Rp</span>
-          <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
-        </div>
-      </div>`;
-    document.getElementById('containerPendapatan').appendChild(div);
-  }
+    </div>`;
+  document.getElementById('containerPendapatan').appendChild(div);
+}
 
   function kembaliEditUsaha() { sw(typeToReturn, null); }
 
   function simpanRekapBlok26() {
-    if (!tempBlok26Final) return;
-    const now = new Date().toLocaleString('id-ID', { hour12: false });
-    let savedData = { 
-      nama: tempBlok26Final.nama, 
-      jenis: tempBlok26Final.jenis, 
-      omzetTahun: tempBlok26Final.omzetKotor, 
-      biayaTahun: tempBlok26Final.totalBiaya, 
-      totalPendapatan: tempBlok26Final.omzetKotor, 
-      totalLaba: tempBlok26Final.labaTahun, 
-      labaBulan: tempBlok26Final.labaBulan,
-      rincian: tempBlok26Final.rincian
-    };
-    dataRekap.unshift({ id: Date.now(), type: tempBlok26Final.type, waktu: now, data: savedData });
-    localStorage.setItem('rekapSensusData', JSON.stringify(dataRekap));
-    renderRekap();
-    showToast('Rekap ' + tempBlok26Final.type.toUpperCase() + ' Tersimpan!');
-    sw('rekap', document.querySelector('.tabs button:last-child'));
-  }
+  if (!tempBlok26Final) return;
+  
+  // Memunculkan kolom prompt untuk menamai data
+  let namaInput = prompt("Masukkan Nama Responden / Petugas untuk menyimpan data ini:", tempBlok26Final.nama || "");
+  
+  // Jika user klik cancel pada prompt, batalkan proses simpan
+  if (namaInput === null) return; 
+  
+  // Update nama jika diisi, jika kosong gunakan default
+  tempBlok26Final.nama = namaInput.trim() !== "" ? namaInput : "Tanpa Nama";
+
+  const now = new Date().toLocaleString('id-ID', { hour12: false });
+  let savedData = { 
+    nama: tempBlok26Final.nama, 
+    jenis: tempBlok26Final.jenis, 
+    omzetTahun: tempBlok26Final.omzetKotor, 
+    biayaTahun: tempBlok26Final.totalBiaya, 
+    totalPendapatan: tempBlok26Final.omzetKotor, 
+    totalLaba: tempBlok26Final.labaTahun, 
+    labaBulan: tempBlok26Final.labaBulan,
+    rincian: tempBlok26Final.rincian
+  };
+  
+  dataRekap.unshift({ id: Date.now(), type: tempBlok26Final.type, waktu: now, data: savedData });
+  localStorage.setItem('rekapSensusData', JSON.stringify(dataRekap));
+  
+  renderRekap();
+  showToast('Rekap ' + tempBlok26Final.type.toUpperCase() + ' Tersimpan!');
+  sw('rekap', document.querySelector('.tabs button:last-child'));
+} 
   
   function simpanRekap(jenis) {
     const now = new Date().toLocaleString('id-ID', { hour12: false });
@@ -3982,10 +4053,40 @@ else if (jenis === 'kuliner') {
       showToast('Form Pendidikan Direset'); resetBlok26();
     
     } else if (jenis === 'kebutuhan') {
-      document.getElementById('containerPendapatan').innerHTML = `<div class="biaya-item p-gaji-item"><div class="biaya-item-top"><input type="text" class="input-box i-nama" placeholder="Gaji Kepala Keluarga" value="Gaji Kepala Keluarga"><button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button></div><div class="field" style="margin-bottom:0;"><div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)"></div></div></div>`;
-      document.getElementById('keb15a').value = ''; document.getElementById('keb16a_val').value = ''; document.getElementById('container15b').innerHTML = ''; document.getElementById('container16b').innerHTML = ''; document.getElementById('container16c').innerHTML = ''; document.getElementById('resKebutuhan').classList.remove('vis'); showToast('Form Kebutuhan Direset');
+  document.getElementById('containerPendapatan').innerHTML = `
+    <div class="biaya-item p-gaji-item manual-income">
+      <div class="biaya-item-top" style="margin-bottom:8px;">
+        <select class="input-box i-kategori" style="width: 45%; font-weight:700; color:var(--accent); padding: 0 8px;">
+          <option value="Gaji" data-icon="👤">Gaji</option>
+          <option value="Usaha" data-icon="💼">Usaha</option>
+          <option value="Online Shop" data-icon="🛒">Online Shop</option>
+          <option value="Investasi" data-icon="📈">Investasi</option>
+          <option value="Kontrakan" data-icon="🏠">Kontrakan</option>
+          <option value="Dividen" data-icon="💸">Dividen</option>
+          <option value="Pensiun" data-icon="🧓">Pensiun</option>
+          <option value="Kiriman Anak" data-icon="💌">Kiriman Anak</option>
+          <option value="Lainnya" data-icon="📌">Lainnya</option>
+        </select>
+        <input type="text" class="input-box i-nama" placeholder="Keterangan..." value="Gaji Kepala Keluarga" style="flex:1;">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <div class="input-group">
+          <span class="input-group-text">Rp</span>
+          <input type="text" inputmode="numeric" class="val-biaya" placeholder="0" oninput="formatRupiah(this)">
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('keb15a').value = ''; 
+  document.getElementById('keb16a_val').value = ''; 
+  document.getElementById('container15b').innerHTML = ''; 
+  document.getElementById('container16b').innerHTML = ''; 
+  document.getElementById('container16c').innerHTML = ''; 
+  document.getElementById('resKebutuhan').classList.remove('vis'); 
+  showToast('Form Kebutuhan Direset');
+} 
 
-    } else if (jenis === 'blok27') {
+    else if (jenis === 'blok27') {
       document.getElementById('container27A').innerHTML = ''; document.getElementById('container27B').innerHTML = ''; document.getElementById('container27D').innerHTML = ''; document.getElementById('resBlok27Box').classList.remove('vis'); showToast('Form Blok 27 Direset');
 
     } else if (jenis === 'industri') {
@@ -4214,100 +4315,157 @@ function tambahItem15b() {
   }
   
   function hitungKebutuhan() {
-    let pendapatanBulan = 0; 
-    document.querySelectorAll('#containerPendapatan .val-biaya').forEach(i => pendapatanBulan += parseNum(i.value));
-    
-    let tMasukBulan = pendapatanBulan; 
-    let tKeluarBulan = 0; 
-    let h = '';
-    
-    let l = parseNum(document.getElementById('keb15a').value); 
-    if(l > 0) { 
-      tKeluarBulan += l; 
-      h += `<div class="bd-row minus"><span>- Listrik</span><span class="bd-val" style="color:#e11d48;">${formatRp(l)}/bln</span></div>`; 
-    }
-    
-    let sub15b = sumBiayaItemsBulanan('#container15b .dynamic-b-item'); 
-    tKeluarBulan += sub15b.total; 
-    h += sub15b.html;
-    
-    let m = parseNum(document.getElementById('keb16a_val').value);
-    if(m > 0) { 
-      let mB = m * ((document.getElementById('keb16a_per').value === 'hari') ? (window.totalHariSebulan || 30) : 4.33); 
-      tKeluarBulan += mB; 
-      h += `<div class="bd-row minus"><span>- Makanan Rutin</span><span class="bd-val" style="color:#e11d48;">${formatRp(mB)}/bln</span></div>`; 
-    }
-    
-    let sub16b = sumBiayaItemsBulanan('#container16b .dynamic-b-item'); 
-    tKeluarBulan += sub16b.total; 
-    h += sub16b.html;
-    
-    let sub16c = sumBiayaItemsBulanan('#container16c .dynamic-b-item'); 
-    tKeluarBulan += sub16c.total; 
-    h += sub16c.html;
-
-    let sisa = tMasukBulan - tKeluarBulan;
-    document.getElementById('r-kin').innerText = formatRp(tMasukBulan);
-    document.getElementById('r-kout').innerText = formatRp(tKeluarBulan);
-    document.getElementById('r-kprofit').innerText = formatRp(sisa);
-    
-    let wadahAnomali = document.getElementById('peringatanAnomaliRT');
-    if (tMasukBulan === 0 && tKeluarBulan > 0) {
-       wadahAnomali.innerHTML = `<div style="background:#fef2f2; border:1px solid #fecaca; padding:12px; border-radius:12px; margin-bottom:14px; font-size:13px; color:#dc2626; font-weight:700;">⚠️ PERINGATAN: Pengeluaran ada tetapi pendapatan diisi Rp 0.</div>`;
-    } else if (tMasukBulan > 0) {
-      let expenseRatio = (tKeluarBulan / tMasukBulan) * 100;
-      let isAnomali = expenseRatio > 100;
-      wadahAnomali.innerHTML = `
-        <div style="background: ${isAnomali ? '#fef2f2' : '#eef2fb'}; border: 1px solid ${isAnomali ? '#fecaca' : '#d4def1'}; padding: 12px; border-radius: 12px; margin-bottom: 14px; font-size: 13px;">
-          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-            <span style="color:#475569; font-weight:600;">Pemasukan Sebulan:</span> 
-            <strong style="color:${isAnomali ? '#dc2626' : '#0B2E52'};">100%</strong>
-          </div>
-          <div style="display:flex; justify-content:space-between;">
-            <span style="color:#475569; font-weight:600;">Pengeluaran Sebulan:</span> 
-            <strong style="color:${isAnomali ? '#dc2626' : '#0B2E52'};">${expenseRatio.toFixed(1)}% <span style="font-size:10px; font-weight:normal;">dari pendapatan</span></strong>
-          </div>
-          ${isAnomali ? `<div style="color: #dc2626; font-weight: 700; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #fca5a5; font-size:12px;">⚠️ PERINGATAN: Periksa kembali data, karena total pengeluaran melebihi pendapatan keluarga!</div>` : ''}
-        </div>`;
-    } else {
-       wadahAnomali.innerHTML = '';
-    }
-
-    let boxKprofit = document.getElementById('box-kprofit');
-    let lblKprofit = document.getElementById('lbl-kprofit');
-    let valKprofit = document.getElementById('r-kprofit');
-
-    if (sisa < 0) {
-      boxKprofit.style.background = '#fff1f2';
-      boxKprofit.style.borderColor = '#fecdd3';
-      
-      lblKprofit.innerHTML = '<i class="ti ti-scale-unbalanced"></i> SELISIH (DEFISIT / MINUS)';
-      lblKprofit.style.color = '#9f1239';
-      valKprofit.style.color = '#e11d48';
-    } else {
-      boxKprofit.style.background = '#eef2fb';
-      boxKprofit.style.borderColor = '#d4def1';
+  let pendapatanBulan = 0;
   
-      lblKprofit.innerHTML = '<i class="fa-solid fa-scale-balanced"></i> SELISIH PENDAPATAN & PENGELUARAN';
-      lblKprofit.style.color = '#5a719d';
-      valKprofit.style.color = '#475a82';
-    }
+  // Membangun Kartu Rincian Pendapatan
+  let htmlPendapatanDetail = `
+    <div style="background:var(--surface-1); border-radius:10px; border:1px solid var(--border-strong); padding:14px; margin-bottom:16px;">
+      <div style="font-size:12px; font-weight:800; color:var(--accent); border-bottom:1px dashed var(--border-strong); padding-bottom:8px; margin-bottom:12px; text-transform:uppercase;">Rincian Sumber Pendapatan</div>`;
 
-    document.getElementById('resBreakdownKebutuhan').innerHTML = h;
-    document.getElementById('resKebutuhan').classList.add('vis');
+  document.querySelectorAll('#containerPendapatan .biaya-item').forEach(item => {
+    let valInput = item.querySelector('.val-biaya');
+    if(!valInput) return;
+    let val = parseNum(valInput.value);
     
-    tempKebutuhan = { 
-      totalBulan: tKeluarBulan, 
-      pendapatanBulan: pendapatanBulan, 
-      nama: 'Kebutuhan RT', 
-      rincian: h, 
-      totalPendapatan: tMasukBulan, 
-      totalLaba: sisa 
-    };
-    
-    document.getElementById('btn-save-kebutuhan').classList.add('vis');
-    setTimeout(() => { document.getElementById('resKebutuhan').scrollIntoView({behavior: "smooth"}); }, 150);
+    if (val > 0) {
+      pendapatanBulan += val;
+      let isImport = item.hasAttribute('data-is-import');
+      let nama = item.querySelector('.i-nama').value || 'Tanpa Keterangan';
+      
+      if (isImport) {
+        let kategori = item.getAttribute('data-kategori') || 'Usaha';
+        htmlPendapatanDetail += `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed var(--border);">
+            <div style="flex:1;">
+              <span style="font-size:13px; font-weight:700; color:var(--text-primary); display:block;">🌾 ${nama}</span>
+              <span style="font-size:9px; background:var(--bg-success); color:var(--text-success); padding:3px 8px; border-radius:12px; font-weight:800; display:inline-block; margin-top:4px; letter-spacing:0.5px;">AUTO IMPORT (${kategori})</span>
+            </div>
+            <strong style="font-family:var(--font-mono); font-size:13.5px; color:var(--text-success);">${formatRp(val)}</strong>
+          </div>`;
+      } else {
+        let catSelect = item.querySelector('.i-kategori');
+        let icon = '📌';
+        let namaKat = 'Lainnya';
+        
+        if (catSelect) {
+          let selOpt = catSelect.options[catSelect.selectedIndex];
+          icon = selOpt.getAttribute('data-icon') || '📌';
+          namaKat = catSelect.value;
+        }
+
+        htmlPendapatanDetail += `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed var(--border);">
+            <div style="flex:1;">
+              <span style="font-size:13px; font-weight:700; color:var(--text-primary); display:block;">${icon} ${nama}</span>
+              <span style="font-size:10.5px; color:var(--text-muted); display:block; margin-top:2px;">Kategori: ${namaKat}</span>
+            </div>
+            <strong style="font-family:var(--font-mono); font-size:13.5px; color:var(--text-success);">${formatRp(val)}</strong>
+          </div>`;
+      }
+    }
+  });
+
+  htmlPendapatanDetail += `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px; background:var(--bg-success); padding:10px; border-radius:8px; border:1px dashed var(--border-success);">
+        <span style="font-size:13px; font-weight:800; color:var(--text-success);">TOTAL PENDAPATAN KELUARGA</span>
+        <strong style="font-family:var(--font-mono); font-size:15px; color:var(--text-success);">${formatRp(pendapatanBulan)}/bln</strong>
+      </div>
+    </div>`;
+
+  // Hitung Pengeluaran
+  let tMasukBulan = pendapatanBulan; 
+  let tKeluarBulan = 0; 
+  let h = htmlPendapatanDetail; // Tempelkan rincian pendapatan di paling atas breakdown
+  
+  h += `<div style="font-size:12px; font-weight:800; color:var(--text-danger); border-bottom:1px dashed var(--border-strong); padding-bottom:8px; margin-bottom:10px; margin-top:16px; text-transform:uppercase;">Rincian Pengeluaran</div>`;
+
+  let l = parseNum(document.getElementById('keb15a').value); 
+  if(l > 0) { 
+    tKeluarBulan += l; 
+    h += `<div class="bd-row minus"><span>- Listrik</span><span class="bd-val" style="color:#e11d48;">${formatRp(l)}/bln</span></div>`; 
   }
+  
+  let sub15b = sumBiayaItemsBulanan('#container15b .dynamic-b-item'); 
+  tKeluarBulan += sub15b.total; 
+  h += sub15b.html;
+  
+  let m = parseNum(document.getElementById('keb16a_val').value);
+  if(m > 0) { 
+    let mB = m * ((document.getElementById('keb16a_per').value === 'hari') ? (window.totalHariSebulan || 30) : 4.33); 
+    tKeluarBulan += mB; 
+    h += `<div class="bd-row minus"><span>- Makanan Rutin</span><span class="bd-val" style="color:#e11d48;">${formatRp(mB)}/bln</span></div>`; 
+  }
+  
+  let sub16b = sumBiayaItemsBulanan('#container16b .dynamic-b-item'); 
+  tKeluarBulan += sub16b.total; 
+  h += sub16b.html;
+  
+  let sub16c = sumBiayaItemsBulanan('#container16c .dynamic-b-item'); 
+  tKeluarBulan += sub16c.total; 
+  h += sub16c.html;
+
+  let sisa = tMasukBulan - tKeluarBulan;
+  
+  // Render ke DOM
+  document.getElementById('r-kin').innerText = formatRp(tMasukBulan);
+  document.getElementById('r-kout').innerText = formatRp(tKeluarBulan);
+  document.getElementById('r-kprofit').innerText = formatRp(sisa);
+  
+  let wadahAnomali = document.getElementById('peringatanAnomaliRT');
+  if (tMasukBulan === 0 && tKeluarBulan > 0) {
+     wadahAnomali.innerHTML = `<div style="background:#fef2f2; border:1px solid #fecaca; padding:12px; border-radius:12px; margin-bottom:14px; font-size:13px; color:#dc2626; font-weight:700;">⚠️ PERINGATAN: Pengeluaran ada tetapi pendapatan diisi Rp 0.</div>`;
+  } else if (tMasukBulan > 0) {
+    let expenseRatio = (tKeluarBulan / tMasukBulan) * 100;
+    let isAnomali = expenseRatio > 100;
+    wadahAnomali.innerHTML = `
+      <div style="background: ${isAnomali ? '#fef2f2' : '#eef2fb'}; border: 1px solid ${isAnomali ? '#fecaca' : '#d4def1'}; padding: 12px; border-radius: 12px; margin-bottom: 14px; font-size: 13px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <span style="color:#475569; font-weight:600;">Pemasukan Sebulan:</span> 
+          <strong style="color:${isAnomali ? '#dc2626' : '#0B2E52'};">100%</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:#475569; font-weight:600;">Pengeluaran Sebulan:</span> 
+          <strong style="color:${isAnomali ? '#dc2626' : '#0B2E52'};">${expenseRatio.toFixed(1)}% <span style="font-size:10px; font-weight:normal;">dari pendapatan</span></strong>
+        </div>
+        ${isAnomali ? `<div style="color: #dc2626; font-weight: 700; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #fca5a5; font-size:12px;">⚠️ PERINGATAN: Periksa kembali data, karena total pengeluaran melebihi pendapatan keluarga!</div>` : ''}
+      </div>`;
+  } else {
+     wadahAnomali.innerHTML = '';
+  }
+
+  let boxKprofit = document.getElementById('box-kprofit');
+  let lblKprofit = document.getElementById('lbl-kprofit');
+  let valKprofit = document.getElementById('r-kprofit');
+
+  if (sisa < 0) {
+    boxKprofit.style.background = '#fff1f2';
+    boxKprofit.style.borderColor = '#fecdd3';
+    lblKprofit.innerHTML = '<i class="ti ti-scale-unbalanced"></i> SELISIH (DEFISIT / MINUS)';
+    lblKprofit.style.color = '#9f1239';
+    valKprofit.style.color = '#e11d48';
+  } else {
+    boxKprofit.style.background = '#eef2fb';
+    boxKprofit.style.borderColor = '#d4def1';
+    lblKprofit.innerHTML = '<i class="fa-solid fa-scale-balanced"></i> SISA DANA SEBULAN';
+    lblKprofit.style.color = '#5a719d';
+    valKprofit.style.color = '#475a82';
+  }
+
+  document.getElementById('resBreakdownKebutuhan').innerHTML = h;
+  document.getElementById('resKebutuhan').classList.add('vis');
+  
+  tempKebutuhan = { 
+    totalBulan: tKeluarBulan, 
+    pendapatanBulan: pendapatanBulan, 
+    nama: 'Kebutuhan RT', 
+    rincian: h, 
+    totalPendapatan: tMasukBulan, 
+    totalLaba: sisa 
+  };
+  
+  document.getElementById('btn-save-kebutuhan').classList.add('vis');
+  setTimeout(() => { document.getElementById('resKebutuhan').scrollIntoView({behavior: "smooth"}); }, 150);
+}
 
   function tambahItem27A() {
   const div = document.createElement('div'); 
@@ -6571,6 +6729,170 @@ function hitungTransportasi() {
 function setFilterRekapDropdown(selectEl) {
   currentFilter = selectEl.value;
   renderRekap();
+}
+
+function importLabaUsaha() {
+  let rekap = JSON.parse(localStorage.getItem('rekapSensusData')) || [];
+  // Ambil data selain kebutuhan RT dan Blok 27
+  let usahaList = rekap.filter(item => item.type !== 'kebutuhan' && item.type !== 'blok27');
+  
+  if (usahaList.length === 0) {
+    showToast("Belum ada data usaha yang tersimpan di rekap!");
+    return;
+  }
+
+  let importedCount = 0;
+
+  usahaList.forEach(u => {
+    // Hindari import ganda berdasarkan ID
+    if (document.querySelector(`.imported-id-${u.id}`)) return;
+
+    let labaBulan = u.data.labaBulan || 0;
+    if (labaBulan <= 0) return; // Hanya import jika ada laba (tidak rugi)
+
+    const div = document.createElement('div');
+    div.className = `biaya-item p-gaji-item imported-id-${u.id}`;
+    div.style.borderLeft = "4px solid var(--text-success)"; // Penanda visual
+    
+    // Format HTML sesuai permintaan (Badge Informasi Terhubung)
+    div.innerHTML = `
+      <div style="background: var(--bg-accent); border: 1px dashed var(--border-strong); border-radius: 8px; padding: 8px 12px; margin-bottom: 10px;">
+        <span style="font-size: 10.5px; font-weight: 700; color: var(--blue-strong); display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+          <i class="ti ti-link"></i> Terhubung ke Rekap
+        </span>
+        <div style="font-size: 10px; color: var(--text-secondary); line-height: 1.4;">
+          ID : ${u.id}<br>
+          Jenis : ${u.data.jenis || u.type}<br>
+          Terakhir Update : ${u.waktu}
+        </div>
+      </div>
+      <div class="biaya-item-top" style="margin-bottom:0;">
+        <input type="text" class="input-box i-nama" value="Hasil Usaha: ${u.data.nama || u.type}" readonly style="background: var(--surface-2); font-weight: 700; color: var(--text-success);">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="field" style="margin-bottom:0; margin-top: 6px;">
+        <div class="input-group">
+          <span class="input-group-text" style="background: var(--surface-2);">Rp</span>
+          <input type="text" inputmode="numeric" class="val-biaya" value="${new Intl.NumberFormat('id-ID').format(labaBulan)}" readonly style="background: var(--surface-2); font-weight: 700; color: var(--text-success);">
+        </div>
+      </div>`;
+      
+    document.getElementById('containerPendapatan').appendChild(div);
+    importedCount++;
+  });
+
+  if (importedCount > 0) {
+    showToast(`Berhasil mengimpor ${importedCount} data laba usaha!`);
+  } else {
+    showToast("Semua data usaha sudah diimpor.");
+  }
+}
+
+function importLabaUsaha() {
+  document.getElementById('modalImportLaba').classList.add('active');
+  document.getElementById('searchImport').value = ''; // Kosongkan search tiap kali dibuka
+  renderImportList();
+}
+
+function closeImportModal(e) {
+  if (!e || e.target.id === 'modalImportLaba' || e.currentTarget.classList.contains('btn-del')) {
+    document.getElementById('modalImportLaba').classList.remove('active');
+  }
+}
+
+function renderImportList() {
+  const container = document.getElementById('listImportLaba');
+  const searchQ = document.getElementById('searchImport').value.toLowerCase();
+  
+  // Filter hanya data sektoral (kecualikan data rt/kebutuhan/blok27)
+  const validTypes = ['usaha', 'kuliner', 'jasa', 'sewa', 'perikanan', 'pertanian', 'peternakan', 'pendidikan', 'industri', 'pertambangan', 'kesehatan', 'keuangan', 'transportasi'];
+  
+  let filtered = dataRekap.filter(item => 
+    validTypes.includes(item.type) && 
+    (item.data.nama || '').toLowerCase().includes(searchQ)
+  );
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding: 30px 10px; color:var(--text-muted); font-size:13px;">
+        <i class="ti ti-folder-off" style="font-size:32px; display:block; margin-bottom:8px; opacity:0.5;"></i>
+        Nama responden tidak ditemukan.
+      </div>`;
+    return;
+  }
+
+  let html = '';
+  filtered.forEach(item => {
+    let labaBulan = item.data.labaBulan || 0;
+    let isRugi = labaBulan < 0;
+    let labelUang = isRugi ? `<span style="color:var(--text-danger); font-weight:700;">${formatRp(labaBulan)}</span>` : `<span style="color:var(--text-success); font-weight:700;">${formatRp(labaBulan)}</span>`;
+    
+    html += `
+      <div class="import-card" onclick="pilihImportLaba(${item.id})">
+        <div style="flex:1;">
+          <span class="badge-tipe">${item.data.jenis || item.type}</span>
+          <strong style="font-size:14px; color:var(--text-primary); display:block; margin-bottom:2px;">${item.data.nama || 'Tanpa Nama'}</strong>
+          <span style="font-size:12px; color:var(--text-secondary);">Est. Sebulan: ${labelUang}</span>
+        </div>
+        <div style="background:var(--bg-success); color:var(--text-success); padding:8px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+          <i class="ti ti-arrow-down" style="font-size:18px;"></i>
+        </div>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function pilihImportLaba(id) {
+  const item = dataRekap.find(x => x.id === id);
+  if (!item) return;
+
+  let labaBulan = item.data.labaBulan || 0;
+  let nama = item.data.nama || 'Tanpa Nama';
+  let jenis = item.data.jenis || item.type;
+  let waktu = item.waktu || new Date().toLocaleString('id-ID');
+
+  const div = document.createElement('div');
+  div.className = 'biaya-item p-gaji-item';
+  div.setAttribute('data-is-import', 'true'); // Penanda khusus untuk kalkulator
+  div.setAttribute('data-kategori', jenis);
+  div.style.border = '1px solid var(--border-success)';
+  div.style.borderLeft = '6px solid var(--text-success)';
+  div.style.padding = '14px';
+  div.style.background = '#F9FCFA';
+  div.style.borderRadius = '12px';
+  div.style.marginBottom = '14px';
+
+  let uniqueId = 'import_val_' + Date.now();
+
+  div.innerHTML = `
+    <div style="background:#EEF2FB; border:1px dashed #C9D9EC; padding:10px 12px; border-radius:8px; margin-bottom:12px; font-size:11px;">
+      <div style="color:#0056B3; font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:4px;">
+        <i class="ti ti-link"></i> Terhubung ke Rekap Usaha
+      </div>
+      <div style="color:#45607F; line-height:1.6;">
+        ID : ${item.id}<br>
+        Sektor : ${jenis}
+      </div>
+    </div>
+    
+    <div class="biaya-item-top" style="margin-bottom:8px;">
+      <input type="text" class="input-box i-nama" style="font-weight:700; color:var(--text-success); border-color:var(--border-success); background:#fff; font-size:13.5px;" value="${nama}" readonly>
+      <button class="btn-del" onclick="hapusElemen(this)" style="background:#FCE7DA; border-color:#F3C7A8; color:#C1440E; width:42px;"><i class="ti ti-x"></i></button>
+    </div>
+    
+    <div class="field" style="margin-bottom:0;">
+      <div class="input-group" style="border-color:var(--border-success);">
+        <span class="input-group-text" style="background:#EEF8F1; color:var(--text-success); border-right:1px solid var(--border-success);">Rp</span>
+        <input type="text" inputmode="numeric" id="${uniqueId}" class="val-biaya" style="color:var(--text-success); font-weight:800; font-size:15px; background:#fff;" value="${new Intl.NumberFormat('id-ID').format(Math.round(labaBulan))}" oninput="formatRupiah(this)">
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('containerPendapatan').appendChild(div);
+  closeImportModal();
+  showToast(`Berhasil mengimport data ${nama}!`);
 }
 </script>
 </body>
