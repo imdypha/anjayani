@@ -4493,49 +4493,63 @@ function tambahItem15b() {
       </div>
     </div>`;
 
-  // Hitung Pengeluaran
+  // --- HITUNG PENGELUARAN DENGAN KATEGORI PEMISAH ---
   let tMasukBulan = pendapatanBulan; 
   let tKeluarBulan = 0; 
   let h = htmlPendapatanDetail; 
   
   h += `<div style="font-size:12px; font-weight:800; color:var(--text-danger); border-bottom:1px dashed var(--border-strong); padding-bottom:8px; margin-bottom:10px; margin-top:16px; text-transform:uppercase;">Rincian Pengeluaran</div>`;
 
+  // 15.a Listrik
   let l = parseNum(document.getElementById('keb15a').value); 
   if(l > 0) { 
     tKeluarBulan += l; 
-    h += `<div class="bd-row minus"><span>- Listrik</span><span class="bd-val" style="color:#e11d48;">${formatRp(l)}/bln</span></div>`; 
+    h += `<div class="bd-row total" style="color:var(--text-secondary); font-size:11.5px; border-bottom:none; padding-bottom:0;"><span>15.a Listrik Sebulan</span></div>`;
+    h += `<div class="bd-row minus" style="padding-left:10px;"><span>- Biaya Listrik</span><span class="bd-val" style="color:#e11d48;">${formatRp(l)}/bln</span></div>`; 
   }
   
+  // 15.b Pulsa & Internet
   let sub15b = sumBiayaItemsBulanan('#container15b .dynamic-b-item'); 
-  tKeluarBulan += sub15b.total; 
-  h += sub15b.html;
+  if(sub15b.total > 0) {
+    tKeluarBulan += sub15b.total; 
+    h += `<div class="bd-row total" style="color:var(--text-secondary); font-size:11.5px; border-bottom:none; padding-bottom:0; margin-top:8px;"><span>15.b Pulsa & Internet</span></div>`;
+    h += sub15b.html;
+  }
   
-  // PEMBARUAN: Rincian Makanan Mingguan
+  // 16.a Makanan Rutin
   let m = parseNum(document.getElementById('keb16a_val').value);
   if(m > 0) { 
     let per = document.getElementById('keb16a_per').value;
     let multiplier = (per === 'hari') ? (window.totalHariSebulan || 30) : 4.33;
     let mB = m * multiplier; 
-    
     let mggVal = (per === 'hari') ? (m * 7) : m;
     
     tKeluarBulan += mB; 
-    h += `<div class="bd-row minus" style="align-items: center;">
+    h += `<div class="bd-row total" style="color:var(--text-secondary); font-size:11.5px; border-bottom:none; padding-bottom:0; margin-top:8px;"><span>16.a Makanan Rutin</span></div>`;
+    h += `<div class="bd-row minus" style="align-items: center; padding-left:10px;">
             <div>
-              <span>- Makanan Rutin</span><br>
+              <span>- Makanan & Minuman</span><br>
               <small style="font-size:10px; color:var(--text-muted);">(Setara ${formatRp(mggVal)} / minggu)</small>
             </div>
             <span class="bd-val" style="color:#e11d48;">${formatRp(mB)}/bln</span>
           </div>`; 
   }
 
+  // 16.b Bukan Makanan (Bulanan)
   let sub16b = sumBiayaItemsBulanan('#container16b .dynamic-b-item'); 
-  tKeluarBulan += sub16b.total; 
-  h += sub16b.html;
+  if(sub16b.total > 0) {
+    tKeluarBulan += sub16b.total; 
+    h += `<div class="bd-row total" style="color:var(--text-secondary); font-size:11.5px; border-bottom:none; padding-bottom:0; margin-top:8px;"><span>16.b Bukan Makanan (Bulanan)</span></div>`;
+    h += sub16b.html;
+  }
   
+  // 16.c Bukan Makanan (Tahunan)
   let sub16c = sumBiayaItemsBulanan('#container16c .dynamic-b-item'); 
-  tKeluarBulan += sub16c.total; 
-  h += sub16c.html;
+  if(sub16c.total > 0) {
+    tKeluarBulan += sub16c.total; 
+    h += `<div class="bd-row total" style="color:var(--text-secondary); font-size:11.5px; border-bottom:none; padding-bottom:0; margin-top:8px;"><span>16.c Bukan Makanan (Tahunan)</span></div>`;
+    h += sub16c.html;
+  }
 
   let sisa = tMasukBulan - tKeluarBulan;
   
@@ -7075,18 +7089,18 @@ function pilihImport(id, nama, nominal, type) {
   closeImportModal();
   showToast('Data Laba ' + nama + ' berhasil di-import!');
   
-  // Hitung ulang rekap setelah import masuk
-  if (typeof hitungKebutuhan === 'function') hitungKebutuhan();
+  // Baris hitungKebutuhan() telah dihapus agar tidak otomatis menghitung
 }
 
 // Fungsi khusus menghapus item import dan melepaskan kuncian ID nya
 function hapusImport(btn, id) {
   hapusElemen(btn); // Hapus elemen HTML-nya
+  
   // Hapus ID dari array kuncian, agar bisa di-import lagi nanti jika dibutuhkan
   importedRekapIds = importedRekapIds.filter(lockedId => lockedId !== id);
-  if (typeof hitungKebutuhan === 'function') hitungKebutuhan();
+  
+  // Baris hitungKebutuhan() telah dihapus agar tidak otomatis menghitung saat dihapus
 }
-
 // Fungsi untuk mengembalikan pengaturan ke standar pabrik (menghapus custom dari LocalStorage)
 function resetAsumsiTani() {
   const komoditasId = document.getElementById('taniKomoditas').value;
