@@ -3911,6 +3911,7 @@ function hitungDagang() {
   }
 
   let dataRekap = JSON.parse(localStorage.getItem('rekapSensusData')) || [];
+  let importedRekapIds = [];
   let currentFilter = 'semua';
 
   function resetBlok26() {
@@ -4123,6 +4124,7 @@ else if (jenis === 'kuliner') {
       showToast('Form Pendidikan Direset'); resetBlok26();
     
     } else if (jenis === 'kebutuhan') {
+      importedRekapIds = [];
   document.getElementById('containerPendapatan').innerHTML = `
     <div class="biaya-item p-gaji-item manual-income">
       <div class="biaya-item-top" style="margin-bottom:8px;">
@@ -6961,137 +6963,128 @@ function importLabaUsaha() {
 
 function importLabaUsaha() {
   document.getElementById('modalImportLaba').classList.add('active');
-  document.getElementById('searchImport').value = ''; 
+  document.getElementById('searchImport').value = '';
   renderImportList();
 }
 
 function closeImportModal(e) {
-  if (!e || e.target.id === 'modalImportLaba' || e.currentTarget.classList.contains('btn-del')) {
-    document.getElementById('modalImportLaba').classList.remove('active');
-  }
+  if (e) e.stopPropagation();
+  document.getElementById('modalImportLaba').classList.remove('active');
 }
 
 function renderImportList() {
   const container = document.getElementById('listImportLaba');
   const searchQ = document.getElementById('searchImport').value.toLowerCase();
   
-  const validTypes = ['usaha', 'kuliner', 'jasa', 'sewa', 'perikanan', 'pertanian', 'peternakan', 'pendidikan', 'industri', 'pertambangan', 'kesehatan', 'keuangan', 'transportasi'];
+  // Ambil data usaha dari Blok 26 (kecuali RT dan Blok 27)
+  let dataUsaha = dataRekap.filter(item => item.type !== 'kebutuhan' && item.type !== 'blok27');
   
-  let filtered = dataRekap.filter(item => 
-    validTypes.includes(item.type) && 
-    (item.data.nama || '').toLowerCase().includes(searchQ)
-  );
-
-  if (filtered.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center; padding: 30px 10px; color:var(--text-muted); font-size:13px;">
-        <i class="ti ti-folder-off" style="font-size:32px; display:block; margin-bottom:8px; opacity:0.5;"></i>
-        Nama responden tidak ditemukan.
-      </div>`;
+  if (dataUsaha.length === 0) {
+    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:13px; padding:30px 20px;">Belum ada data usaha yang tersimpan di Rekap Blok 26.</div>';
     return;
   }
 
   let html = '';
-  filtered.forEach(item => {
-    let labaBulan = item.data.labaBulan || 0;
-    let isRugi = labaBulan < 0;
-    let labelUang = isRugi ? `<span style="color:var(--text-danger); font-weight:700;">${formatRp(labaBulan)}</span>` : `<span style="color:var(--text-success); font-weight:700;">${formatRp(labaBulan)}</span>`;
-    
-    html += `
-      <div class="import-card" onclick="pilihImportLaba(${item.id})">
-        <div style="flex:1;">
-          <span class="badge-tipe">${item.data.jenis || item.type}</span>
-          <strong style="font-size:14px; color:var(--text-primary); display:block; margin-bottom:2px;">${item.data.nama || 'Tanpa Nama'}</strong>
-          <span style="font-size:12px; color:var(--text-secondary);">Est. Sebulan: ${labelUang}</span>
-        </div>
-        <div style="background:var(--bg-success); color:var(--text-success); padding:8px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
-          <i class="ti ti-arrow-down" style="font-size:18px;"></i>
-        </div>
-      </div>
-    `;
+  dataUsaha.forEach(item => {
+    let d = item.data;
+    if (d.nama && d.nama.toLowerCase().includes(searchQ)) {
+      let labaBulan = d.labaBulan !== undefined ? d.labaBulan : (d.totalLaba / 12);
+      let isImported = importedRekapIds.includes(item.id); // Cek apakah ID ini sudah masuk list
+
+      if (isImported) {
+        // Tampilan Kartu Jika Sudah Di-Import (Disabled)
+        html += `
+        <div class="import-card" style="opacity: 0.5; cursor: not-allowed; background: var(--surface-2);">
+          <div>
+            <span class="badge-tipe" style="background:var(--border-strong); color:var(--text-secondary);">${item.type}</span>
+            <strong style="display:block; font-size:13px; color:var(--text-secondary);">${d.nama}</strong>
+            <span style="font-size:10px; color:var(--text-danger); font-weight:800; display:flex; align-items:center; gap:4px; margin-top:4px;">
+              <i class="ti ti-lock"></i> SUDAH DI-IMPORT
+            </span>
+          </div>
+          <div style="text-align:right;">
+            <span style="font-size:10px; color:var(--text-muted);">Estimasi Laba/Bulan</span>
+            <strong style="display:block; font-family:var(--font-mono); color:var(--text-secondary); font-size:14px;">${formatRp(labaBulan)}</strong>
+          </div>
+        </div>`;
+      } else {
+        // Tampilan Kartu Normal (Bisa di-klik)
+        html += `
+        <div class="import-card" onclick="pilihImport(${item.id}, '${d.nama}', ${labaBulan}, '${item.type}')">
+          <div>
+            <span class="badge-tipe">${item.type}</span>
+            <strong style="display:block; font-size:13px; color:var(--text-primary);">${d.nama}</strong>
+            <span style="font-size:11px; color:var(--text-secondary);">${d.jenis || ''}</span>
+          </div>
+          <div style="text-align:right;">
+            <span style="font-size:10px; color:var(--text-muted);">Estimasi Laba/Bulan</span>
+            <strong style="display:block; font-family:var(--font-mono); color:var(--text-success); font-size:14px;">${formatRp(labaBulan)}</strong>
+          </div>
+        </div>`;
+      }
+    }
   });
-  
   container.innerHTML = html;
 }
 
-function pilihImportLaba(id) {
-  const item = dataRekap.find(x => x.id === id);
-  if (!item) return;
-
-  let labaBulan = item.data.labaBulan || 0;
-  let nama = item.data.nama || 'Tanpa Nama';
-  let jenis = item.data.jenis || item.type;
-  let waktu = item.waktu || new Date().toLocaleString('id-ID');
+function pilihImport(id, nama, nominal, type) {
+  // Masukkan ID ke array agar terkunci dan tidak bisa di-import dobel
+  importedRekapIds.push(id);
 
   const div = document.createElement('div');
-  div.className = 'biaya-item p-gaji-item';
-  div.setAttribute('data-is-import', 'true'); 
-  div.setAttribute('data-kategori', jenis);
-  div.style.border = '1px solid var(--border-success)';
-  div.style.borderLeft = '6px solid var(--text-success)';
-  div.style.padding = '14px';
-  div.style.background = '#F9FCFA';
-  div.style.borderRadius = '12px';
-  div.style.marginBottom = '14px';
-
-  let uniqueId = 'import_val_' + Date.now();
+  div.className = 'biaya-item p-gaji-item auto-import';
+  div.setAttribute('data-is-import', 'true');
+  div.setAttribute('data-kategori', type.toUpperCase());
+  
+  // Custom Styling untuk Container Import agar sangat berbeda dari input biasa
+  div.style.cssText = "background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); border: 1.5px dashed #15803d; padding: 16px; border-radius: 12px; margin-bottom: 12px; position: relative; overflow: hidden; box-shadow: 0 4px 10px rgba(22,101,52,0.05);";
 
   div.innerHTML = `
-    <div style="background:#EEF2FB; border:1px dashed #C9D9EC; padding:10px 12px; border-radius:8px; margin-bottom:12px; font-size:11px;">
-      <div style="color:#0056B3; font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:4px;">
-        <i class="ti ti-link"></i> Terhubung ke Rekap Usaha
-      </div>
-      <div style="color:#45607F; line-height:1.6;">
-        ID : ${item.id}<br>
-        Sektor : ${jenis}
-      </div>
+    <!-- Pita/Badge Import di bagian atas -->
+    <div style="position: absolute; top: 0; left: 16px; background: #15803d; color: #fff; font-size: 9px; font-weight: 800; padding: 4px 12px; border-radius: 0 0 8px 8px; letter-spacing: 0.6px; box-shadow: 0 2px 4px rgba(21,128,61,0.3);">
+      <i class="ti ti-link"></i> IMPORT (${type.toUpperCase()})
     </div>
-    
-    <div class="biaya-item-top" style="margin-bottom:8px;">
-      <input type="text" class="input-box i-nama" style="font-weight:700; color:var(--text-success); border-color:var(--border-success); background:#fff; font-size:13.5px;" value="${nama}" readonly>
-      <button class="btn-del" onclick="hapusElemen(this)" style="background:#FCE7DA; border-color:#F3C7A8; color:#C1440E; width:42px;"><i class="ti ti-x"></i></button>
-    </div>
-    
-    <div class="field" style="margin-bottom:0;">
-      <div class="input-group" style="border-color:var(--border-success);">
-        <span class="input-group-text" style="background:#EEF8F1; color:var(--text-success); border-right:1px solid var(--border-success);">Rp</span>
-        <input type="text" inputmode="numeric" id="${uniqueId}" class="val-biaya" style="color:var(--text-success); font-weight:800; font-size:15px; background:#fff;" value="${new Intl.NumberFormat('id-ID').format(Math.round(labaBulan))}" oninput="formatRupiah(this)">
+
+    <!-- Background Icon Transparan -->
+    <i class="ti ti-building-store" style="position: absolute; right: -10px; bottom: -15px; font-size: 90px; color: rgba(22,101,52,0.04); pointer-events: none;"></i>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; position: relative; z-index: 1;">
+      
+      <div style="flex: 1; min-width: 0;">
+        <label style="font-size: 10px; font-weight: 700; color: #166534; display: block; margin-bottom: 2px;">SUMBER PENDAPATAN (NAMA USAHA)</label>
+        <input type="text" class="i-nama" value="${nama}" readonly style="background: transparent; border: none; font-size: 14px; font-weight: 800; color: var(--text-primary); width: 100%; outline: none; pointer-events: none; font-family: var(--font-sans); text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+        
+        <div style="margin-top: 10px;">
+          <label style="font-size: 10px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 2px;">NILAI LABA BERSIH / BULAN</label>
+          <div style="display: flex; align-items: baseline; gap: 4px;">
+            <span style="font-size: 13px; font-weight: 700; color: #15803d;">Rp</span>
+            <input type="text" class="val-biaya" value="${new Intl.NumberFormat('id-ID').format(nominal)}" readonly style="background: transparent; border: none; font-size: 20px; font-weight: 800; color: #15803d; width: 100%; outline: none; pointer-events: none; font-family: var(--font-mono);">
+          </div>
+        </div>
       </div>
+
+      <!-- Tombol Hapus Didesain Ulang -->
+      <button class="btn-del" onclick="hapusImport(this, ${id})" style="background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; box-shadow: 0 2px 4px rgba(225,29,72,0.1); transition: 0.2s;" title="Hapus Data Import">
+        <i class="ti ti-unlink" style="font-size: 16px;"></i>
+      </button>
+      
     </div>
   `;
   
   document.getElementById('containerPendapatan').appendChild(div);
   closeImportModal();
-  showToast(`Berhasil mengimport data ${nama}!`);
-}
-// Fungsi untuk menyimpan pengaturan custom ke LocalStorage
-function simpanAsumsiTani() {
-  const komoditasId = document.getElementById('taniKomoditas').value;
-  if (!komoditasId) return;
-
-  // Ambil data custom yang mungkin sudah ada sebelumnya
-  let customAsumsi = JSON.parse(localStorage.getItem('customAsumsiTani')) || {};
-
-  // Simpan nilai-nilai yang ada di form saat ini
-  customAsumsi[komoditasId] = {
-    produktivitas: parseFloat(document.getElementById('st_produktivitas').value) || 0,
-    siklus: parseFloat(document.getElementById('st_siklus').value) || 1,
-    biaya: {
-      olahTanah: parseNum(document.getElementById('st_olahTanah').value),
-      benih: parseNum(document.getElementById('st_benih').value),
-      urea: parseNum(document.getElementById('st_urea').value),
-      sp36: parseNum(document.getElementById('st_sp36').value),
-      pestisida: parseNum(document.getElementById('st_pestisida').value),
-      pemeliharaan: parseNum(document.getElementById('st_pemeliharaan').value),
-      panen: parseNum(document.getElementById('st_panen').value),
-      angkut: parseNum(document.getElementById('st_angkut').value)
-    }
-  };
-
-  localStorage.setItem('customAsumsiTani', JSON.stringify(customAsumsi));
+  showToast('Data Laba ' + nama + ' berhasil di-import!');
   
-  const namaKomoditas = document.getElementById('taniKomoditas').options[document.getElementById('taniKomoditas').selectedIndex].text;
-  showToast(`Asumsi teknis ${namaKomoditas} berhasil disimpan!`);
+  // Hitung ulang rekap setelah import masuk
+  if (typeof hitungKebutuhan === 'function') hitungKebutuhan();
+}
+
+// Fungsi khusus menghapus item import dan melepaskan kuncian ID nya
+function hapusImport(btn, id) {
+  hapusElemen(btn); // Hapus elemen HTML-nya
+  // Hapus ID dari array kuncian, agar bisa di-import lagi nanti jika dibutuhkan
+  importedRekapIds = importedRekapIds.filter(lockedId => lockedId !== id);
+  if (typeof hitungKebutuhan === 'function') hitungKebutuhan();
 }
 
 // Fungsi untuk mengembalikan pengaturan ke standar pabrik (menghapus custom dari LocalStorage)
