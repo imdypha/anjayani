@@ -2913,7 +2913,7 @@
   if (kategori === 'pangan') {
     options = '<option value="Padi">Padi</option><option value="Jagung Manis">Jagung Manis</option><option value="Jagung Ayam (Pakan)">Jagung Ayam (Pakan)</option><option value="Kedelai">Kedelai</option><option value="Ubi Kayu (Singkong)">Ubi Kayu (Singkong)</option><option value="Ubi Jalar">Ubi Jalar</option><option value="Lainnya">Lainnya</option>';
   } else if (kategori === 'horti') {
-    options = '<option value="Cabai">Cabai</option><option value="Bawang Merah">Bawang Merah</option><option value="Tomat">Tomat</option><option value="Sayuran Daun">Sayuran Daun</option><option value="Sereh">Sereh</option><option value="Lengkuas">Lengkuas (Laos)</option><option value="Kunyit">Kunyit</option><option value="Lainnya">Lainnya</option>';
+    options = '<option value="Cabai">Cabai</option><option value="Bawang Merah">Bawang Merah</option><option value="Tomat">Tomat</option><option value="Kentang">Kentang</option><option value="Sayuran Daun">Sayuran Daun</option><option value="Sereh">Sereh</option><option value="Lengkuas">Lengkuas (Laos)</option><option value="Kunyit">Kunyit</option><option value="Lainnya">Lainnya</option>';
   } else if (kategori === 'kebun') {
     options = '<option value="Sawit">Sawit</option><option value="Karet">Karet</option><option value="Kopi">Kopi</option><option value="Kakao">Kakao</option><option value="Kelapa">Kelapa</option><option value="Tebu">Tebu</option><option value="Cengkeh">Cengkeh</option><option value="Teh">Teh</option><option value="Lada">Lada</option><option value="Pala">Pala</option><option value="Lainnya">Lainnya</option>';
   }
@@ -2929,7 +2929,7 @@
   // Konversi produktivitas ke Kg / m2 (dari standar per Ha / 10.000m2)
   const vals = { 
     "Padi": 0.80, "Jagung Manis": 1.20, "Jagung Ayam (Pakan)": 0.70, "Kedelai": 0.22, "Ubi Kayu (Singkong)": 2.50, "Ubi Jalar": 2.00,
-    "Cabai": 1.20, "Bawang Merah": 1.00, "Tomat": 1.50, "Sayuran Daun": 1.00, "Sereh": 2.00, "Lengkuas": 2.00, "Kunyit": 1.50,
+    "Cabai": 1.20, "Bawang Merah": 1.00, "Tomat": 1.50, "Kentang": 2.00, "Sayuran Daun": 1.00, "Sereh": 2.00, "Lengkuas": 2.00, "Kunyit": 1.50,
     "Sawit": 2.40, "Karet": 0.15, "Kopi": 0.15, "Kakao": 0.12, "Kelapa": 0.60, "Tebu": 8.00, "Cengkeh": 0.05, "Teh": 0.20, "Lada": 0.12, "Pala": 0.07,
     "Lainnya": 0.50 
   };
@@ -5655,6 +5655,8 @@ const masterKomoditas = {
       biaya: { olahTanah: 3000000, benih: 1000000, urea: 2000000, sp36: 1500000, pestisida: 3000000, pemeliharaan: 4000000, panen: 2500000, angkut: 800000 } },
     { id: 'bawang', nama: 'Bawang Merah', satuan: 'Kg', hargaAcuan: 25000, produktivitas: 10000, siklus: 4, 
       biaya: { olahTanah: 4000000, benih: 1500000, urea: 2000000, sp36: 1500000, pestisida: 4000000, pemeliharaan: 5000000, panen: 3000000, angkut: 800000 } },
+    { id: 'kentang', nama: 'Kentang', satuan: 'Kg', hargaAcuan: 12000, produktivitas: 20000, siklus: 3, 
+      biaya: { olahTanah: 4000000, benih: 10000000, urea: 2000000, sp36: 1500000, pestisida: 4000000, pemeliharaan: 5000000, panen: 3000000, angkut: 1500000 } },
     { id: 'sayuran', nama: 'Sayuran Daun (Sawi/Kangkung)', satuan: 'Kg', hargaAcuan: 5000, produktivitas: 10000, siklus: 6, 
       biaya: { olahTanah: 2000000, benih: 500000, urea: 1000000, sp36: 500000, pestisida: 1000000, pemeliharaan: 2000000, panen: 1500000, angkut: 500000 } },
     { id: 'sereh', nama: 'Sereh', satuan: 'Kg', hargaAcuan: 3000, produktivitas: 20000, siklus: 2, 
