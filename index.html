@@ -1356,13 +1356,37 @@
     </div>
   </div>
 
-  <div class="section-label" style="margin-top: 20px;">Data Lahan & Harga</div>
-  <div class="fields-grid">
-    <div class="field">
-      <label>LUAS LAHAN (m²)</label>
-      <input type="number" class="input-box" id="taniLuasM2" placeholder="Cth: 10000" oninput="liveKalkulasiTani()">
+  <div class="section-label" style="margin-top: 20px;">Data Lahan & Hasil Panen</div>
+  <div class="field" style="margin-bottom: 12px;">
+    <label>LUAS LAHAN (m²) - <span style="text-transform:none; color:var(--text-muted); font-weight:normal;">Dasar hitung biaya standar</span></label>
+    <input type="number" class="input-box" id="taniLuasM2" placeholder="Cth: 10000" oninput="liveKalkulasiTani()">
+  </div>
+
+  <div class="fields-grid" style="background: var(--surface-2); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+    <div class="field" style="grid-column: span 2; margin-bottom:0;">
+      <label style="color:var(--accent);">METODE INPUT HASIL PANEN</label>
+      <select id="taniModeHasil" class="input-box" onchange="ubahModeHasilTani()">
+        <option value="estimasi">Otomatis (Estimasi dari Luas Lahan)</option>
+        <option value="aktual">Manual (Input Jumlah Penjualan Langsung)</option>
+      </select>
     </div>
-    <div class="field">
+
+    <div class="field" id="wrapTaniInputAktual" style="display:none; margin-top:8px;">
+      <label id="lblTaniInputQty">JUMLAH TERJUAL</label>
+      <div class="input-group">
+        <input type="number" class="input-box" id="taniQtyAktual" placeholder="0" oninput="liveKalkulasiTani()" style="border-right:none;">
+        <select id="taniSatuanAktual" class="input-box" style="width: 85px; border-left: 1px solid var(--border-strong); padding: 0 4px;" onchange="updateLabelSatuanTani()">
+          <option value="Kg">Kg</option>
+          <option value="Buah">Buah</option>
+          <option value="Ikat">Ikat</option>
+          <option value="Ekor">Ekor</option>
+          <option value="Liter">Liter</option>
+          <option value="Ton">Ton</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:8px; grid-column: span 2;" id="wrapTaniHarga">
       <label id="lblTaniHarga">HARGA JUAL / KG</label>
       <div class="input-group">
         <span class="input-group-text">Rp</span>
@@ -1425,6 +1449,14 @@
         <div class="field"><label>Biaya Angkut / Ha</label><div class="input-group"><span class="input-group-text">Rp</span><input type="text" id="st_angkut" class="input-box" value="0" oninput="formatRupiah(this); liveKalkulasiTani();" style="border:none;"></div></div>
       </div>
     </div>
+      <div style="display:flex; gap:8px; margin-top: 16px; border-top: 1px dashed var(--border-strong); padding-top: 12px;">
+        <button class="btn-reset" onclick="resetAsumsiTani()" style="flex:1; margin:0; font-size:11px; padding:10px;">
+          <i class="ti ti-refresh"></i> Reset Default
+        </button>
+        <button class="btn-primary" onclick="simpanAsumsiTani()" style="flex:2; margin:0; font-size:11px; padding:10px;">
+          <i class="ti ti-device-floppy"></i> Simpan Sbg Default
+        </button>
+      </div>
   </div>
 
   <div class="section-label">Data Pekerja / Pegawai</div>
@@ -4462,7 +4494,7 @@ function tambahItem15b() {
   // Hitung Pengeluaran
   let tMasukBulan = pendapatanBulan; 
   let tKeluarBulan = 0; 
-  let h = htmlPendapatanDetail; // Tempelkan rincian pendapatan di paling atas breakdown
+  let h = htmlPendapatanDetail; 
   
   h += `<div style="font-size:12px; font-weight:800; color:var(--text-danger); border-bottom:1px dashed var(--border-strong); padding-bottom:8px; margin-bottom:10px; margin-top:16px; text-transform:uppercase;">Rincian Pengeluaran</div>`;
 
@@ -4476,13 +4508,25 @@ function tambahItem15b() {
   tKeluarBulan += sub15b.total; 
   h += sub15b.html;
   
+  // PEMBARUAN: Rincian Makanan Mingguan
   let m = parseNum(document.getElementById('keb16a_val').value);
   if(m > 0) { 
-    let mB = m * ((document.getElementById('keb16a_per').value === 'hari') ? (window.totalHariSebulan || 30) : 4.33); 
+    let per = document.getElementById('keb16a_per').value;
+    let multiplier = (per === 'hari') ? (window.totalHariSebulan || 30) : 4.33;
+    let mB = m * multiplier; 
+    
+    let mggVal = (per === 'hari') ? (m * 7) : m;
+    
     tKeluarBulan += mB; 
-    h += `<div class="bd-row minus"><span>- Makanan Rutin</span><span class="bd-val" style="color:#e11d48;">${formatRp(mB)}/bln</span></div>`; 
+    h += `<div class="bd-row minus" style="align-items: center;">
+            <div>
+              <span>- Makanan Rutin</span><br>
+              <small style="font-size:10px; color:var(--text-muted);">(Setara ${formatRp(mggVal)} / minggu)</small>
+            </div>
+            <span class="bd-val" style="color:#e11d48;">${formatRp(mB)}/bln</span>
+          </div>`; 
   }
-  
+
   let sub16b = sumBiayaItemsBulanan('#container16b .dynamic-b-item'); 
   tKeluarBulan += sub16b.total; 
   h += sub16b.html;
@@ -5652,22 +5696,39 @@ function renderKomoditasList() {
 function applyMasterKomoditas() {
   const kat = document.getElementById('taniKategori').value;
   const komId = document.getElementById('taniKomoditas').value;
-  const data = masterKomoditas[kat].find(k => k.id === komId);
+  const masterData = masterKomoditas[kat].find(k => k.id === komId);
   
-  if (!data) return;
+  if (!masterData) return;
 
-  document.getElementById('lblTaniHarga').innerText = `HARGA JUAL / ${data.satuan.toUpperCase()}`;
-  document.getElementById('lblStSatuan').innerText = data.satuan;
-  document.getElementById('lblAsumsiKomoditas').innerText = data.nama.toUpperCase();
+  // CEK CUSTOM ASUMSI DARI LOCAL STORAGE
+  let customAsumsi = JSON.parse(localStorage.getItem('customAsumsiTani')) || {};
+  let dataTerap = customAsumsi[komId] || masterData; // Prioritaskan custom jika ada
+
+  document.getElementById('lblTaniHarga').innerText = `HARGA JUAL / ${masterData.satuan.toUpperCase()}`;
+  document.getElementById('lblStSatuan').innerText = masterData.satuan;
+  
+  // Tampilkan Indikator Jika Menggunakan Settingan Custom
+  if (customAsumsi[komId]) {
+    document.getElementById('lblAsumsiKomoditas').innerHTML = `${masterData.nama.toUpperCase()} <span style="font-size:9px; background:var(--gold); color:#fff; padding:2px 6px; border-radius:4px; margin-left:4px;">KUSTOM</span>`;
+  } else {
+    document.getElementById('lblAsumsiKomoditas').innerText = masterData.nama.toUpperCase();
+  }
  
-  document.getElementById('taniHargaSatuan').value = new Intl.NumberFormat('id-ID').format(data.hargaAcuan);
+  document.getElementById('taniHargaSatuan').value = new Intl.NumberFormat('id-ID').format(masterData.hargaAcuan);
 
-  document.getElementById('st_produktivitas').value = data.produktivitas;
-  document.getElementById('st_siklus').value = data.siklus;
+  // Setel nilai Produktivitas & Siklus berdasarkan data yang diterapkan
+  document.getElementById('st_produktivitas').value = dataTerap.produktivitas;
+  document.getElementById('st_siklus').value = dataTerap.siklus;
 
+  // Setel nilai Komponen Biaya
   komponenTaniMeta.forEach(meta => {
     const input = document.getElementById('st_' + meta.id);
-    if (input) input.value = new Intl.NumberFormat('id-ID').format(data.biaya[meta.id]);
+    let nilaiBiaya = dataTerap.biaya ? dataTerap.biaya[meta.id] : masterData.biaya[meta.id];
+    
+    // Safety fallback jika ada error data
+    if (nilaiBiaya === undefined) nilaiBiaya = masterData.biaya[meta.id]; 
+    
+    if (input) input.value = new Intl.NumberFormat('id-ID').format(nilaiBiaya);
   });
 
   liveKalkulasiTani();
@@ -5678,12 +5739,25 @@ function liveKalkulasiTani() {
   const luasHa = luasM2 / 10000;
   const hargaSatuan = parseNum(document.getElementById('taniHargaSatuan').value);
   
-  const stProd = parseFloat(document.getElementById('st_produktivitas').value) || 0;
   const stSiklus = parseFloat(document.getElementById('st_siklus').value) || 1;
   const namaKomoditas = document.getElementById('taniKomoditas').options[document.getElementById('taniKomoditas').selectedIndex].text;
-  const satuan = document.getElementById('lblStSatuan').innerText;
 
-  const prodTotalTahunan = luasHa * stProd * stSiklus;
+  // Logika Pemilihan Mode Perhitungan Produksi
+  const mode = document.getElementById('taniModeHasil').value;
+  let prodTotalTahunan = 0;
+  let satuan = '';
+
+  if (mode === 'estimasi') {
+    const stProd = parseFloat(document.getElementById('st_produktivitas').value) || 0;
+    satuan = document.getElementById('lblStSatuan').innerText;
+    prodTotalTahunan = luasHa * stProd * stSiklus;
+  } else {
+    const qtyAktual = parseFloat(document.getElementById('taniQtyAktual').value) || 0;
+    satuan = document.getElementById('taniSatuanAktual').value;
+    // Nilai manual diasumsikan per siklus, sehingga dikali siklus tahunan
+    prodTotalTahunan = qtyAktual * stSiklus; 
+  }
+
   const omzetKotorTahunan = prodTotalTahunan * hargaSatuan;
 
   document.getElementById('out_prodTahunan').innerText = `${prodTotalTahunan.toLocaleString('id-ID', {maximumFractionDigits: 2})} ${satuan}`;
@@ -6989,6 +7063,84 @@ function pilihImportLaba(id) {
   document.getElementById('containerPendapatan').appendChild(div);
   closeImportModal();
   showToast(`Berhasil mengimport data ${nama}!`);
+}
+// Fungsi untuk menyimpan pengaturan custom ke LocalStorage
+function simpanAsumsiTani() {
+  const komoditasId = document.getElementById('taniKomoditas').value;
+  if (!komoditasId) return;
+
+  // Ambil data custom yang mungkin sudah ada sebelumnya
+  let customAsumsi = JSON.parse(localStorage.getItem('customAsumsiTani')) || {};
+
+  // Simpan nilai-nilai yang ada di form saat ini
+  customAsumsi[komoditasId] = {
+    produktivitas: parseFloat(document.getElementById('st_produktivitas').value) || 0,
+    siklus: parseFloat(document.getElementById('st_siklus').value) || 1,
+    biaya: {
+      olahTanah: parseNum(document.getElementById('st_olahTanah').value),
+      benih: parseNum(document.getElementById('st_benih').value),
+      urea: parseNum(document.getElementById('st_urea').value),
+      sp36: parseNum(document.getElementById('st_sp36').value),
+      pestisida: parseNum(document.getElementById('st_pestisida').value),
+      pemeliharaan: parseNum(document.getElementById('st_pemeliharaan').value),
+      panen: parseNum(document.getElementById('st_panen').value),
+      angkut: parseNum(document.getElementById('st_angkut').value)
+    }
+  };
+
+  localStorage.setItem('customAsumsiTani', JSON.stringify(customAsumsi));
+  
+  const namaKomoditas = document.getElementById('taniKomoditas').options[document.getElementById('taniKomoditas').selectedIndex].text;
+  showToast(`Asumsi teknis ${namaKomoditas} berhasil disimpan!`);
+}
+
+// Fungsi untuk mengembalikan pengaturan ke standar pabrik (menghapus custom dari LocalStorage)
+function resetAsumsiTani() {
+  const komoditasId = document.getElementById('taniKomoditas').value;
+  let customAsumsi = JSON.parse(localStorage.getItem('customAsumsiTani')) || {};
+
+  if (customAsumsi[komoditasId]) {
+    delete customAsumsi[komoditasId];
+    localStorage.setItem('customAsumsiTani', JSON.stringify(customAsumsi));
+  }
+
+  applyMasterKomoditas(); // Reload ulang dari standar sistem
+  showToast('Asumsi teknis dikembalikan ke standar awal.');
+}
+
+function ubahModeHasilTani() {
+  const mode = document.getElementById('taniModeHasil').value;
+  const wrapAktual = document.getElementById('wrapTaniInputAktual');
+  const wrapHarga = document.getElementById('wrapTaniHarga');
+  
+  if (mode === 'aktual') {
+    wrapAktual.style.display = 'block';
+    wrapHarga.style.gridColumn = 'span 1'; // Sejajarkan di sebelah form input
+    updateLabelSatuanTani();
+  } else {
+    wrapAktual.style.display = 'none';
+    wrapHarga.style.gridColumn = 'span 2'; // Lebarkan ke bawah penuh
+    
+    // Kembalikan label harga ke satuan master data otomatis
+    let komId = document.getElementById('taniKomoditas').value;
+    let kat = document.getElementById('taniKategori').value;
+    if(masterKomoditas[kat]) {
+      let masterData = masterKomoditas[kat].find(k => k.id === komId);
+      if (masterData) {
+        document.getElementById('lblTaniHarga').innerText = `HARGA JUAL / ${masterData.satuan.toUpperCase()}`;
+      }
+    }
+  }
+  liveKalkulasiTani();
+}
+
+function updateLabelSatuanTani() {
+  if (document.getElementById('taniModeHasil').value === 'aktual') {
+    const satuan = document.getElementById('taniSatuanAktual').value;
+    document.getElementById('lblTaniInputQty').innerText = `JUMLAH TERJUAL (${satuan.toUpperCase()})`;
+    document.getElementById('lblTaniHarga').innerText = `HARGA / ${satuan.toUpperCase()}`;
+  }
+  liveKalkulasiTani();
 }
 </script>
 </body>
