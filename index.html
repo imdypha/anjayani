@@ -1965,6 +1965,8 @@
           <option value="Air Minum Isi Ulang">Air Minum Isi Ulang</option>
           <option value="Es Batu">Es Batu</option>
           <option value="Industri Konveksi">Industri Konveksi / Jahit</option>
+          <!-- Tambahan Baru -->
+          <option value="Industri Tenun">Industri Tenun / Tekstil</option>
           <option value="Industri Furniture">Industri Furniture / Mebel</option>
           <option value="Industri Kayu">Industri Kayu / Penggergajian</option>
           <option value="Industri Percetakan">Industri Percetakan</option>
@@ -2919,11 +2921,26 @@
   } else if (kategori === 'horti') {
     options = '<option value="Cabai">Cabai</option><option value="Bawang Merah">Bawang Merah</option><option value="Tomat">Tomat</option><option value="Kentang">Kentang</option><option value="Sayuran Daun">Sayuran Daun</option><option value="Sereh">Sereh</option><option value="Lengkuas">Lengkuas (Laos)</option><option value="Kunyit">Kunyit</option><option value="Wortel">Wortel</option><option value="Labu Siam">Labu Siam</option><option value="Lainnya">Lainnya</option>';
   } else if (kategori === 'kebun') {
-    options = '<option value="Sawit">Sawit</option><option value="Karet">Karet</option><option value="Kopi">Kopi</option><option value="Kakao">Kakao</option><option value="Kelapa">Kelapa</option><option value="Tebu">Tebu</option><option value="Cengkeh">Cengkeh</option><option value="Teh">Teh</option><option value="Lada">Lada</option><option value="Pala">Pala</option><option value="Belimbing">Belimbing</option><option value="Lainnya">Lainnya</option>';
+    options = '<option value="Sawit">Sawit</option><option value="Karet">Karet</option><option value="Kopi">Kopi</option><option value="Kakao">Kakao</option><option value="Kelapa">Kelapa</option><option value="Tebu">Tebu</option><option value="Cengkeh">Cengkeh</option><option value="Teh">Teh</option><option value="Lada">Lada</option><option value="Pala">Pala</option><option value="Belimbing">Belimbing</option><option value="Tembakau">Tembakau</option><option value="Lainnya">Lainnya</option>';
   }
   
   komoditasSelect.innerHTML = options;
   updateProduktivitas(komoditasSelect);
+}
+
+function updateProduktivitas(selectEl) {
+  const parent = selectEl.closest('.up-tani-item');
+  const prodInput = parent.querySelector('.l-produktivitas');
+  
+  // Konversi produktivitas ke Kg / m2 (dari standar per Ha / 10.000m2)
+  const vals = { 
+    "Padi": 0.80, "Jagung Manis": 1.20, "Jagung Ayam (Pakan)": 0.70, "Kedelai": 0.22, "Ubi Kayu (Singkong)": 2.50, "Ubi Jalar": 2.00,
+    "Cabai": 1.20, "Bawang Merah": 1.00, "Tomat": 1.50, "Kentang": 2.00, "Sayuran Daun": 1.00, "Sereh": 2.00, "Lengkuas": 2.00, "Kunyit": 1.50, "Wortel": 1.50, "Labu Siam": 2.00,
+    "Sawit": 2.40, "Karet": 0.15, "Kopi": 0.15, "Kakao": 0.12, "Kelapa": 0.60, "Tebu": 8.00, "Cengkeh": 0.05, "Teh": 0.20, "Lada": 0.12, "Pala": 0.07, "Belimbing": 1.50, "Tembakau": 0.12,
+    "Lainnya": 0.50 
+  };
+  
+  prodInput.value = vals[selectEl.value] || 0.50;
 }
 
   function updateProduktivitas(selectEl) {
@@ -4892,7 +4909,9 @@ function getMultiplierBulanan(periode) {
     'Industri Logam': { unitLabel: 'PRODUKSI / PESANAN', tarifLabel: 'HARGA RATA-RATA', defSatuan: 'Pcs', isHarian: false, prod: ['Besi / Baja / Aluminium', 'Kawat Las', 'Cat Besi', 'Gas Las / Oksigen'], ops: ['Listrik', 'Transportasi'] },
     'Industri Bata Merah': { unitLabel: 'PRODUKSI BATA', tarifLabel: 'HARGA / BIJI', defSatuan: 'Biji', isHarian: false, prod: ['Tanah Liat', 'Kayu Bakar / Sekam / Abu', 'Air'], ops: ['Listrik (Jika Pakai Mesin)', 'Transportasi'] },
     'Industri Genteng': { unitLabel: 'PRODUKSI GENTENG', tarifLabel: 'HARGA / BIJI', defSatuan: 'Biji', isHarian: false, prod: ['Tanah Liat', 'Kayu Bakar', 'Cat (Jika Genteng Cat)'], ops: ['Listrik', 'Transportasi'] },
-    'Lainnya': { unitLabel: 'JUMLAH PRODUKSI', tarifLabel: 'HARGA / SATUAN', defSatuan: 'Pcs', isHarian: false, prod: ['Bahan Baku Utama', 'Bahan Penolong'], ops: ['Biaya Operasional Lain'] }
+    'Lainnya': { unitLabel: 'JUMLAH PRODUKSI', tarifLabel: 'HARGA / SATUAN', defSatuan: 'Pcs', isHarian: false, prod: ['Bahan Baku Utama', 'Bahan Penolong'], ops: ['Biaya Operasional Lain'] },
+    'Industri Tenun': { unitLabel: 'PRODUKSI KAIN TENUN', tarifLabel: 'HARGA / LEMBAR / METER', defSatuan: 'Lembar', isHarian: false, prod: ['Benang Tenun', 'Pewarna Kain', 'Bahan Penguat'], ops: ['Perawatan ATBM / Mesin Tenun', 'Listrik', 'Sewa Tempat'] },
+    // 'Industri Furniture': { unitLabel: 'PRODUKSI MEBEL', tarifLabel: 'HARGA / UNIT', defSatuan: 'Unit', isHarian: false, prod: ['Kayu / Papan / Triplek', 'Paku / Baut / Engsel', 'Cat / Politur', 'Lem Kayu'], ops: ['Listrik', 'Transportasi / Pengiriman'] },
   };
 
   function applyMasterIndustri() {
@@ -5700,7 +5719,12 @@ const masterKomoditas = {
     { id: 'kakao', nama: 'Kakao (Cokelat)', satuan: 'Kg', hargaAcuan: 40000, produktivitas: 1200, siklus: 1, 
       biaya: { olahTanah: 0, benih: 0, urea: 1500000, sp36: 1000000, pestisida: 1500000, pemeliharaan: 3500000, panen: 3000000, angkut: 1000000 } },
     { id: 'tebu', nama: 'Tebu', satuan: 'Ton', hargaAcuan: 600000, produktivitas: 80, siklus: 1, 
-      biaya: { olahTanah: 3000000, benih: 2000000, urea: 2500000, sp36: 1500000, pestisida: 1000000, pemeliharaan: 2000000, panen: 10000000, angkut: 5000000 } }
+      biaya: { olahTanah: 3000000, benih: 2000000, urea: 2500000, sp36: 1500000, pestisida: 1000000, pemeliharaan: 2000000, panen: 10000000, angkut: 5000000 } },
+    { id: 'tebu', nama: 'Tebu', satuan: 'Ton', hargaAcuan: 600000, produktivitas: 80, siklus: 1, 
+      biaya: { olahTanah: 3000000, benih: 2000000, urea: 2500000, sp36: 1500000, pestisida: 1000000, pemeliharaan: 2000000, panen: 10000000, angkut: 5000000 } },
+    // Tambahkan Tembakau di sini
+    { id: 'tembakau', nama: 'Tembakau', satuan: 'Kg', hargaAcuan: 40000, produktivitas: 1200, siklus: 2, 
+      biaya: { olahTanah: 2000000, benih: 500000, urea: 1000000, sp36: 1000000, pestisida: 1500000, pemeliharaan: 2000000, panen: 1500000, angkut: 1000000 } }
   ]
 };
 
