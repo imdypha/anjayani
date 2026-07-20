@@ -1536,6 +1536,10 @@
           <option value="Kambing">Kambing</option>
           <option value="Ayam Pedaging">Ayam Pedaging</option>
           <option value="Ayam Petelur">Ayam Petelur</option>
+          <!-- Tambahan Baru -->
+          <option value="Ulat Kandang">Ulat Kandang</option>
+          <option value="Jangkrik">Jangkrik</option>
+          <option value="Lainnya">Lainnya (dll)</option>
         </select>
       </div>
     </div>
@@ -2913,9 +2917,9 @@
   if (kategori === 'pangan') {
     options = '<option value="Padi">Padi</option><option value="Jagung Manis">Jagung Manis</option><option value="Jagung Ayam (Pakan)">Jagung Ayam (Pakan)</option><option value="Kedelai">Kedelai</option><option value="Ubi Kayu (Singkong)">Ubi Kayu (Singkong)</option><option value="Ubi Jalar">Ubi Jalar</option><option value="Lainnya">Lainnya</option>';
   } else if (kategori === 'horti') {
-    options = '<option value="Cabai">Cabai</option><option value="Bawang Merah">Bawang Merah</option><option value="Tomat">Tomat</option><option value="Kentang">Kentang</option><option value="Sayuran Daun">Sayuran Daun</option><option value="Sereh">Sereh</option><option value="Lengkuas">Lengkuas (Laos)</option><option value="Kunyit">Kunyit</option><option value="Lainnya">Lainnya</option>';
+    options = '<option value="Cabai">Cabai</option><option value="Bawang Merah">Bawang Merah</option><option value="Tomat">Tomat</option><option value="Kentang">Kentang</option><option value="Sayuran Daun">Sayuran Daun</option><option value="Sereh">Sereh</option><option value="Lengkuas">Lengkuas (Laos)</option><option value="Kunyit">Kunyit</option><option value="Wortel">Wortel</option><option value="Labu Siam">Labu Siam</option><option value="Lainnya">Lainnya</option>';
   } else if (kategori === 'kebun') {
-    options = '<option value="Sawit">Sawit</option><option value="Karet">Karet</option><option value="Kopi">Kopi</option><option value="Kakao">Kakao</option><option value="Kelapa">Kelapa</option><option value="Tebu">Tebu</option><option value="Cengkeh">Cengkeh</option><option value="Teh">Teh</option><option value="Lada">Lada</option><option value="Pala">Pala</option><option value="Lainnya">Lainnya</option>';
+    options = '<option value="Sawit">Sawit</option><option value="Karet">Karet</option><option value="Kopi">Kopi</option><option value="Kakao">Kakao</option><option value="Kelapa">Kelapa</option><option value="Tebu">Tebu</option><option value="Cengkeh">Cengkeh</option><option value="Teh">Teh</option><option value="Lada">Lada</option><option value="Pala">Pala</option><option value="Belimbing">Belimbing</option><option value="Lainnya">Lainnya</option>';
   }
   
   komoditasSelect.innerHTML = options;
@@ -2929,8 +2933,8 @@
   // Konversi produktivitas ke Kg / m2 (dari standar per Ha / 10.000m2)
   const vals = { 
     "Padi": 0.80, "Jagung Manis": 1.20, "Jagung Ayam (Pakan)": 0.70, "Kedelai": 0.22, "Ubi Kayu (Singkong)": 2.50, "Ubi Jalar": 2.00,
-    "Cabai": 1.20, "Bawang Merah": 1.00, "Tomat": 1.50, "Kentang": 2.00, "Sayuran Daun": 1.00, "Sereh": 2.00, "Lengkuas": 2.00, "Kunyit": 1.50,
-    "Sawit": 2.40, "Karet": 0.15, "Kopi": 0.15, "Kakao": 0.12, "Kelapa": 0.60, "Tebu": 8.00, "Cengkeh": 0.05, "Teh": 0.20, "Lada": 0.12, "Pala": 0.07,
+    "Cabai": 1.20, "Bawang Merah": 1.00, "Tomat": 1.50, "Kentang": 2.00, "Sayuran Daun": 1.00, "Sereh": 2.00, "Lengkuas": 2.00, "Kunyit": 1.50, "Wortel": 1.50, "Labu Siam": 2.00,
+    "Sawit": 2.40, "Karet": 0.15, "Kopi": 0.15, "Kakao": 0.12, "Kelapa": 0.60, "Tebu": 8.00, "Cengkeh": 0.05, "Teh": 0.20, "Lada": 0.12, "Pala": 0.07, "Belimbing": 1.50,
     "Lainnya": 0.50 
   };
   
@@ -3770,7 +3774,10 @@ function hitungDagang() {
     'Sapi Perah': { unitLabel: 'PRODUKSI SUSU', tarifLabel: 'HARGA / LITER', defSatuan: 'Liter', isHarian: true, hariLabel: 'HARI PEMERAHAN / BULAN', prod: ['Pakan', 'Vitamin', 'Obat'], ops: ['BBM', 'Upah PekerjaLepas'] },
     'Kambing': { unitLabel: 'PRODUKSI DAGING', tarifLabel: 'HARGA / KG', defSatuan: 'Kg', isHarian: false, prod: ['Pakan', 'Vitamin', 'Obat'], ops: ['BBM', 'Upah PekerjaLepas'] },
     'Ayam Pedaging': { unitLabel: 'PRODUKSI DAGING', tarifLabel: 'HARGA / KG', defSatuan: 'Kg', isHarian: false, prod: ['Pakan', 'Vitamin', 'Obat'], ops: ['BBM', 'Upah PekerjaLepas'] },
-    'Ayam Petelur': { unitLabel: 'PRODUKSI TELUR', tarifLabel: 'HARGA / KG', defSatuan: 'Kg', isHarian: true, hariLabel: 'HARI PRODUKSI TELUR / BULAN', prod: ['Pakan', 'Vitamin', 'Obat'], ops: ['BBM', 'Upah PekerjaLepas'] }
+    'Ayam Petelur': { unitLabel: 'PRODUKSI TELUR', tarifLabel: 'HARGA / KG', defSatuan: 'Kg', isHarian: true, hariLabel: 'HARI PRODUKSI TELUR / BULAN', prod: ['Pakan', 'Vitamin', 'Obat'], ops: ['BBM', 'Upah PekerjaLepas'] },
+    'Ulat Kandang': { unitLabel: 'PRODUKSI ULAT', tarifLabel: 'HARGA / KG', defSatuan: 'Kg', isHarian: false, prod: ['Pakan (Polar/Pur)', 'Media Kandang (Ampas/Dedak)'], ops: ['Transportasi', 'Listrik'] },
+    'Jangkrik': { unitLabel: 'PRODUKSI JANGKRIK', tarifLabel: 'HARGA / KG', defSatuan: 'Kg', isHarian: false, prod: ['Pakan (Pur/Sayuran)', 'Media Kandang (Klaras/Kardus Telur)'], ops: ['Transportasi', 'Listrik'] },
+    'Lainnya': { unitLabel: 'JUMLAH PRODUKSI', tarifLabel: 'HARGA RATA-RATA', defSatuan: 'Kg', isHarian: false, prod: ['Pakan / Bibit', 'Vitamin'], ops: ['Operasional / Listrik'] }
   };
 
   function applyMasterTernak() {
@@ -5664,7 +5671,12 @@ const masterKomoditas = {
     { id: 'lengkuas', nama: 'Lengkuas (Laos)', satuan: 'Kg', hargaAcuan: 4000, produktivitas: 20000, siklus: 1, 
       biaya: { olahTanah: 2000000, benih: 1500000, urea: 1000000, sp36: 800000, pestisida: 500000, pemeliharaan: 1200000, panen: 3000000, angkut: 1200000 } },
     { id: 'kunyit', nama: 'Kunyit', satuan: 'Kg', hargaAcuan: 5000, produktivitas: 15000, siklus: 1, 
-      biaya: { olahTanah: 2000000, benih: 1500000, urea: 1000000, sp36: 800000, pestisida: 500000, pemeliharaan: 1200000, panen: 2500000, angkut: 1000000 } }
+      biaya: { olahTanah: 2000000, benih: 1500000, urea: 1000000, sp36: 800000, pestisida: 500000, pemeliharaan: 1200000, panen: 2500000, angkut: 1000000 } },
+    { id: 'wortel', nama: 'Wortel', satuan: 'Kg', hargaAcuan: 5000, produktivitas: 15000, siklus: 3, 
+      biaya: { olahTanah: 3000000, benih: 1500000, urea: 1000000, sp36: 1000000, pestisida: 2000000, pemeliharaan: 3000000, panen: 2000000, angkut: 800000 } },
+    { id: 'labu_siam', nama: 'Labu Siam', satuan: 'Kg', hargaAcuan: 3000, produktivitas: 20000, siklus: 4, 
+      biaya: { olahTanah: 2000000, benih: 500000, urea: 1000000, sp36: 800000, pestisida: 1500000, pemeliharaan: 2000000, panen: 1500000, angkut: 800000 } }
+      
   ],
   buah: [
     { id: 'pisang', nama: 'Pisang', satuan: 'Tandan', hargaAcuan: 40000, produktivitas: 1000, siklus: 1, 
@@ -5674,7 +5686,9 @@ const masterKomoditas = {
     { id: 'durian', nama: 'Durian', satuan: 'Buah', hargaAcuan: 50000, produktivitas: 3000, siklus: 1, 
       biaya: { olahTanah: 0, benih: 0, urea: 2000000, sp36: 1500000, pestisida: 2500000, pemeliharaan: 4000000, panen: 3000000, angkut: 2000000 } },
     { id: 'kelapa', nama: 'Kelapa', satuan: 'Butir', hargaAcuan: 3000, produktivitas: 12000, siklus: 4, 
-      biaya: { olahTanah: 0, benih: 0, urea: 1000000, sp36: 500000, pestisida: 500000, pemeliharaan: 1500000, panen: 4000000, angkut: 2000000 } }
+      biaya: { olahTanah: 0, benih: 0, urea: 1000000, sp36: 500000, pestisida: 500000, pemeliharaan: 1500000, panen: 4000000, angkut: 2000000 } },
+      { id: 'belimbing', nama: 'Belimbing', satuan: 'Kg', hargaAcuan: 8000, produktivitas: 15000, siklus: 3, 
+      biaya: { olahTanah: 0, benih: 500000, urea: 1500000, sp36: 1000000, pestisida: 2000000, pemeliharaan: 3000000, panen: 2000000, angkut: 1000000 } }
   ],
   kebun_industri: [
     { id: 'sawit', nama: 'Kelapa Sawit (TBS)', satuan: 'Kg', hargaAcuan: 2700, produktivitas: 24000, siklus: 1, 
