@@ -76,6 +76,10 @@
 .c-green { background: #E7F5EC; border-color: #CDE9D7; } .c-green .ic { background: #DAF0E1; }
 .c-navy { background: #EAEFF6; border-color: #D3DEEC; } .c-navy .ic { background: #DDE7F3; } */
 
+.m-online { background: #F5F3FF; border-color: #DDD6FE; } 
+.m-online .ic { background: #EDE9FE; color: #6D28D9; } 
+.m-online span { color: #4C1D95; }
+
 /* Palet Warna Baru Grid Menu Home (Thematic Palette) */
 .m-dagang { background: #EBF5FF; border-color: #BFDBFE; } .m-dagang .ic { background: #DBEAFE; color: #1E40AF; } .m-dagang span { color: #1E3A8A; }
 .m-makanan { background: #FFF7ED; border-color: #FFEDD5; } .m-makanan .ic { background: #FFEDD5; color: #C2410C; } .m-makanan span { color: #7C2D12; }
@@ -371,6 +375,7 @@
       <div class="section-label" style="margin-top: 0;"><span class="idx">Sektor Usaha Responden</div>
       <p class="section-desc">Pilih sektor usaha di bawah ini untuk memulai perhitungan.</p>
       
+      
       <div class="home-grid">
         <div class="home-card m-dagang" onclick="sw('kalkulasi', document.getElementById('tab-home'))">
           <div class="ic">🛒</div>
@@ -430,10 +435,135 @@
   <div class="ic">🚚</div>
   <span>Transportasi</span>
 </div>
+<div class="home-card m-online" onclick="sw('online', document.getElementById('tab-home'))">
+  <div class="ic">🌐</div>
+  <span>Sektor Online</span>
+</div>
 
       </div>
     </div>
   </div>
+
+  <div id="p-online" class="panel">
+  <div class="section-label">Data Usaha Online</div>
+  
+  <div class="fields-grid">
+    <div class="field">
+      <label>NAMA USAHA / AKUN (OPSIONAL)</label>
+      <input type="text" id="onlineNama" class="input-box" placeholder="Contoh: Toko Cantik / @tokocantik">
+    </div>
+    <div class="field">
+      <label>JENIS USAHA ONLINE</label>
+      <select id="onlineJenis" class="input-box" onchange="applyMasterOnline()">
+        <option value="Online Shop / Marketplace Seller">Online Shop / Marketplace Seller</option>
+        <option value="Reseller">Reseller</option>
+        <option value="Dropshipper">Dropshipper</option>
+        <option value="Affiliate Marketing">Affiliate Marketing</option>
+        <option value="Content Creator">Content Creator</option>
+        <option value="YouTuber">YouTuber</option>
+        <option value="TikTok Creator">TikTok Creator</option>
+        <option value="Streamer">Streamer</option>
+        <option value="Influencer / Endorsement">Influencer / Endorsement</option>
+        <option value="Freelancer Online">Freelancer Online</option>
+        <option value="Jasa Digital">Jasa Digital</option>
+        <option value="Admin Media Sosial">Admin Media Sosial</option>
+        <option value="Penjual Produk Digital">Penjual Produk Digital</option>
+        <option value="Lainnya">Lainnya</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="field" style="margin-top: 12px;">
+    <label>PLATFORM UTAMA (BISA PILIH LEBIH DARI SATU)</label>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;" id="onlinePlatform">
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="Shopee"> Shopee</label>
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="Tokopedia"> Tokopedia</label>
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="TikTok Shop"> TikTok Shop</label>
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="Lazada"> Lazada</label>
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="Facebook"> Facebook</label>
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="Instagram"> Instagram</label>
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="TikTok"> TikTok</label>
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="YouTube"> YouTube</label>
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="WhatsApp"> WhatsApp</label>
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="Website Sendiri"> Website Sendiri</label>
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="Freelance"> Fiverr / Upwork / Freelance</label>
+      <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; text-transform: none; color: var(--text-primary);"><input type="checkbox" value="Lainnya"> Lainnya</label>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Pendapatan Utama</div>
+<div class="fields-grid">
+  <div class="field">
+    <label>CARA MENGETAHUI PENDAPATAN</label>
+    <select id="onlinePeriode" class="input-box" onchange="cekPeriodeOnline()">
+      <option value="hari">Pendapatan Harian (Rata-rata)</option>
+      <option value="minggu">Pendapatan Mingguan (Rata-rata)</option>
+      <option value="bulan" selected>Pendapatan Bulanan (Rata-rata)</option>
+      <option value="tahun">Pendapatan Tahunan (Rata-rata)</option>
+      <option value="xhari">Pendapatan Setiap X Hari</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>NILAI PENDAPATAN</label>
+    <div class="input-group">
+      <span class="input-group-text">Rp</span>
+      <input type="text" inputmode="numeric" id="onlineOmzetVal" placeholder="0" oninput="formatRupiah(this)">
+    </div>
+  </div>
+</div>
+
+<!-- Muncul jika memilih "Setiap X Hari" -->
+<div id="wrapOnlineXHari" class="field" style="margin-top: 12px; display: none; background: var(--bg-accent); padding: 14px; border-radius: 12px; border: 1px solid var(--border-accent);">
+  <label>PENDAPATAN TERSEBUT DIPEROLEH SELAMA</label>
+  <div class="input-group">
+    <input type="number" id="onlineXHariVal" class="input-box" placeholder="Contoh: 3" min="1" style="border-right: none;">
+    <span class="input-group-text">Hari</span>
+  </div>
+</div>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Sumber Pendapatan Online</div>
+  <p class="section-desc">Masukkan seluruh sumber pendapatan (Cth: Penjualan, Ads, Affiliate, Saweran/Gift).</p>
+  <div id="pendapatan-Online"></div>
+  <button class="btn-add" onclick="tambahItemBiaya('pendapatan-Online', 'Cth: Penjualan / Ads / Endorse')" style="background: #E1F3E7; color: #1E7A4C; border-color: #BEE3CB;">+ Tambah Sumber Pendapatan</button>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Data Pekerja & Jamsos (26.A)</div>
+  <div class="fields-grid">
+    <div class="field"><label>JUMLAH PEGAWAI / ADMIN</label><input type="number" id="onlinePegawai" class="input-box" placeholder="0" min="0"></div>
+    <div class="field"><label>PERIODE GAJI</label><select id="onlinePeriodeGaji" class="input-box"><option value="hari">Per Hari</option><option value="minggu">Per Minggu</option><option value="bulan" selected>Per Bulan</option><option value="tahun">Per Tahun</option></select></div>
+    <div class="field" style="grid-column: span 2;"><label>GAJI PER PEGAWAI</label><div class="input-group"><span class="input-group-text">Rp</span><input type="text" inputmode="numeric" id="onlineGaji" placeholder="0" oninput="formatRupiah(this)"></div></div>
+  </div>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Rincian Pengeluaran Usaha (26.B, 26.C, 26.D)</div>
+  <button class="btn-add" id="btnLoadBiayaOnline" onclick="loadDefaultBiayaOnline()" style="background: var(--bg-success); border: 1px dashed var(--border-success); color: var(--text-success); margin-bottom: 12px;">⚡ Fitur Isi Otomatis Biaya Online Shop</button>
+
+  <div class="section-label" style="margin-top: 0; font-size: 13px;">Biaya Produksi / Konten (26.B)</div>
+  <p class="section-desc">Kebutuhan packing, properti konten, bahan baku, dsb.</p>
+  <div id="containerProdOnline"></div>
+  <button class="btn-add" onclick="tambahItemBiaya('containerProdOnline', 'Cth: Kardus / Bubble Wrap / Properti')">+ Tambah Manual Biaya Produksi</button>
+
+  <div class="section-label" style="margin-top: 0.5rem; font-size: 13px;">Biaya Barang Terjual (26.C)</div>
+  <p class="section-desc">Kulakan / pembelian stok barang untuk dijual kembali.</p>
+  <div id="bbt-Online"></div>
+  <button class="btn-add" onclick="tambahItemBiaya('bbt-Online', 'Cth: Belanja Stok Pakaian')">+ Tambah Manual Barang Terjual</button>
+
+  <div class="section-label" style="margin-top: 0.5rem; font-size: 13px;">Biaya Operasional (26.D)</div>
+  <p class="section-desc">Listrik, Internet, Ads/Iklan, Biaya Admin Platform, Software.</p>
+  <div id="containerOpsOnline"></div>
+  <button class="btn-add" onclick="tambahItemBiaya('containerOpsOnline', 'Cth: Ads / Internet / Admin Marketplace')">+ Tambah Manual Operasional</button>
+
+  <div class="section-label" style="margin-top: 1.5rem;">Biaya Non-Operasional (26.E)</div>
+  <div id="nonops-Online"></div>
+  <button class="btn-add" onclick="tambahItemBiaya('nonops-Online', 'Cth: Pajak / Bunga Pinjaman')">+ Tambah Biaya Non-Operasional</button>
+  
+  <div class="section-label" style="margin-top: 1.5rem; color: var(--text-success);">Pendapatan Lainnya (Opsional)</div>
+  <div id="ekstra-Online"></div>
+  <button class="btn-add" onclick="tambahPendapatanEkstra('ekstra-Online')" style="border-color: var(--border-success); color: var(--text-success); background: var(--surface-1);">
+    + Tambah Pendapatan Lainnya
+  </button>
+
+  <button class="btn-primary" onclick="hitungOnline()"><i class="ti ti-calculator"></i> HITUNG HASIL USAHA ONLINE</button>
+  <button class="btn-reset" onclick="resetForm('online')"><i class="ti ti-refresh"></i> RESET FORM ONLINE</button>
+</div>
 
   <div id="p-transportasi" class="panel">
   <div class="section-label">Data Usaha Transportasi</div>
@@ -2627,7 +2757,7 @@
     div.className = 'biaya-item dynamic-b-item';
     div.innerHTML = `
       <div style="margin-bottom: 10px;">
-        <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px; letter-spacing:0.5px;">① PENGELUARAN UNTUK APA?</label>
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px; letter-spacing:0.5px;">① PEMASUKAN DI DAPAT DARI ?</label>
         <div class="biaya-item-top" style="margin-bottom:0;">
           <input type="text" class="input-box dyn-nama" placeholder="${placeholder}">
           <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
@@ -2635,7 +2765,7 @@
       </div>
       <div style="display: flex; gap: 6px; align-items: flex-end;">
         <div style="flex: 2;">
-          <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px; letter-spacing:0.5px;">② BIAYANYA</label>
+          <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px; letter-spacing:0.5px;">② NOMINAL</label>
           <div class="b-nom" style="width:100%;">
             <span>Rp</span>
             <input type="text" inputmode="numeric" class="val-biaya dyn-nom" placeholder="0" oninput="formatRupiah(this)">
@@ -7205,6 +7335,171 @@ function updateLabelSatuanTani() {
     document.getElementById('lblTaniHarga').innerText = `HARGA / ${satuan.toUpperCase()}`;
   }
   liveKalkulasiTani();
+}
+
+const masterOnline = {
+  'Online Shop / Marketplace Seller': { prod: ['Kardus / Packaging', 'Bubble Wrap', 'Lakban / Stiker Label'], bbt: ['Belanja Stok Barang'], ops: ['Internet / Kuota', 'Listrik', 'Biaya Admin Marketplace', 'Iklan / Ads', 'Transportasi / Kurir'] },
+  'Reseller': { prod: ['Plastik Packing', 'Lakban'], bbt: ['Pembelian Produk Reseller'], ops: ['Internet', 'Listrik', 'Transportasi'] },
+  'Dropshipper': { prod: [], bbt: [], ops: ['Internet / Kuota Data', 'Listrik'] },
+  'Affiliate Marketing': { prod: ['Properti Konten', 'Sample Produk'], bbt: [], ops: ['Internet', 'Listrik', 'Iklan / Boost Konten'] },
+  'Content Creator': { prod: ['Properti Syuting', 'Sewa Studio', 'Pakaian Konten'], bbt: [], ops: ['Internet', 'Listrik', 'Software Editing', 'Langganan Aplikasi'] },
+  'YouTuber': { prod: ['Properti Syuting'], bbt: [], ops: ['Internet', 'Listrik', 'Software Editing'] },
+  'TikTok Creator': { prod: ['Properti Konten', 'Pakaian / Makeup'], bbt: [], ops: ['Internet', 'Listrik', 'Koin TikTok (Promote)'] },
+  'Freelancer Online': { prod: ['Aset Digital / Template'], bbt: [], ops: ['Internet', 'Listrik', 'Software / Lisensi', 'Biaya Platform (Fiverr/Upwork)'] },
+  'Lainnya': { prod: ['Bahan Pendukung'], bbt: ['Stok Produk'], ops: ['Internet', 'Listrik'] }
+};
+
+function applyMasterOnline() {
+  let jenis = document.getElementById('onlineJenis').value;
+  document.getElementById('btnLoadBiayaOnline').innerHTML = '⚡ Fitur Isi Otomatis Biaya ' + jenis;
+}
+
+function loadDefaultBiayaOnline() {
+  let jenis = document.getElementById('onlineJenis').value;
+  let data = masterOnline[jenis] || masterOnline['Lainnya'];
+  
+  let containerProd = document.getElementById('containerProdOnline');
+  let containerBbt = document.getElementById('bbt-Online');
+  let containerOps = document.getElementById('containerOpsOnline');
+  
+  containerProd.innerHTML = ''; containerBbt.innerHTML = ''; containerOps.innerHTML = ''; 
+  
+  const buatHTMLBiaya = (namaItem) => `
+    <div style="margin-bottom: 10px;">
+      <div class="biaya-item-top" style="margin-bottom:0;">
+        <input type="text" class="input-box dyn-nama" placeholder="Biaya" value="${namaItem}">
+        <button class="btn-del" onclick="hapusElemen(this)"><i class="ti ti-x"></i></button>
+      </div>
+    </div>
+    <div style="display: flex; gap: 6px; align-items: flex-end;">
+      <div style="flex: 2;">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px;">BIAYA / BELANJA</label>
+        <div class="b-nom" style="width:100%;"><span>Rp</span><input type="text" inputmode="numeric" class="val-biaya dyn-nom" placeholder="0" oninput="formatRupiah(this)"></div>
+      </div>
+      <div style="height: 42px; display: flex; align-items: center; font-size:14px; font-weight:bold; color:var(--text-muted);">x</div>
+      <div style="flex: 0.8;">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px; text-align:center;">KALI</label>
+        <input type="number" class="input-box dyn-freq" placeholder="1" value="1" min="1" style="text-align:center; padding: 0 4px; width:100%;">
+      </div>
+      <div style="flex: 1.2;">
+        <label style="font-size:10px; color:var(--text-danger); font-weight:700; display:block; margin-bottom:4px;">PERIODE</label>
+        <select class="input-box dyn-periode" style="padding: 0 4px; width:100%;"><option value="hari">/ Hari</option><option value="minggu">/ Mgg</option><option value="bulan" selected>/ Bln</option><option value="tahun">/ Thn</option></select>
+      </div>
+    </div>`;
+
+  if (data.prod) data.prod.forEach(item => { let div = document.createElement('div'); div.className = 'biaya-item dynamic-b-item'; div.innerHTML = buatHTMLBiaya(item); containerProd.appendChild(div); });
+  if (data.bbt) data.bbt.forEach(item => { let div = document.createElement('div'); div.className = 'biaya-item dynamic-b-item'; div.innerHTML = buatHTMLBiaya(item); containerBbt.appendChild(div); });
+  if (data.ops) data.ops.forEach(item => { let div = document.createElement('div'); div.className = 'biaya-item dynamic-b-item'; div.innerHTML = buatHTMLBiaya(item); containerOps.appendChild(div); });
+  
+  showToast('Template Biaya ' + jenis + ' Berhasil Dimuat!');
+}
+
+function hitungOnline() {
+  // 1. Hitung Pendapatan Utama (Input Manual)
+  let periode = document.getElementById('onlinePeriode').value;
+  let nilaiDasar = parseNum(document.getElementById('onlineOmzetVal').value);
+  let omzetBulanan = 0;
+  let labelInfo = '';
+
+  if (periode === 'hari') {
+    omzetBulanan = nilaiDasar * 30; // Asumsi 30 hari
+    labelInfo = `(Pendapatan Harian)`;
+  } else if (periode === 'minggu') {
+    omzetBulanan = nilaiDasar * (52 / 12);
+    labelInfo = `(Pendapatan Mingguan)`;
+  } else if (periode === 'bulan') {
+    omzetBulanan = nilaiDasar;
+    labelInfo = `(Pendapatan Bulanan)`;
+  } else if (periode === 'tahun') {
+    omzetBulanan = nilaiDasar / 12;
+    labelInfo = `(Pendapatan Tahunan)`;
+  } else if (periode === 'xhari') {
+    let xHari = parseFloat(document.getElementById('onlineXHariVal').value) || 1;
+    omzetBulanan = (nilaiDasar / xHari) * 30;
+    labelInfo = `(Pendapatan per ${xHari} Hari)`;
+  }
+
+  let omzetUtamaInputTahun = omzetBulanan * 12;
+  let htmlInputUtama = '';
+  if (omzetUtamaInputTahun > 0) {
+     htmlInputUtama = `<div class="bd-row minus" style="padding-left:10px;"><span>+ Pendapatan Utama <br><small style="font-size:10px; color:var(--text-muted)">${labelInfo}</small></span><span class="bd-val" style="color:var(--text-success);">${formatRp(omzetUtamaInputTahun)}/thn</span></div>`;
+  }
+
+  // 2. Hitung Sumber Pendapatan Dinamis (Jika Ada)
+  let pendapatanSumber = sumBiayaItems('#pendapatan-Online .dynamic-b-item', true);
+  
+  // 3. Pendapatan Lainnya
+  let ekstra = sumBiayaItems('#ekstra-Online .dynamic-income-item', true);
+  
+  let omzetUtamaTahun = omzetUtamaInputTahun + pendapatanSumber.total;
+  let omzetKotorTahun = omzetUtamaTahun + ekstra.total;
+
+  // 4. Hitung Pengeluaran
+  let gaji = hitungGaji('onlinePegawai', 'onlineGaji', 'onlinePeriodeGaji', 'Pegawai / Admin');
+  let prod = sumBiayaItems('#containerProdOnline .dynamic-b-item');
+  let bbt = sumBiayaItems('#bbt-Online .dynamic-b-item'); 
+  let ops = sumBiayaItems('#containerOpsOnline .dynamic-b-item'); 
+  let nonOps = sumBiayaItems('#nonops-Online .dynamic-b-item'); 
+
+  let totalBiaya = gaji.total + prod.total + bbt.total + ops.total + nonOps.total;
+  let omzetBersihTahun = omzetKotorTahun - bbt.total; 
+  
+  // 5. Build HTML
+  let platforms = Array.from(document.querySelectorAll('#onlinePlatform input[type="checkbox"]:checked')).map(cb => cb.value).join(', ');
+  let labelPlatform = platforms ? `Platform: ${platforms}` : 'Platform tidak dipilih';
+
+  let htmlPendapatanUtama = (omzetUtamaInputTahun > 0 || pendapatanSumber.total > 0) 
+    ? htmlInputUtama + pendapatanSumber.html 
+    : `<div class="bd-row minus" style="padding-left:10px;"><span style="color:var(--text-muted); font-size:11px;">Tidak ada sumber pendapatan utama diinput</span></div>`;
+  
+  let htmlEkstra = ekstra.total > 0 ? ekstra.html : '';
+  
+  let customA = `<div class="bd-row total" style="color:var(--accent);"><span>A. Pendapatan</span></div><div class="bd-row minus" style="padding-left:10px; border-bottom:none;"><span style="font-size:11px; color:var(--text-secondary); font-weight:700;">[ ${labelPlatform} ]</span></div>${htmlPendapatanUtama}${htmlEkstra}<div class="bd-row minus" style="padding-left:10px;"><span>= Omzet Bersih</span><span class="bd-val" style="color:var(--text-success); font-weight:700;">${formatRp(omzetBersihTahun)}/thn</span></div>`;
+
+  let htmlBreakdown = generateAnomaliWarning(omzetKotorTahun, totalBiaya) + customA + buildBreakdownHTML(0, 0, gaji, prod, bbt, ops, nonOps, true);
+
+  tampilkanBlok26({ 
+    tabAsal: 'online', 
+    type: 'usaha', 
+    nama: document.getElementById('onlineNama').value, 
+    jenis: document.getElementById('onlineJenis').value, 
+    omzetKotor: omzetUtamaTahun,
+    omzetEkstra: ekstra.total,
+    gaji: gaji.total, prod: prod.total, bbt: bbt.total, ops: ops.total, nonOps: nonOps.total, 
+    totalBiaya: totalBiaya, 
+    labaTahun: omzetKotorTahun - totalBiaya, 
+    labaBulan: (omzetKotorTahun - totalBiaya)/12, 
+    rincian: htmlBreakdown 
+  });
+}
+
+const originalResetForm = window.resetForm;
+window.resetForm = function(jenis) {
+  if (jenis === 'online') {
+    document.getElementById('onlineNama').value = ''; 
+    document.querySelectorAll('#onlinePlatform input[type="checkbox"]').forEach(cb => cb.checked = false);
+    document.getElementById('onlineOmzetVal').value = '';
+    document.getElementById('onlinePeriode').value = 'bulan';
+    if(document.getElementById('onlineXHariVal')) document.getElementById('onlineXHariVal').value = '';
+    if(document.getElementById('wrapOnlineXHari')) document.getElementById('wrapOnlineXHari').style.display = 'none';
+    document.getElementById('onlinePegawai').value = ''; 
+    document.getElementById('onlineGaji').value = ''; 
+    document.getElementById('pendapatan-Online').innerHTML = ''; 
+    document.getElementById('containerProdOnline').innerHTML = ''; 
+    document.getElementById('bbt-Online').innerHTML = ''; 
+    document.getElementById('containerOpsOnline').innerHTML = ''; 
+    document.getElementById('nonops-Online').innerHTML = ''; 
+    document.getElementById('ekstra-Online').innerHTML = ''; 
+    applyMasterOnline();
+    showToast('Form Online Direset'); resetBlok26();
+  } else {
+    originalResetForm(jenis);
+  }
+}
+
+function cekPeriodeOnline() {
+  let p = document.getElementById('onlinePeriode').value;
+  document.getElementById('wrapOnlineXHari').style.display = p === 'xhari' ? 'block' : 'none';
 }
 </script>
 </body>
